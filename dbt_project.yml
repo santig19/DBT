@@ -48,3 +48,5 @@ models:
         alias: m_product
     m_null_country_values:
         alias: m_null_country_values
+    m_null_country_values_snapshot_monthly_historical:
+        alias: m_null_country_values_snapshot 

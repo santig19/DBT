@@ -41,8 +41,10 @@ vars:
 models:
   sf_poc_dbt:
       # Applies to all files under models/example/
-      materialized: table
-      m_territory:
+    materialized: table
+    m_territory:
         alias: m_territory        
-      m_product:
+    m_product:
         alias: m_product
+    m_null_country_values:
+        alias: m_null_country_values

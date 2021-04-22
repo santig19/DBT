@@ -2,7 +2,7 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'my_new_project'
+name: 'sf_poc_dbt'
 version: '1.0.0'
 config-version: 2
 
@@ -24,6 +24,13 @@ clean-targets:         # directories to be removed by `dbt clean`
     - "target"
     - "dbt_modules"
 
+#Variables
+#Generic variables used in all models
+vars:
+  #Snowflake schema where are all the raw tables
+  schema: "RAW_SCHEMA"
+  #Snowflake user to grant privileges for each model
+  snowflake_user_grant_privileges: "ACCOUNTADMIN"
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
@@ -32,7 +39,10 @@ clean-targets:         # directories to be removed by `dbt clean`
 # as tables. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
 models:
-  my_new_project:
+  sf_poc_dbt:
       # Applies to all files under models/example/
-      example:
-          materialized: view
+      materialized: table
+      m_territory:
+        alias: m_territory        
+      m_product:
+        alias: m_product

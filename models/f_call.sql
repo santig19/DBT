@@ -214,8 +214,8 @@ when(h.Call_Record_Type = 'Medical Call')
 then Null
 else case
 when(m.Product_Analytic_Group_Id is not null)
-then COALESCE(h.Account_Id,'') + '-' + COALESCE(h.Product_Analytic_Group_Id,'') + '-' + case when trim(d.product_country_code)='' or d.product_country_code is null then 'NM' else d.product_country_code end
-else COALESCE(h.Account_Id,'') + '-' + case when trim(d.Product_Detail_Id)='' or d.Product_Detail_Id is null then 'NM' else d.Product_Detail_Id end
+then concat(COALESCE(h.Account_Id,''),'-',COALESCE(h.Product_Analytic_Group_Id,''),'-',case when trim(d.product_country_code)='' or d.product_country_code is null then 'NM' else d.product_country_code end)
+else concat(COALESCE(h.Account_Id,''),'-',case when trim(d.Product_Detail_Id)='' or d.Product_Detail_Id is null then 'NM' else d.Product_Detail_Id end)
 end
 end,
 h.veeva_remote_meeting_id,

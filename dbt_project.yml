@@ -62,3 +62,5 @@ models:
         alias: tmp_call_hierarchy_1
     tmp_call_hierarchy_2:
         alias: tmp_call_hierarchy_2
+    tmp_call:
+        alias: tmp_call

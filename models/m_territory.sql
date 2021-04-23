@@ -90,8 +90,8 @@ SELECT
 	,RIGHT(t3.NAME, LEN(t3.NAME)-3) as territory_distribution_region
 	,t.JJ_TERRITORY1ID__C as Territory1_id
 	,t.JJ_PARENTTERRITORY1ID__C as parentterritory1_id
-	,t.country_iso_code as country_iso_code
-	,case when t.lastmodifieddate = '' then null else t.lastmodifieddate end::datetime as last_modified_date
+	,t.country_iso_code as country_iso_code	
+	,case when t.lastmodifieddate = '' then null else to_date(t.lastmodifieddate,'YYYYMMDD HH24:MI:SS') end::datetime as last_modified_date	
 	,t.developername as developer_name
 	,t.description as description
 FROM {{ var('schema') }}.territory_business t

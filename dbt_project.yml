@@ -58,3 +58,5 @@ models:
         alias: tmp_f_call_account
     tmp_f_call_user:        
         alias: tmp_f_call_user
+    tmp_call_hierarchy_1:
+        alias: tmp_call_hierarchy_1

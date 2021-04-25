@@ -129,11 +129,11 @@ h.average_call_expenses_lc,
 h.total_call_expenses_lc,
 h.call_attachments
 FROM {{ ref('tmp_call_hierarchy_2') }} h
-LEFT OUTER JOIN {{ var('schema') }}.products_business p on p.Id=
+LEFT OUTER JOIN {{ var('schema') }}.product_raw p on p.Id=
 	case when Len(replace(h.Aux_Product_Id,' ',''))>0 
 		then h.Aux_Product_Id else concat('(FK_THERAREA)_',COALESCE(h.Call_Therapeutical_Area,''),'_',COALESCE(h.Country_Code,'')) 
 	end
-LEFT OUTER JOIN {{ var('schema') }}.product_group_map_business g on g.Product_vod__c=
+LEFT OUTER JOIN {{ var('schema') }}.product_group_map_raw g on g.Product_vod__c=
 	case when (h.Call_Record_Type = 'Medical Call') 
 		then concat('(FK_THERAREA)_',COALESCE(h.Call_Therapeutical_Area,''),'_',COALESCE(h.Country_Code,''))
 		else case when Len(replace(h.Aux_Product_Id,' ',''))>0 then h.Aux_Product_Id else concat('(FK_THERAREA)_',COALESCE(h.Call_Therapeutical_Area,''),'_',COALESCE(h.Country_Code,'')) end 
@@ -154,7 +154,7 @@ LEFT OUTER JOIN (
 ) b on b.product_id=case when Len(replace(h.Aux_Product_Id,' ',''))>0 then h.Aux_Product_Id else concat('(FK_THERAREA)_',COALESCE(h.Call_Therapeutical_Area,''),'_',COALESCE(h.Country_Code,'')) end
 LEFT OUTER JOIN (
 	SELECT M.Product_Topic as Call_Product_Topic, M.Product_Id
-	FROM {{ var('schema') }}.products_business t
+	FROM {{ var('schema') }}.product_raw t
 	JOIN {{ ref('m_product') }} M on M.Product_Id=t.Id
 ) pt on pt.product_id= 
 	case when (h.Call_Record_Type = 'Medical Call') 

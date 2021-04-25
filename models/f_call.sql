@@ -117,8 +117,8 @@ LEFT JOIN (
 SELECT
 min(an.id) as product_analytic_group_id
 ,pg.product_vod__c as product_id
-FROM {{ var('schema') }}.analytics_product_group_business an
-JOIN {{ var('schema') }}.product_group_map_business pg ON an.id = pg.analytics_product_group_vod__c
+FROM {{ var('schema') }}.analytics_product_group_raw an
+JOIN {{ var('schema') }}.product_group_map_raw pg ON an.id = pg.analytics_product_group_vod__c
 WHERE pg.product_vod__c IS NOT NULL AND pg.product_vod__c <> ''
 GROUP BY pg.product_vod__c
 ) M on M.Product_Id = h.Product_Id
@@ -126,7 +126,7 @@ GROUP BY pg.product_vod__c
 LEFT JOIN (
  
 SELECT DISTINCT(ID), Medical_Event_vod__c AS Medical_Event from
-{{ var('schema') }}.calls_business) b
+{{ var('schema') }}.call_raw) b
 on H.Call_Id = b.id
  
 LEFT JOIN (SELECT Account_Id, Territory_Id FROM {{ ref('m_null_country_values') }}

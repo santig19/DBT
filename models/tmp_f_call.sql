@@ -73,38 +73,38 @@ c.jj_proactive_reactive_sales__c As call_proactive_reactive_flag,
 case when c.JJ_AVERAGE_CALL_EXPENSES__C = '' then null else c.JJ_AVERAGE_CALL_EXPENSES__C end::decimal(28,2) as average_call_expenses_lc,
 case when c.JJ_TOTAL_CALL_EXPENSES__C = '' then null else c.JJ_TOTAL_CALL_EXPENSES__C end::decimal(28,2) as total_call_expenses_lc,
 case when c.ZVOD_ATTACHMENTS_VOD__C = '' then null else c.ZVOD_ATTACHMENTS_VOD__C end::integer as call_attachments
-FROM {{ var('schema') }}.calls_business c 
+FROM {{ var('schema') }}.call_raw c 
 LEFT JOIN (
 	SELECT ut_uniq.id, ut_uniq.userid, ut.territory2id as territoryid
 	FROM (
 		SELECT min(id) as id, userid
 		FROM (
 			SELECT ut.Id, ut.UserId
-			FROM {{ var('schema') }}.user_territory_association_business ut
-			JOIN {{ var('schema') }}.users_business u on u.id = ut.userid AND u.isactive != 0
+			FROM {{ var('schema') }}.user_territory_association_raw ut
+			JOIN {{ var('schema') }}.user_raw u on u.id = ut.userid AND u.isactive != 0
 		)
 		GROUP BY userid
 	) ut_uniq 
-	JOIN {{ var('schema') }}.user_territory_association_business ut on ut.id = ut_uniq.id
+	JOIN {{ var('schema') }}.user_territory_association_raw ut on ut.id = ut_uniq.id
 ) ut on c.OwnerId = ut.UserId
-LEFT JOIN {{ var('schema') }}.users_business us on c.OwnerId = us.Id
-LEFT JOIN {{ var('schema') }}.account_business a on c.Account_vod__c = a.Id
-LEFT JOIN {{ var('schema') }}.records_type_business rt on c.RecordTypeId = rt.Id
+LEFT JOIN {{ var('schema') }}.user_raw us on c.OwnerId = us.Id
+LEFT JOIN {{ var('schema') }}.account_raw a on c.Account_vod__c = a.Id
+LEFT JOIN {{ var('schema') }}.record_type_raw rt on c.RecordTypeId = rt.Id
 LEFT JOIN (
 	SELECT ROW_NUMBER() OVER (PARTITION BY IsoCode ORDER BY lastmodifieddate DESC) as rowid,IsoCode 
-	FROM {{ var('schema') }}.currency_type_business
+	FROM {{ var('schema') }}.currency_type_raw
 ) cu on c.CurrencyIsoCode = cu.IsoCode and cu.rowid=1
 LEFT JOIN (SELECT ROW_NUMBER() OVER (PARTITION BY parentid ORDER BY lastmodifieddate DESC) as rowid,parentid,value,Language 
-	FROM {{ var('schema') }}.record_type_localization_business 
+	FROM {{ var('schema') }}.record_type_localization_raw 
 	WHERE Language = 'en_US'
 ) rtl on rt.id=rtl.parentid and rtl.rowid=1
 LEFT JOIN (
 	SELECT ROW_NUMBER() OVER (PARTITION BY Name ORDER BY lastmodifieddate DESC) as rowid,name,country_iso_code,jj_Country_ISO_Code__c 
-	FROM {{ var('schema') }}.country_settings_business
+	FROM {{ var('schema') }}.country_settings_raw
 ) cs on Us.jj_User_Country__c=cs.Name and cs.rowid=1
 LEFT JOIN (
 	SELECT ROW_NUMBER() OVER ( partition by Account_vod__c,User_vod__c,Call2_vod__c order by lastmodifieddate asc) as rowid, Type_vod__c, Account_vod__c, User_vod__c, Call2_vod__c 
-	FROM {{ var('schema') }}.call_expenses_business 
+	FROM {{ var('schema') }}.call_expenses_raw 
 ) ce on concat(c.Account_vod__c,'_',c.User_vod__c,'_',c.Id) = concat(ce.Account_vod__c,'_',ce.User_vod__c,'_',ce.Call2_vod__c) and ce.rowid=1
 LEFT JOIN (
 	SELECT count(DISTINCT Child_Call) as cont_child, Parent_Call

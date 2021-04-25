@@ -74,7 +74,7 @@ LEFT OUTER JOIN (
 		cd.Type_vod__c as Call_Detail_Type,
 		cd.Call2_vod__c as call_id,
 		case when (c.Call_IspersonAccount = 'Yes' or c.Single_Call_to_Hospital = 'Yes') then '1' else '0' end::numeric(10,0) as Call_Interactions_Counter
-		FROM {{ var('schema') }}.calls_detail_business cd 
+		FROM {{ var('schema') }}.call_detail_raw cd 
 		LEFT OUTER JOIN (
 			SELECT DISTINCT Call_IspersonAccount,Single_Call_to_Hospital,Call_Id 
 			FROM {{ ref('tmp_f_call') }}

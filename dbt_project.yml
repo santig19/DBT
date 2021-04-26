@@ -64,4 +64,4 @@ models:
         alias: tmp_call           
     f_call:
         alias: f_call
-        materialized: view    
+        materialized: table    

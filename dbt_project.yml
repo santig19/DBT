@@ -41,7 +41,7 @@ vars:
 models:
   sf_poc_dbt:
       # Applies to all files under models/example/
-    materialized: table
+    materialized: Ephemeral
     m_territory:
         alias: m_territory        
     m_product:
@@ -62,5 +62,6 @@ models:
         alias: tmp_call_hierarchy_2
     tmp_call:
         alias: tmp_call
+    materialized: Table        
     f_call:
         alias: f_call    

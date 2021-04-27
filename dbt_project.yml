@@ -61,7 +61,15 @@ models:
     tmp_call_hierarchy_2:
         alias: tmp_call_hierarchy_2
     tmp_call:
-        alias: tmp_call           
+        alias: tmp_call    
+    tmp_user_territory:
+        alias: tmp_user_territory
+    f_survey_target:
+        alias: f_survey_target
+    tmp_f_process_instance:
+        alias: tmp_f_process_instance
+    f_event_approval_process:
+        alias: f_event_approval_process
     f_call:
         alias: f_call
         materialized: table    

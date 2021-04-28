@@ -71,4 +71,4 @@ LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ var('schema') }}.b
             GROUP BY Account_Id, Territory_Id, yearmonth) mncvs
        ON st.ACCOUNT_VOD__C = mncvs.Account_Id AND CASE WHEN LEN(ut.territoryid) > 0 THEN ut.territoryid ELSE 'NM' END = mncvs.Territory_Id AND left(TO_CHAR(TO_DATE(st.LASTMODIFIEDDATE, 'YYYYMMDD HH24:MI:SS'), 'YYYYMMDD')::numeric(8,0),6) = mncvs.yearmonth
 WHERE LOWER(st.STATUS_VOD__C) IN ('saved_vod', 'pending_vod', 'late_submission_vod', 'submitted_vod')
-	AND TO_CHAR(TO_DATE(st.LASTMODIFIEDDATE,'YYYYMMDD HH24:MI:SS'),'yyyymmdd') BETWEEN TO_CHAR(add_months(CURRENT_DATE,-24),'YYYYMM')+'01' AND TO_CHAR(TO_DATE(getdate(), 'YYYY-MM-DD HH24:MI:SS'), 'yyyymmdd')
+	AND TO_CHAR(TO_DATE(st.LASTMODIFIEDDATE,'YYYYMMDD HH24:MI:SS'),'yyyymmdd') BETWEEN TO_CHAR(add_months(CURRENT_DATE,-24),'YYYYMM')+'01' AND TO_CHAR(TO_DATE(getdate()::VARCHAR, 'YYYY-MM-DD HH24:MI:SS.FF TZHTZM'), 'yyyymmdd')

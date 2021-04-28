@@ -5,7 +5,7 @@
 SELECT ut_uniq.id, ut_uniq.userid, ut.territory2id as territoryid
 FROM 
 (
-	SELECT max(id) as "id", userid
+	SELECT max(id) as id, userid
 	FROM 
 	(
 		SELECT ut.Id, ut.UserId

@@ -85,7 +85,9 @@ models:
     tmp_f_event_detail_4:
         alias: tmp_f_event_detail_4
     tmp_yearly_ffs:
-        alias: tmp_yearly_ffs        
+        alias: tmp_yearly_ffs
+    tmp_yearly_attendance:
+        alias: tmp_yearly_attendance        
     f_call:
         alias: f_call
         materialized: table

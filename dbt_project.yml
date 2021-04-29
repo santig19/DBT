@@ -83,7 +83,9 @@ models:
     tmp_anonymous_surveys:
         alias: tmp_anonymous_surveys
     tmp_f_event_detail_4:
-        alias: tmp_f_event_detail_4        
+        alias: tmp_f_event_detail_4
+    tmp_yearly_ffs:
+        alias: tmp_yearly_ffs        
     f_call:
         alias: f_call
         materialized: table

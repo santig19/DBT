@@ -80,7 +80,8 @@ models:
         alias: tmp_f_event_detail_1   
     tmp_f_event_detail_2_3:
         alias: tmp_f_event_detail_2_3
-        materialized: table
+    tmp_anonymous_surveys:
+        alias: tmp_anonymous_surveys        
     f_call:
         alias: f_call
         materialized: table

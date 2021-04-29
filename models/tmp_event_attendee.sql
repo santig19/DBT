@@ -116,7 +116,7 @@ e.Event_Approval_step3_Timestamp as Event_Attendee_Approval_Step3_Timestamp,
 e.Event_Approval_Starter_Employee, /*Not in transformation sheet*/
 e.Event_Approval_Id, /*Not in transformation sheet*/
 
-datediff(day, to_date('1899-12-30','YYYY-MM-DD'),TO_DATE(TO_CHAR(TO_DATE('20180419', 'YYYYMMDD'), 'YYYY-MM-DD'),'YYYY-MM-DD')) AS Date,
+datediff(day, to_date('1899-12-30','YYYY-MM-DD'),TO_DATE(TO_CHAR(TO_DATE(f.Date, 'YYYYMMDD'), 'YYYY-MM-DD'),'YYYY-MM-DD')) AS Date,
 f.Aux_Year,
 f.Employee_Id as Employee_Id,
 f.Territory_Nominal_Id as Territory_Nominal_Id,

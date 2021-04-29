@@ -41,7 +41,8 @@ vars:
 models:
   sf_poc_dbt:
       # Applies to all files under models/example/
-    materialized: ephemeral
+    #materialized: ephemeral
+    materialized: table
     m_territory:
         alias: m_territory        
     m_product:
@@ -63,36 +64,36 @@ models:
     tmp_call:
         alias: tmp_call    
     tmp_user_territory:
-        alias: tmp_user_territory        
+        alias: tmp_user_territory                
     f_survey_target:
-        alias: f_survey_target        
+        alias: f_survey_target                
     tmp_f_process_instance:
-        alias: tmp_f_process_instance        
+        alias: tmp_f_process_instance                
     f_event_approval_process:
         alias: f_event_approval_process        
     tmp_f_event_1:
         alias: tmp_f_event_1        
     tmp_f_event_2:
-        alias: tmp_f_event_2
+        alias: tmp_f_event_2        
     tmp_event_attendee:
-        alias: tmp_event_attendee
+        alias: tmp_event_attendee        
     tmp_f_event_detail_1:
-        alias: tmp_f_event_detail_1
+        alias: tmp_f_event_detail_1        
     tmp_f_event_detail_2_3:
-        alias: tmp_f_event_detail_2_3
+        alias: tmp_f_event_detail_2_3        
     tmp_anonymous_surveys:
-        alias: tmp_anonymous_surveys
+        alias: tmp_anonymous_surveys        
     tmp_f_event_detail_4:
-        alias: tmp_f_event_detail_4
+        alias: tmp_f_event_detail_4        
     tmp_yearly_ffs:
-        alias: tmp_yearly_ffs
+        alias: tmp_yearly_ffs        
     tmp_yearly_attendance:
-        alias: tmp_yearly_attendance
+        alias: tmp_yearly_attendance        
     tmp_yearly_attendance_main_kpi:
-        alias: tmp_yearly_attendance_main_kpi        
+        alias: tmp_yearly_attendance_main_kpi                
     f_call:
-        alias: f_call
-        materialized: table
+        alias: f_call        
     f_event:
-        alias: f_event
-        materialized: table
+        alias: f_event        
+    f_event_detail:
+        alias: f_event_detail        

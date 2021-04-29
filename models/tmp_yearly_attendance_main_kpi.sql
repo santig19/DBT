@@ -5,8 +5,8 @@
 SELECT
 	 Compliance_Country
 	,Aux_Event_Attendee_Framework_Key
-    ,to_number(Aux_Annual_Promotional_Event_Attendee_Counter_Main_KPI, 10 , 0) AS Aux_Annual_Promotional_Event_Attendee_Counter_Main_KPI	
-    ,to_number(Aux_Annual_Medical_Event_Attendee_Counter_Main_KPI, 10 , 0) AS Aux_Annual_Medical_Event_Attendee_Counter_Main_KPI	
+    ,Aux_Annual_Promotional_Event_Attendee_Counter_Main_KPI::numeric(10, 0) AS Aux_Annual_Promotional_Event_Attendee_Counter_Main_KPI	
+    ,Aux_Annual_Medical_Event_Attendee_Counter_Main_KPI::numeric(10, 0) AS Aux_Annual_Medical_Event_Attendee_Counter_Main_KPI	
 	,ST.n_of_company_organized_promo_events_and_hcp_can_attend_per_year AS Promo_Events_Year_Limit
 	,ST.n_of_company_organized_meded_events_and_hcp_can_attend_per_year AS MedEd_Events_Year_Limit
 

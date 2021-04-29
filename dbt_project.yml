@@ -77,7 +77,10 @@ models:
     tmp_event_attendee:
         alias: tmp_event_attendee
     tmp_f_event_detail_1:
-        alias: tmp_f_event_detail_1        
+        alias: tmp_f_event_detail_1   
+    tmp_f_event_detail_2_3:
+        alias: tmp_f_event_detail_2_3
+        materialized: table
     f_call:
         alias: f_call
         materialized: table

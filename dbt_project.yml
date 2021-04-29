@@ -87,7 +87,9 @@ models:
     tmp_yearly_ffs:
         alias: tmp_yearly_ffs
     tmp_yearly_attendance:
-        alias: tmp_yearly_attendance        
+        alias: tmp_yearly_attendance
+    tmp_yearly_attendance_main_kpi:
+        alias: tmp_yearly_attendance_main_kpi        
     f_call:
         alias: f_call
         materialized: table

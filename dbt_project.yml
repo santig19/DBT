@@ -90,7 +90,9 @@ models:
     tmp_yearly_attendance:
         alias: tmp_yearly_attendance        
     tmp_yearly_attendance_main_kpi:
-        alias: tmp_yearly_attendance_main_kpi                
+        alias: tmp_yearly_attendance_main_kpi
+    f_survey_target_events:                        
+        alias: f_survey_target_events
     f_call:
         alias: f_call        
     f_event:

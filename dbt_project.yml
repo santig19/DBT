@@ -104,4 +104,6 @@ models:
     f_event:
         alias: f_event        
     f_event_detail:
-        alias: f_event_detail        
+        alias: f_event_detail
+    f_campaign:
+        alias: f_campaign

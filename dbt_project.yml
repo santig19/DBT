@@ -111,3 +111,5 @@ models:
         alias: f_campaign    
     #f_campaign_open_counter:
     #    alias: f_campaign_open_counter
+    f_account_plan:
+        alias: f_account_plan

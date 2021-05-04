@@ -115,3 +115,13 @@ models:
         alias: f_account_plan
     f_account_plan_actions:
         alias: f_account_plan_actions
+    f_account_plan_activities_counter:
+        alias: f_account_plan_activities_counter
+    f_account_plan_counter:
+        alias: f_account_plan_counter
+    f_account_plan_objectives:
+        alias: f_account_plan_objectives
+    f_account_plan_objectives_counter:
+        alias: f_account_plan_objectives_counter
+    f_account_plan_profile:
+        alias: f_account_plan_profile

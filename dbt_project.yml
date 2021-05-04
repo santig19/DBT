@@ -93,8 +93,8 @@ models:
         alias: tmp_yearly_attendance_main_kpi
     tmp_f_campaign:
         alias: tmp_f_campaign
-    #tmp_f_activity_email_eloqua:
-    #    alias: tmp_f_activity_email_eloqua
+    tmp_f_activity_email_eloqua:
+        alias: tmp_f_activity_email_eloqua
     f_survey_target_events:                        
         alias: f_survey_target_events
     f_eligible_event_attendee:

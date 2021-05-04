@@ -129,3 +129,7 @@ models:
         alias: f_approved_email
     f_approved_email_counters:
         alias: f_approved_email_counters
+    f_channel_recomendations:
+        alias: f_channel_recomendations
+    f_content_recomendations:
+        alias: f_content_recomendations

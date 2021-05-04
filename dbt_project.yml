@@ -125,3 +125,7 @@ models:
         alias: f_account_plan_objectives_counter
     f_account_plan_profile:
         alias: f_account_plan_profile
+    f_approved_email:
+        alias: f_approved_email
+    f_approved_email_counters:
+        alias: f_approved_email_counters

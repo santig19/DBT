@@ -143,3 +143,5 @@ models:
         alias: f_cycle_plan
     f_key_message_link:
         alias: f_key_message_link
+    f_knowledge_kav:
+        alias: f_knowledge_kav

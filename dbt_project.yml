@@ -113,6 +113,8 @@ models:
         alias: f_campaign_clickthrough_counter
     f_campaign_open_counter:
         alias: f_campaign_open_counter
+    f_iconnect_campaign:
+        alias: f_iconnect_campaign
     f_account_plan:
         alias: f_account_plan
     f_account_plan_actions:

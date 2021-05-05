@@ -312,8 +312,8 @@ FROM (
                 THEN ''
                 ELSE TO_CHAR(TO_DATE(C.JJ_End_Date__C, 'YYYYMMDD HH24:MI:SS'), 'YYYYMMDD')
         END::varchar(255) AS "Customer_Request_End_Date",
-        'Customer Request'::varchar(255) AS "Origin",
-        //*('Non Visited' || '_' || Country_Code_c)::varchar(255) AS "Account_Visited_NonVisited_Technical",*/
+        'Customer Request'::varchar(255) AS "Origin",            
+        ('Non Visited' || '_' || Country_Code_c)::varchar(255) AS "Account_Visited_NonVisited_Technical",    
         '1'::varchar(255) AS "Sys_Compliance_Visibility",
         'My Region'::varchar(255) AS "Compliance_Visibility",
         C.JJ_PV_Reference__c    AS "Customer_Request_PV_Reference_1",
@@ -345,7 +345,7 @@ FROM (
         END::varchar(255) AS "Product_Target_Class_Key",
         (C.AccountId || '-' || C.CreatedById)::varchar(255) AS "Security_Key",
         (C.AccountId || '-' || TO_CHAR(TO_DATE(C.CreatedDate, 'YYYYMMDD HH24:MI:SS'), 'YYYYMMDD'))::varchar(255) AS "Account_SCD_Id",
-        (C.AccountId || '-' || Product_Id ||'-' || TO_CHAR(TO_DATE(C.CreatedDate, 'YYYYMMDD HH24:MI:SS'), 'YYYYMMDD'))::varchar(255) AS "Product_Metrics_SCD_Id",
+        (C.AccountId || '-' || Product_Id || '-' || TO_CHAR(TO_DATE(C.CreatedDate, 'YYYYMMDD HH24:MI:SS'), 'YYYYMMDD'))::varchar(255) AS "Product_Metrics_SCD_Id",
         CASE
             WHEN C.AccountId <> ''
                 THEN C.AccountId

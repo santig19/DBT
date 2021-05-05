@@ -137,5 +137,5 @@ models:
         alias: f_channel_recomendations
     f_content_recomendations:
         alias: f_content_recomendations
-    #f_customer_request:
-    #    alias: f_customer_request
+    f_customer_request:
+        alias: f_customer_request

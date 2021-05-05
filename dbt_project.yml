@@ -145,3 +145,5 @@ models:
         alias: f_key_message_link
     f_knowledge_kav:
         alias: f_knowledge_kav
+    f_livechat_transcript:
+        alias: f_livechat_transcript

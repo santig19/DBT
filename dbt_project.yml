@@ -109,6 +109,8 @@ models:
         alias: f_event_detail
     f_campaign:
         alias: f_campaign    
+    f_campaign_clickthrough_counter:
+        alias: f_campaign_clickthrough_counter
     #f_campaign_open_counter:
     #    alias: f_campaign_open_counter
     f_account_plan:

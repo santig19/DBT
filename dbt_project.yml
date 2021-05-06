@@ -147,3 +147,5 @@ models:
         alias: f_knowledge_kav
     f_livechat_transcript:
         alias: f_livechat_transcript
+    f_mc_cycle_plan:
+        alias: f_mc_cycle_plan

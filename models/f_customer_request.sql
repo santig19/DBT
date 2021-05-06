@@ -216,7 +216,7 @@ FROM (*/
         C.CaseNumber AS Customer_Request_Number,
         C.JJ_Non_CSC_Request_Number__c AS Customer_Request_Code,
         C.JJ_SKM_Time_Registration__c AS Customer_Request_SKM_Time_Registration,
-        C.JJ_SKM_comments__c AS Customer_Request_Question_to_SKM/*,
+        C.JJ_SKM_comments__c AS Customer_Request_Question_to_SKM,
         CASE
             WHEN C.ClosedDate = ''
                 THEN ''
@@ -254,7 +254,7 @@ FROM (*/
                 THEN 'yes'
             WHEN C.IsClosed IN ('false', '0')
                 THEN 'no'
-        END::varchar(255) AS Customer_Request_Closed,
+        END::varchar(255) AS Customer_Request_Closed/*,
         C.JJ_Answer__c AS Customer_Request_Answer,
         C.JJ_Approval_Status__c AS Customer_Request_Approval_Status,
         CASE

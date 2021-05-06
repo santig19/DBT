@@ -149,3 +149,6 @@ models:
         alias: f_livechat_transcript
     f_mc_cycle_plan:
         alias: f_mc_cycle_plan
+    f_multichannel_activity:
+        alias: f_multichannel_activity
+    

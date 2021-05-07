@@ -157,3 +157,5 @@ models:
         alias: tmp_f_one_to_one_email
     f_one_to_one_email:
         alias: f_one_to_one_email
+    f_question:
+        alias: f_question

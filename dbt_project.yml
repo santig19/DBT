@@ -161,3 +161,5 @@ models:
         alias: f_question
     f_question_response:
         alias: f_question_response
+    f_survey:
+        alias: f_survey

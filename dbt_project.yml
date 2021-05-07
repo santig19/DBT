@@ -164,4 +164,8 @@ models:
     f_survey:
         alias: f_survey
     f_survey_question:
-        alias: f_survey_question    
+        alias: f_survey_question
+    tmp_f_time_effectiveness:
+        alias: tmp_f_time_effectiveness
+    f_time_effectiveness:
+        alias: f_time_effectiveness

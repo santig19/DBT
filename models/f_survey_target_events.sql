@@ -2,73 +2,90 @@
 	post_hook="grant all privileges on {{ this }} to {{ var('snowflake_user_grant_privileges') }}")
 }}
 
+with aggr1 as (
+	SELECT event_id, account_id, MAX(survey_last_modified_date_time) AS survey_last_modified_date_time
+	FROM {{ ref('f_survey_target') }}
+	WHERE LEN(event_id) > 0
+	AND LOWER(survey_target_status) IN ('submitted_vod', 'late_submission_vod') 
+	GROUP BY event_id, account_id
+) 
+, aggr2_anonym_surv as (
+	SELECT event_id, survey_target_id, MAX(survey_last_modified_date_time) AS survey_last_modified_date_time
+	FROM {{ ref('f_survey_target') }}
+	WHERE LEN(event_id) > 0
+	AND LOWER(survey_target_status) IN ('submitted_vod', 'late_submission_vod') 
+	AND account_id IN ('', ' ', NULL)
+	AND CHARINDEX('Speaker', survey_target_account_name) = 0
+	GROUP BY event_id, survey_target_id
+)
+, aggr3_event_null as (
+	SELECT account_id, MAX(survey_last_modified_date_time) AS survey_last_modified_date_time
+	FROM {{ ref('f_survey_target') }}
+	WHERE event_id IS NULL
+	AND LOWER(survey_target_status) IN ('submitted_vod', 'late_submission_vod') 
+	GROUP BY account_id
+)
+
 SELECT
-    st.id                          as survey_target_id
-  , st.ACCOUNT_DISPLAY_NAME_VOD__C as survey_target_account_name
-  , st.ACCOUNT_VOD__C              as account_id
-  , st.STATUS_VOD__C               as survey_target_status
-  , st.JJ_CALL__C                  as call_id
-  , st.JJ_CUSTOMER_REQUEST__C      as customer_request_id
-  , (CASE WHEN LEN(st.JJ_EVENT__C)>0 THEN st.JJ_EVENT__C ELSE NULL END)::varchar(255) as event_id
-  , (CASE WHEN LEN(st.JJ_NPS_SCORE__C)>0 THEN st.JJ_NPS_SCORE__C ELSE '0' END)::numeric(10,0) as survey_target_nps_score
-  , st.JJ_NPS_STATUS__C            as survey_nps_target_status
-  , TO_CHAR(TO_DATE(st.LASTMODIFIEDDATE, 'YYYYMMDD HH24:MI:SS'), 'YYYYMMDD')::numeric(8,0) as date
-  , st.name                        as survey_target_name
-  , TO_CHAR(TO_DATE(st.LASTMODIFIEDDATE, 'YYYYMMDD HH24:MI:SS'), 'YYYY-MM-DD')::varchar(255) as survey_last_modified_date
-  , st.LASTMODIFIEDDATE  as survey_last_modified_date_time
-  , st.OWNERID            as survey_target_ownerid
-  , st.LASTMODIFIEDBYID   as survey_target_last_modifiedby_id
-  , st.SURVEY_VOD__C      as survey_id
-  , st.JJ_CLOSE_STATUS__C as survey_target_close_status
-  , '1'::numeric(10,0)    as survey_target_counter
-  , CASE
-        WHEN LEN(ac.country_iso_code) > 0
-        THEN ac.country_iso_code
-        ELSE 'NM'
-    END as country_code
-  , CASE
-        WHEN LEN(cs.NAME) > 0
-        THEN cs.NAME
-        ELSE 'NM'
-    END as country
-  , CASE
-        WHEN LEN (cs.JJ_REGION__C) > 0
-        THEN cs.JJ_REGION__C
-        ELSE 'NM'
-    END as region
-  , CASE
-        WHEN st.id = qr.SURVEY_TARGET_VOD__C
-        THEN qr.JJ_CLICKTOOLS_ANSWER__C
-        ELSE NULL
-    END as Survey_Clicktool_Answer
-  , CASE
-        WHEN qr.JJ_CLICKTOOLS_ANSWER__C <> ''
-        THEN st.OWNERID
-        ELSE st.LASTMODIFIEDBYID
-    END as employee_id,
-CASE WHEN mncv.Account_Id IS NOT NULL AND mncv.Territory_Id IS NOT NULL
-        THEN 1
-           ELSE 0
-               END AS flag_territory_belong,
-CASE WHEN mncvs.Account_Id IS NOT NULL AND mncvs.Territory_Id IS NOT NULL AND yearmonth IS NOT NULL
-        THEN 1
-            ELSE 0
-                END AS historical_flag_territory_belong
-  , st.JJ_Ext_Response_Id__c::varchar(60)   as Medallia_Response_ID
-  , NULLIF(st.JJ_CSAT_Score__c,'')::decimal(2,0)    as CSAT_Score
-  , NULLIF(st.JJ_NPS_Score__c,'')::decimal(2,0)         as NPS_Score
-  , qr.ID::varchar(36)                      as Question_Response_id
-FROM {{ var('schema') }}.survey_target_vod__c_raw st
-LEFT OUTER JOIN {{ var('schema') }}.account_raw ac on ac.ID = st.ACCOUNT_VOD__C
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw cs ON cs.JJ_COUNTRY_ISO_CODE__C = ac.country_iso_code
-LEFT OUTER JOIN {{ var('schema') }}.question_response_vod__c_raw qr ON st.ID = qr.SURVEY_TARGET_VOD__C
-LEFT JOIN {{ ref('tmp_user_territory') }} ut 
-	on ut.USERID = CASE WHEN qr.JJ_CLICKTOOLS_ANSWER__C <> '' THEN st.OWNERID ELSE st.LASTMODIFIEDBYID END
-LEFT JOIN (SELECT Account_Id, Territory_Id FROM {{ ref('m_null_country_values') }}
-            GROUP BY Account_Id, Territory_Id) mncv
-       ON st.ACCOUNT_VOD__C = mncv.Account_Id AND CASE WHEN LEN(ut.territoryid) > 0 THEN ut.territoryid ELSE 'NM' END = mncv.Territory_Id
-LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ var('schema') }}.buw_alignment_m_null_country_values_snapshot_monthly_historical
-            GROUP BY Account_Id, Territory_Id, yearmonth) mncvs
-       ON st.ACCOUNT_VOD__C = mncvs.Account_Id AND CASE WHEN LEN(ut.territoryid) > 0 THEN ut.territoryid ELSE 'NM' END = mncvs.Territory_Id AND left(TO_CHAR(TO_DATE(st.LASTMODIFIEDDATE, 'YYYYMMDD HH24:MI:SS'), 'YYYYMMDD')::numeric(8,0),6) = mncvs.yearmonth
-WHERE LOWER(st.STATUS_VOD__C) IN ('saved_vod', 'pending_vod', 'late_submission_vod', 'submitted_vod')
-	AND TO_CHAR(TO_DATE(st.LASTMODIFIEDDATE,'YYYYMMDD HH24:MI:SS'),'yyyymmdd') BETWEEN TO_CHAR(add_months(CURRENT_DATE,-24),'YYYYMM')+'01' AND TO_CHAR(current_date(), 'yyyymmdd')
+	 (st.event_id || '-' || st.account_id)::varchar(255) AS Customer_Feedback_Id
+	,('Event Survey')::varchar(255) AS Customer_Feedback_Origin 
+	,max(st.survey_target_nps_score)::numeric(10, 0) AS survey_target_nps_score 
+	,st.event_id
+	,st.account_id
+	,st.survey_target_id AS survey_target_id
+	,CASE 
+  		WHEN LEN(acc.Country_JJ__c)>0
+     	THEN acc.Country_JJ__c 
+        ELSE acc.JJ_country__c
+  	END::varchar(255) AS Survey_Target_Events_Country_Code
+	,cs.jj_region__c AS Survey_Target_Events_Region
+FROM aggr1
+LEFT OUTER JOIN {{ ref('f_survey_target') }} AS st ON st.event_id=aggr1.event_id and st.account_id=aggr1.account_id 
+	and st.survey_last_modified_date_time=aggr1.survey_last_modified_date_time
+LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw cs ON cs.jj_country_iso_code__c = st.country_code
+LEFT OUTER JOIN {{ var('schema') }}.account_raw acc ON acc.Id = st.account_id
+GROUP BY st.event_id, st.account_id, st.survey_target_id, acc.Country_JJ__c, acc.JJ_country__c, cs.jj_region__c
+
+UNION ALL
+
+SELECT
+	 (st.event_id || '-' || st.account_id)::varchar(255) AS Customer_Feedback_Id
+	,('Event Survey')::varchar(255) AS Customer_Feedback_Origin 
+	,max(st.survey_target_nps_score)::numeric(10, 0) AS survey_target_nps_score 
+	,st.event_id
+	,st.account_id
+	,st.survey_target_id::varchar(255) AS survey_target_id
+	,CASE 
+  		WHEN LEN(acc.Country_JJ__c)>0
+     	THEN acc.Country_JJ__c 
+        ELSE acc.JJ_country__c
+  	END::varchar(255) AS Survey_Target_Events_Country_Code
+	,cs.jj_region__c::varchar(255) AS Survey_Target_Events_Region
+FROM aggr2_anonym_surv aggr2
+LEFT OUTER JOIN {{ ref('f_survey_target') }} AS st ON st.event_id=aggr2.event_id and st.survey_target_id=aggr2.survey_target_id 
+	and st.survey_last_modified_date_time=aggr2.survey_last_modified_date_time
+LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS cs ON cs.jj_country_iso_code__c = st.country_code
+LEFT OUTER JOIN {{ var('schema') }}.account_raw AS acc ON acc.Id = st.account_id
+GROUP BY st.event_id, st.account_id, st.survey_target_id, acc.Country_JJ__c, acc.JJ_country__c, cs.jj_region__c
+
+UNION ALL
+
+SELECT
+	 NULL::varchar(255) AS Customer_Feedback_Id
+	,('Event Survey')::varchar(255) AS Customer_Feedback_Origin 
+	,max(st.survey_target_nps_score)::numeric(10, 0) AS survey_target_nps_score 
+	,st.event_id
+	,st.account_id
+	,st.survey_target_id::varchar(255) AS survey_target_id
+	,CASE 
+  		WHEN LEN(acc.Country_JJ__c)>0
+     	THEN acc.Country_JJ__c 
+        ELSE acc.JJ_country__c
+  	END::varchar(255) AS Survey_Target_Events_Country_Code
+	,cs.jj_region__c::varchar(255) AS Survey_Target_Events_Region
+FROM aggr3_event_null aggr3
+LEFT OUTER JOIN {{ ref('f_survey_target') }} AS st ON st.account_id=aggr3.account_id 
+	and st.survey_last_modified_date_time=aggr3.survey_last_modified_date_time
+LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS cs ON cs.jj_country_iso_code__c = st.country_code
+LEFT OUTER JOIN {{ var('schema') }}.account_raw AS acc ON acc.Id = st.account_id
+GROUP BY st.event_id, st.account_id, st.survey_target_id, acc.Country_JJ__c, acc.JJ_country__c, cs.jj_region__c

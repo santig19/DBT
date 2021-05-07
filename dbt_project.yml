@@ -181,3 +181,5 @@ models:
         alias: m_account_plan_team_members
     m_activity:
         alias: m_activity
+    m_affiliation:
+        alias: m_affiliation

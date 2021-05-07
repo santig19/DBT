@@ -177,3 +177,5 @@ models:
         alias: m_account
     m_account_plan_key_stakeholders:
         alias: m_account_plan_key_stakeholders
+    m_account_plan_team_members:
+        alias: m_account_plan_team_members

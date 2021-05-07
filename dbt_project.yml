@@ -173,3 +173,5 @@ models:
         alias: f_time_effectiveness_employee
     f_time_registration:
         alias: f_time_registration
+    m_account:
+        alias: m_account

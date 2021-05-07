@@ -155,3 +155,5 @@ models:
         alias: f_my_insights_analytics
     tmp_f_one_to_one_email:
         alias: tmp_f_one_to_one_email
+    f_one_to_one_email:
+        alias: f_one_to_one_email

@@ -137,8 +137,8 @@ models:
         alias: f_channel_recomendations
     f_content_recomendations:
         alias: f_content_recomendations
-    f_customer_request:
-        alias: f_customer_request
+    #f_customer_request:
+    #    alias: f_customer_request
     f_cycle_plan:
         alias: f_cycle_plan
     f_key_message_link:
@@ -151,4 +151,5 @@ models:
         alias: f_mc_cycle_plan
     f_multichannel_activity:
         alias: f_multichannel_activity
-    
+    f_my_insights_analytics:
+        alias: f_my_insights_analytics

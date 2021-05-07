@@ -2,7 +2,7 @@
 	post_hook="grant all privileges on {{ this }} to {{ var('snowflake_user_grant_privileges') }}")
 }}
 
-/*SELECT
+SELECT
     t.Account_Id,
     t.Country_Code,
     t.Brick_Code,
@@ -199,7 +199,7 @@ SELECT
     pqc_external,
     report_type,
     answer_from_skm
-FROM (*/
+FROM (
     SELECT
         C.AccountId AS Account_Id,
         CASE
@@ -233,7 +233,7 @@ FROM (*/
         CASE
             WHEN C.closeddate = '' OR C.CreatedDate = ''
                 THEN NULL
-                ELSE (DATEDIFF(minute,TO_TIMESTAMP(C.CreatedDate, 'YYYYMMDD HH24:MI:SS')::timestamp,TO_TIMESTAMP(C.ClosedDate, 'YYYYMMDD HH24:MI:SS'))/60.0)
+                ELSE (DATEDIFF(minute,TO_TIMESTAMP(C.CreatedDate, 'YYYYMMDD HH24:MI:SS'),TO_TIMESTAMP(C.ClosedDate, 'YYYYMMDD HH24:MI:SS'))/60.0)
         END::numeric(10,3) AS Customer_Request_Hours_To_Close,
         CASE
             WHEN  C.CreatedDate = '' OR C.ClosedDate = '' OR C.CreatedDate > C.ClosedDate
@@ -254,7 +254,7 @@ FROM (*/
                 THEN 'yes'
             WHEN C.IsClosed IN ('false', '0')
                 THEN 'no'
-        END::varchar(255) AS Customer_Request_Closed/*,
+        END::varchar(255) AS Customer_Request_Closed,
         C.JJ_Answer__c AS Customer_Request_Answer,
         C.JJ_Approval_Status__c AS Customer_Request_Approval_Status,
         CASE
@@ -389,14 +389,14 @@ FROM (*/
         jC.Name AS Country,
         jC.Name AS Compliance_Country,
         CASE
-            WHEN Customer_Request_SKM_Time_Registration > 0
+            WHEN Customer_Request_SKM_Time_Registration != '' AND Customer_Request_SKM_Time_Registration > 0
                 THEN 'Third Line'
             WHEN Customer_Request_Department = 'EMEA_iConnect_CustomerServices'
                 THEN 'First Line'
                 ELSE 'Second Line'
         END::varchar(255) AS Customer_Request_1st_2nd_Line,
         CASE
-            WHEN Customer_Request_SKM_Time_Registration > 0
+            WHEN Customer_Request_SKM_Time_Registration != '' AND Customer_Request_SKM_Time_Registration > 0
                 THEN 'SKM'
             WHEN Customer_Request_Department = 'EMEA_iConnect_CustomerServices'
                 THEN 'Customer Services'
@@ -420,7 +420,7 @@ FROM (*/
         CASE WHEN (Position(CHR(92) || CHR(92), C.JJ_ANSWER_FROM_SKM__C) > 0) OR Position(CHR(124) || CHR(34), C.JJ_ANSWER_FROM_SKM__C) > 0 OR Position(CHR(92) || CHR(124), C.JJ_ANSWER_FROM_SKM__C) > 0 OR Position(CHR(92) || CHR(34), C.JJ_ANSWER_FROM_SKM__C) > 0
             THEN REPLACE(REPLACE(REPLACE(REPLACE(C.JJ_ANSWER_FROM_SKM__C, CHR(92) || CHR(92), CHR(92)), CHR(124) || CHR(34), CHR(34)), CHR(92) || CHR(124), CHR(124)), CHR(92) || CHR(34), CHR(34))
             ELSE C.JJ_ANSWER_FROM_SKM__C
-        END::varchar(10000) AS answer_from_skm*/
+        END::varchar(10000) AS answer_from_skm
     FROM {{ var('schema') }}.case_raw C
     LEFT OUTER JOIN {{ var('schema') }}.account_raw A ON C.AccountId = A.Id
     LEFT OUTER JOIN {{ var('schema') }}.user_raw U ON C.CreatedById = U.Id
@@ -440,7 +440,7 @@ FROM (*/
     LEFT OUTER JOIN {{ var('schema') }}.product_raw pv ON pv.id = C.JJ_Product__c
     LEFT OUTER JOIN {{ ref('tmp_user_territory') }} ut ON C.CreatedById= ut.USERID
     LEFT OUTER JOIN {{ ref('m_product') }} mp ON pv.id = mp.product_id
-/*)
+)
 GROUP BY
     Account_Id,
     Country_Code,
@@ -533,9 +533,9 @@ GROUP BY
     ae_external,
     pqc_external,
     report_type,
-    answer_from_skm*/
+    answer_from_skm
 
-/*UNION
+UNION
   
 SELECT
     Account_Id,
@@ -663,16 +663,17 @@ FROM (
         END::varchar(255) AS Customer_Request_Start_Date,
         TO_CHAR(TO_TIMESTAMP(C.CreatedDate,'YYYYMMDD HH24:MI:SS'), 'YYYYMMDD HH24:MI:SS')::varchar(255) AS Customer_Request_Created_Timestamp,
         CASE
-            WHEN C.closeddate = ''
-                THEN NULL
-                ELSE (DATEDIFF(minute,C.CreatedDate::timestamp,C.ClosedDate::timestamp)/60.0)
+            WHEN C.closeddate = '' OR C.CreatedDate = ''
+                THEN NULL                
+                ELSE (DATEDIFF(minute,TO_TIMESTAMP(C.CreatedDate, 'YYYYMMDD HH24:MI:SS'),TO_TIMESTAMP(C.ClosedDate, 'YYYYMMDD HH24:MI:SS'))/60.0)
         END::numeric(10,3) AS Customer_Request_Hours_To_Close,
-        CASE
-            WHEN C.ClosedDate = '' OR C.CreatedDate > C.ClosedDate
-                THEN NULL
-                ELSE ((DATEDIFF(D,C.CreatedDate::timestamp,C.ClosedDate::timestamp) + 1) - (DATEDIFF(week, C.CreatedDate::timestamp,C.ClosedDate::timestamp)*2)
-                    - (CASE WHEN DATE_PART(dow,C.CreatedDate::timestamp) = '0' THEN 1 ELSE 0 END)
-                    - (CASE WHEN DATE_PART(dow,C.ClosedDate::timestamp) = '6' THEN 1 ELSE 0 END)) * 24
+        CASE            
+            WHEN  C.CreatedDate = '' OR C.ClosedDate = '' OR C.CreatedDate > C.ClosedDate
+                THEN NULL                
+                ELSE ((DATEDIFF(D,TO_TIMESTAMP(C.CreatedDate, 'YYYYMMDD HH24:MI:SS'),TO_TIMESTAMP(C.ClosedDate, 'YYYYMMDD HH24:MI:SS')) + 1)                     
+                    - (DATEDIFF(week, TO_TIMESTAMP(C.CreatedDate, 'YYYYMMDD HH24:MI:SS'),TO_TIMESTAMP(C.ClosedDate, 'YYYYMMDD HH24:MI:SS'))*2)                       
+                    - (CASE WHEN DATE_PART(dow,TO_TIMESTAMP(C.CreatedDate, 'YYYYMMDD HH24:MI:SS')) = '0' THEN 1 ELSE 0 END)                    
+                    - (CASE WHEN DATE_PART(dow,TO_TIMESTAMP(C.ClosedDate, 'YYYYMMDD HH24:MI:SS')) = '6' THEN 1 ELSE 0 END)) * 24                                                                                    
         END::NUMERIC(10,3) AS Customer_Request_Working_Hours_To_Close,
         C.Id AS Customer_Request_Id,
         C.JJ_Signature_Date__c AS Digital_Signature,
@@ -824,14 +825,14 @@ FROM (
         jC.Name AS Country,
         jC.Name AS Compliance_Country,
         CASE
-            WHEN Customer_Request_SKM_Time_Registration > 0
+            WHEN Customer_Request_SKM_Time_Registration != '' AND Customer_Request_SKM_Time_Registration > 0
                 THEN 'Third Line'
             WHEN Customer_Request_Department = 'EMEA_iConnect_CustomerServices'
                 THEN 'First Line'
                 ELSE 'Second Line'
         END::varchar(255) AS Customer_Request_1st_2nd_Line,
         CASE
-            WHEN Customer_Request_SKM_Time_Registration > 0
+            WHEN Customer_Request_SKM_Time_Registration != '' AND Customer_Request_SKM_Time_Registration > 0
                 THEN 'SKM'
             WHEN Customer_Request_Department = 'EMEA_iConnect_CustomerServices'
                 THEN 'Customer Services'
@@ -969,8 +970,8 @@ GROUP BY
     ae_external,
     pqc_external,
     report_type,
-    answer_from_skm*/
-/*)t
+    answer_from_skm
+)t
 LEFT JOIN (SELECT Account_Id, Territory_Id FROM {{ ref('m_null_country_values') }}
             GROUP BY Account_Id, Territory_Id
           ) mncv
@@ -978,4 +979,4 @@ LEFT JOIN (SELECT Account_Id, Territory_Id FROM {{ ref('m_null_country_values') 
 LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ var('schema') }}.buw_alignment_m_null_country_values_snapshot_monthly_historical
             GROUP BY Account_Id, Territory_Id, yearmonth
           ) mncvs
-    ON t.Account_Id = mncvs.Account_Id AND t.Territory_Nominal_Id = mncvs.Territory_Id AND LEFT(TO_CHAR(TO_DATE(t.Date, 'YYYYMMDD HH24:MI:SS'), 'YYYYMMDD')::varchar(255),6) = mncvs.yearmonth  */
+    ON t.Account_Id = mncvs.Account_Id AND t.Territory_Nominal_Id = mncvs.Territory_Id AND LEFT(TO_CHAR(TO_DATE(t.Date, 'YYYYMMDD HH24:MI:SS'), 'YYYYMMDD')::varchar(255),6) = mncvs.yearmonth  

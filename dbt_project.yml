@@ -153,3 +153,5 @@ models:
         alias: f_multichannel_activity
     f_my_insights_analytics:
         alias: f_my_insights_analytics
+    tmp_f_one_to_one_email:
+        alias: tmp_f_one_to_one_email

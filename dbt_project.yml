@@ -183,3 +183,5 @@ models:
         alias: m_activity
     m_affiliation:
         alias: m_affiliation
+    m_assignment:
+        alias: m_assignment

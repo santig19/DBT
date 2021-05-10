@@ -19,7 +19,7 @@ SELECT
 	--convert hours into seconds
 	CASE
 		WHEN ELOQUA.Duration LIKE '%H%' 
-		THEN CASE WHEN SUBSTRING(ELOQUA.Duration, CHARINDEX('T',ELOQUA.Duration)+1, CHARINDEX('H',ELOQUA.Duration)-CHARINDEX('T',ELOQUA.Duration)-1) like '^[0-9]+$' 
+		THEN CASE WHEN regexp_like(SUBSTRING(ELOQUA.Duration, CHARINDEX('T',ELOQUA.Duration)+1, CHARINDEX('H',ELOQUA.Duration)-CHARINDEX('T',ELOQUA.Duration)-1),'^[0-9]+$' )
 				  THEN SUBSTRING(ELOQUA.Duration, CHARINDEX('T',ELOQUA.Duration)+1, CHARINDEX('H',ELOQUA.Duration)-CHARINDEX('T',ELOQUA.Duration)-1)::int * 3600 ELSE 0 END
 		ELSE 0 
 	END +
@@ -29,10 +29,10 @@ SELECT
 		THEN CASE 
 				--when there are hours, take everything between H and M
 				WHEN ELOQUA.Duration LIKE '%H%'
-				THEN CASE WHEN SUBSTRING(ELOQUA.Duration, CHARINDEX('H',ELOQUA.Duration)+1, CHARINDEX('M',ELOQUA.Duration)-CHARINDEX('H',ELOQUA.Duration)-1) like '^[0-9]+$'
+				THEN CASE WHEN regexp_like(SUBSTRING(ELOQUA.Duration, CHARINDEX('H',ELOQUA.Duration)+1, CHARINDEX('M',ELOQUA.Duration)-CHARINDEX('H',ELOQUA.Duration)-1),'^[0-9]+$')
 						  THEN SUBSTRING(ELOQUA.Duration, CHARINDEX('H',ELOQUA.Duration)+1, CHARINDEX('M',ELOQUA.Duration)-CHARINDEX('H',ELOQUA.Duration)-1)::int * 60 ELSE 0 END
 				--when there are No hours, take everything between T and M
-				ELSE CASE WHEN SUBSTRING(ELOQUA.Duration, CHARINDEX('T',ELOQUA.Duration)+1, CHARINDEX('M',ELOQUA.Duration)-CHARINDEX('T',ELOQUA.Duration)-1) like '^[0-9]+$'
+				ELSE CASE WHEN regexp_like(SUBSTRING(ELOQUA.Duration, CHARINDEX('T',ELOQUA.Duration)+1, CHARINDEX('M',ELOQUA.Duration)-CHARINDEX('T',ELOQUA.Duration)-1),'^[0-9]+$')
 						  THEN SUBSTRING(ELOQUA.Duration, CHARINDEX('T',ELOQUA.Duration)+1, CHARINDEX('M',ELOQUA.Duration)-CHARINDEX('T',ELOQUA.Duration)-1)::int * 60 ELSE 0 END
 				END
 		--no minutes present, add 0
@@ -44,15 +44,15 @@ SELECT
 		THEN CASE
 				--when there are minutes, take everything between M and S
 				WHEN ELOQUA.Duration LIKE '%M%'
-				THEN CASE WHEN SUBSTRING(ELOQUA.Duration, CHARINDEX('M',ELOQUA.Duration)+1, CHARINDEX('S',ELOQUA.Duration)-CHARINDEX('M',ELOQUA.Duration)-1) like '^[0-9]+$'
+				THEN CASE WHEN regexp_like(SUBSTRING(ELOQUA.Duration, CHARINDEX('M',ELOQUA.Duration)+1, CHARINDEX('S',ELOQUA.Duration)-CHARINDEX('M',ELOQUA.Duration)-1),'^[0-9]+$')
 						  THEN SUBSTRING(ELOQUA.Duration, CHARINDEX('M',ELOQUA.Duration)+1, CHARINDEX('S',ELOQUA.Duration)-CHARINDEX('M',ELOQUA.Duration)-1)::int ELSE 0 END
 				ELSE CASE 
 						  --when there are hours, take everything between H and S'
 						  WHEN ELOQUA.Duration LIKE '%H%'
-						  THEN CASE WHEN SUBSTRING(ELOQUA.Duration, CHARINDEX('H',ELOQUA.Duration)+1, CHARINDEX('S',ELOQUA.Duration)-CHARINDEX('H',ELOQUA.Duration)-1) like '^[0-9]+$'
+						  THEN CASE WHEN regexp_like(SUBSTRING(ELOQUA.Duration, CHARINDEX('H',ELOQUA.Duration)+1, CHARINDEX('S',ELOQUA.Duration)-CHARINDEX('H',ELOQUA.Duration)-1),'^[0-9]+$')
 						  			THEN SUBSTRING(ELOQUA.Duration, CHARINDEX('H',ELOQUA.Duration)+1, CHARINDEX('S',ELOQUA.Duration)-CHARINDEX('H',ELOQUA.Duration)-1)::int ELSE 0 END
 						  --when there are No hours, take everything between T and S'
-						  ELSE CASE WHEN SUBSTRING(ELOQUA.Duration, CHARINDEX('T',ELOQUA.Duration)+1, CHARINDEX('S',ELOQUA.Duration)-CHARINDEX('T',ELOQUA.Duration)-1) like '^[0-9]+$'
+						  ELSE CASE WHEN regexp_like(SUBSTRING(ELOQUA.Duration, CHARINDEX('T',ELOQUA.Duration)+1, CHARINDEX('S',ELOQUA.Duration)-CHARINDEX('T',ELOQUA.Duration)-1),'^[0-9]+$')
 						  			THEN SUBSTRING(ELOQUA.Duration, CHARINDEX('T',ELOQUA.Duration)+1, CHARINDEX('S',ELOQUA.Duration)-CHARINDEX('T',ELOQUA.Duration)-1)::int ELSE 0 END
 					END 
 				END

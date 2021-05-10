@@ -185,3 +185,5 @@ models:
         alias: m_affiliation
     m_assignment:
         alias: m_assignment
+    m_campaign:
+        alias: m_campaign

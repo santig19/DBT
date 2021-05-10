@@ -52,14 +52,14 @@ FROM
           , cpd.total_planned_details_vod__c   AS Cycle_Plan_Total_Planned_Calls
           , cpd.total_remaining_vod__c         AS Cycle_Plan_Total_Remaining_Calls
           , cpd.total_scheduled_details_vod__c AS Cycle_Plan_Total_Scheduled_Calls
-          , CASE
-                WHEN Trim(cpd.total_planned_details_vod__c) like '^[0-9]+$'
+          , CASE                
+                WHEN  regexp_like(Trim(cpd.total_planned_details_vod__c),'^[0-9]+$')
                     THEN Trim(cpd.total_planned_details_vod__c)
                     ELSE '0'
             END :: Numeric(10,2) AS Total_Planned_Details_vod__c_1
           , Total_Planned_Details_vod__c_1 as Total_Planned_Details_vod__c
           , CASE
-                WHEN Trim(cpd.total_actual_details_vod__c) like '^[0-9]+$'
+                WHEN regexp_like(Trim(cpd.total_actual_details_vod__c),'^[0-9]+$')                 
                     THEN Trim(cpd.total_actual_details_vod__c)
                     ELSE '0'
             END  :: Numeric(10,2) AS Total_Actual_Details_vod__c_1
@@ -257,12 +257,12 @@ SELECT DISTINCT
        cpt.JJ_Original__c AS Cycle_Plan_Original_Calls,
        cpt.total_planned_calls_vod__c AS Cycle_Plan_Planned_Calls,
        CASE
-           WHEN Trim(cpt.total_planned_calls_vod__c) like '^[0-9]+$' THEN Trim(cpt.total_planned_calls_vod__c)
+           WHEN regexp_like(Trim(cpt.total_planned_calls_vod__c),'^[0-9]+$') THEN Trim(cpt.total_planned_calls_vod__c)
            ELSE '0'
        END :: Numeric(10,2) AS Total_Planned_calls_vod__c_1,
        Total_Planned_calls_vod__c_1 AS Total_Planned_calls_vod__c,
        CASE
-           WHEN Trim(cpt.total_actual_calls_vod__c) like '^[0-9]+$' THEN Trim(cpt.total_actual_calls_vod__c)
+           WHEN regexp_like(Trim(cpt.total_actual_calls_vod__c),'^[0-9]+$') THEN Trim(cpt.total_actual_calls_vod__c)
            ELSE '0'
        END :: Numeric(10,2) AS Total_Actual_calls_vod__c_1,
        Total_Actual_calls_vod__c_1 AS Total_Actual_calls_vod__c,

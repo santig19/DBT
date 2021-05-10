@@ -187,3 +187,5 @@ models:
         alias: m_assignment
     m_campaign:
         alias: m_campaign
+    m_channel_preference_completeness:
+        alias: m_channel_preference_completeness

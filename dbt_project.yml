@@ -191,3 +191,5 @@ models:
         alias: m_channel_preference_completeness
     m_case_history:
         alias: m_case_history
+    m_channel_permission:
+        alias: m_channel_permission

@@ -1,0 +1,261 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw_schema
+    tables:
+    - name: account_plan
+      description: none 
+      identifier: account_plan_raw
+    - name: account_plan_team_member
+      description: none 
+      identifier: account_plan_team_member_raw
+    - name: account
+      description: none 
+      identifier: account_raw
+    - name: account_tactic
+      description: none 
+      identifier: account_tactic_raw
+    - name: action_item
+      description: none 
+      identifier: action_item_raw
+    - name: affiliation
+      description: none 
+      identifier: affiliation_raw
+    - name: analytics_product_group
+      description: none 
+      identifier: analytics_product_group_raw
+    - name: approved_document
+      description: none 
+      identifier: approved_document_raw
+    - name: assessment
+      description: none 
+      identifier: assessment_raw
+    - name: buw_alignment_m_null_country_values_snapshot_monthly_historical
+      description: none 
+      identifier: buw_alignment_m_null_country_values_snapshot_monthly_historical
+    - name: calculatedfields
+      description: none 
+      identifier: calculatedfields_raw
+    - name: call_detail
+      description: none 
+      identifier: call_detail_raw
+    - name: call_expenses
+      description: none 
+      identifier: call_expenses_raw
+    - name: call_key_message
+      description: none 
+      identifier: call_key_message_raw
+    - name: call
+      description: none 
+      identifier: call_raw
+    - name: campaign
+      description: none 
+      identifier: campaign_raw
+    - name: campaign_step
+      description: none 
+      identifier: campaign_step_raw
+    - name: campaign_target
+      description: none 
+      identifier: campaign_target_raw
+    - name: case_article
+      description: none 
+      identifier: case_article_raw
+    - name: case_history
+      description: none 
+      identifier: case_history_raw
+    - name: case
+      description: none 
+      identifier: case_raw
+    - name: channel_preferences
+      description: none 
+      identifier: channel_preferences_raw
+    - name: channel_recommendations
+      description: none 
+      identifier: channel_recommendations_raw
+    - name: clm_presentation
+      description: none 
+      identifier: clm_presentation_raw
+    - name: content_recommendations
+      description: none 
+      identifier: content_recommendations_raw
+    - name: country_settings
+      description: none 
+      identifier: country_settings_raw
+    - name: currency_type
+      description: none 
+      identifier: currency_type_raw
+    - name: cycle_plan_detail
+      description: none 
+      identifier: cycle_plan_detail_raw
+    - name: cycle_plan
+      description: none 
+      identifier: cycle_plan_raw
+    - name: cycle_plan_target
+      description: none 
+      identifier: cycle_plan_target_raw
+    - name: dynamic_attribute_configuration
+      description: none 
+      identifier: dynamic_attribute_configuration_raw
+    - name: dynamic_attribute
+      description: none 
+      identifier: dynamic_attribute_raw
+    - name: eloqua_bounceback
+      description: none 
+      identifier: eloqua_bounceback_raw
+    - name: eloqua_emailclickthrough
+      description: none 
+      identifier: eloqua_emailclickthrough_raw
+    - name: eloqua_emailopen
+      description: none 
+      identifier: eloqua_emailopen_raw
+    - name: eloqua_emailsend
+      description: none 
+      identifier: eloqua_emailsend_raw
+    - name: eloqua_formsubmit
+      description: none 
+      identifier: eloqua_formsubmit_raw
+    - name: eloqua_pageview
+      description: none 
+      identifier: eloqua_pageview_raw
+    - name: eloqua_webvisit
+      description: none 
+      identifier: eloqua_webvisit_raw
+    - name: elq_activity
+      description: none 
+      identifier: elq_activity_raw
+    - name: event_attendee_vod__c
+      description: none 
+      identifier: event_attendee_vod__c_raw
+    - name: focus_area
+      description: none 
+      identifier: focus_area_raw
+    - name: group
+      description: none 
+      identifier: group_raw
+    - name: group_speciality_segment_setting
+      description: none 
+      identifier: group_speciality_segment_setting_raw
+    - name: jj_eligible_event_attendee__c
+      description: none 
+      identifier: jj_eligible_event_attendee__c_raw
+    - name: key_message
+      description: none 
+      identifier: key_message_raw
+    - name: key_stakeholder
+      description: none 
+      identifier: key_stakeholder_raw
+    - name: knowledge_kav
+      description: none 
+      identifier: knowledge_kav_raw
+    - name: livechattranscript
+      description: none 
+      identifier: livechattranscript_raw
+    - name: livechatvisitor
+      description: none 
+      identifier: livechatvisitor_raw
+    - name: map_account_type_account_type_description
+      description: none 
+      identifier: map_account_type_account_type_description_raw
+    - name: mc_cycle_plan_channel
+      description: none 
+      identifier: mc_cycle_plan_channel_raw
+    - name: mc_cycle_plan_product
+      description: none 
+      identifier: mc_cycle_plan_product_raw
+    - name: mc_cycle_plan
+      description: none 
+      identifier: mc_cycle_plan_raw
+    - name: mc_cycle_plan_target
+      description: none 
+      identifier: mc_cycle_plan_target_raw
+    - name: mc_cycle_product
+      description: none 
+      identifier: mc_cycle_product_raw
+    - name: mc_multichannel_activity
+      description: none 
+      identifier: mc_multichannel_activity_raw
+    - name: medical_event_vod__c
+      description: none 
+      identifier: medical_event_vod__c_raw
+    - name: multichannel_consent
+      description: none 
+      identifier: multichannel_consent_raw
+    - name: myinsights_analytics
+      description: none 
+      identifier: myinsights_analytics_raw
+    - name: object_territory_association
+      description: none 
+      identifier: object_territory_association_raw
+    - name: process_instance
+      description: none 
+      identifier: process_instance_raw
+    - name: process_instance_step
+      description: none 
+      identifier: process_instance_step_raw
+    - name: product_group_map
+      description: none 
+      identifier: product_group_map_raw
+    - name: product
+      description: none 
+      identifier: product_raw
+    - name: profile
+      description: none 
+      identifier: profile_raw
+    - name: question
+      description: none 
+      identifier: question_raw
+    - name: question_response_vod__c
+      description: none 
+      identifier: question_response_vod__c_raw
+    - name: record_type_localization
+      description: none 
+      identifier: record_type_localization_raw
+    - name: record_type
+      description: none 
+      identifier: record_type_raw
+    - name: rgb
+      description: none 
+      identifier: rgb_raw
+    - name: sent_email
+      description: none 
+      identifier: sent_email_raw
+    - name: slider_threshold
+      description: none 
+      identifier: slider_threshold_raw
+    - name: survey_question
+      description: none 
+      identifier: survey_question_raw
+    - name: survey
+      description: none 
+      identifier: survey_raw
+    - name: survey_target_vod__c
+      description: none 
+      identifier: survey_target_vod__c_raw
+    - name: task
+      description: none 
+      identifier: task_raw
+    - name: territory
+      description: none 
+      identifier: territory_raw
+    - name: time_effectiveness_record_type
+      description: none 
+      identifier: time_effectiveness_record_type_raw
+    - name: time_effectiveness_type
+      description: none 
+      identifier: time_effectiveness_type_raw
+    - name: time_off_territory
+      description: none 
+      identifier: time_off_territory_raw
+    - name: time_registration
+      description: none 
+      identifier: time_registration_raw
+    - name: user
+      description: none 
+      identifier: user_raw
+    - name: user_territory_association
+      description: none 
+      identifier: user_territory_association_raw
+    - name: veeva
+      description: none 
+      identifier: veeva_raw

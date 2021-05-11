@@ -207,3 +207,5 @@ models:
         alias: m_focus_area
     m_key_message:
         alias: m_key_message
+    m_knowledge_article_customer_request_mapping:
+        alias: m_knowledge_article_customer_request_mapping

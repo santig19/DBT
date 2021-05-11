@@ -200,4 +200,6 @@ models:
     m_dynamic_attribute:
         alias: m_dynamic_attribute
     m_dynamic_attribute_configuration:
-        alias: m_dynamic_attribute_configuration    
+        alias: m_dynamic_attribute_configuration
+    m_employee:
+        alias: m_employee

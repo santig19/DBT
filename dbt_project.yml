@@ -203,3 +203,5 @@ models:
         alias: m_dynamic_attribute_configuration
     m_employee:
         alias: m_employee
+    m_focus_area:
+        alias: m_focus_area

@@ -193,3 +193,5 @@ models:
         alias: m_case_history
     m_channel_permission:
         alias: m_channel_permission
+    m_clm_presentation:
+        alias: m_clm_presentation

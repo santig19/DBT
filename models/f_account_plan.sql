@@ -50,19 +50,19 @@ with cte_aux_calls_call_planning_f_account_plan as
          account_plan.recordtypeid as account_plan_record_type,
          case when (Position(CHR(92) || CHR(92), account_plan.JJ_DRIVERS__C) > 0) OR Position(CHR(124) || CHR(34), account_plan.JJ_DRIVERS__C) > 0 OR Position(CHR(92) || CHR(124), account_plan.JJ_DRIVERS__C) > 0 OR Position(CHR(92) || CHR(34), account_plan.JJ_DRIVERS__C) > 0 then REPLACE(REPLACE(REPLACE(REPLACE(account_plan.JJ_DRIVERS__C, CHR(92) || CHR(92), CHR(92)), CHR(124) || CHR(34), CHR(34)), CHR(92) || CHR(124), CHR(124)), CHR(92) || CHR(34), CHR(34)) ELSE account_plan.JJ_DRIVERS__C end as account_plan_drivers,         
          case when (Position(CHR(92) || CHR(92), account_plan.JJ_BARRIERS__C) > 0) OR Position(CHR(124) || CHR(34), account_plan.JJ_BARRIERS__C) > 0 OR Position(CHR(92) || CHR(124), account_plan.JJ_BARRIERS__C) > 0 OR Position(CHR(92) || CHR(34), account_plan.JJ_BARRIERS__C) > 0 then REPLACE(REPLACE(REPLACE(REPLACE(account_plan.JJ_BARRIERS__C, CHR(92) || CHR(92), CHR(92)), CHR(124) || CHR(34), CHR(34)), CHR(92) || CHR(124), CHR(124)), CHR(92) || CHR(34), CHR(34)) ELSE account_plan.JJ_BARRIERS__C end as account_plan_barriers
-    from      {{ var('schema') }}.account_plan_raw            as account_plan
-    left join {{ var('schema') }}.user_raw                           as user_b
+    from      {{ source('raw', 'account_plan') }}            as account_plan
+    left join {{ source('raw', 'user') }}                           as user_b
       on account_plan.OwnerId                                               = user_b.Id
-    left join {{ var('schema') }}.profile_raw                        as profile_b
+    left join {{ source('raw', 'profile') }}                       as profile_b
       on profile_b.Id                                                       = user_b.profileId 
      and account_plan.OwnerId                                               = user_b.Id
-    left join {{ var('schema') }}.country_settings_raw         as country_settings
+    left join {{ source('raw', 'country_settings') }}         as country_settings
       on account_plan.COUNTRY_ISO_CODE                                      = country_settings.jj_Country_ISO_Code__c
-    left join {{ var('schema') }}.user_raw                           as user_coordinator
+    left join {{ source('raw', 'user') }}                          as user_coordinator
       on account_plan.JJ_Account_Plan_Coordinator__c                        = user_coordinator.Id
-    left join {{ var('schema') }}.profile_raw                        as profile_coordinator
+    left join {{ source('raw', 'profile') }}                        as profile_coordinator
       on profile_coordinator.Id                                             = user_coordinator.profileId  
-    left join {{ var('schema') }}.account_plan_team_member_raw as account_plan_team_member
+    left join {{ source('raw', 'account_plan_team_member') }} as account_plan_team_member
       on account_plan_team_member.JJ_Account_Plan__c                        = account_plan.id  
    group by account_plan_id,
             account_plan_counter,

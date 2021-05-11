@@ -5,4 +5,4 @@
 SELECT 
 	 CASEID
 	,KNOWLEDGEARTICLEID
-FROM {{ var('schema') }}.case_article_raw
+FROM {{ source('raw', 'case_article') }}

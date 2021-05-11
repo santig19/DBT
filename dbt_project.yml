@@ -205,3 +205,5 @@ models:
         alias: m_employee
     m_focus_area:
         alias: m_focus_area
+    m_key_message:
+        alias: m_key_message

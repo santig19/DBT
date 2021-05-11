@@ -31,15 +31,15 @@ select AI.account_plan_vod__c::varchar(255) as account_plan_id,
        AI.jj_Issue__c::varchar(510) as account_plan_action_issue,
        AI.jj_Solution__c::varchar(510) as account_plan_action_solution,
        AI.recordtypeid::varchar(36) as account_plan_action_record_type  
- from      {{ var('schema') }}.action_item_raw     as AI
-inner join {{ var('schema') }}.account_tactic_raw  as AT
+ from      {{ source('raw', 'action_item') }}     as AI
+inner join {{ source('raw', 'account_tactic') }}  as AT
    on AI.ACCOUNT_TACTIC_VOD__C                                   = AT.ID
- left join {{ var('schema') }}.user_raw                   as UB
+ left join {{ source('raw', 'user') }}                   as UB
    on AI.assignee_vod__c                                         = UB.id
- left join {{ var('schema') }}.profile_raw                as PB
+ left join {{ source('raw', 'profile') }}                as PB
    on PB.id                                                      = UB.profileid
   and AI.assignee_vod__c                                         = UB.id
- left join {{ var('schema') }}.country_settings_raw as CS
+ left join {{ source('raw', 'country_settings') }} as CS
    on AI.Country_ISO_Code                                        = CS.jj_country_iso_code__c
 group by account_plan_id,
 	     account_plan_objective_id,

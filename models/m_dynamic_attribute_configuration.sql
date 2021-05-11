@@ -1,0 +1,37 @@
+{{ config(
+	post_hook="grant all privileges on {{ this }} to {{ var('snowflake_user_grant_privileges') }}")
+}}
+
+select 	dac.APPLIES_TO_VOD__C::varchar(10000) as APPLIES_TO,
+		dac.ATTRIBUTE_LABEL_VOD__C::varchar(255) as ATTRIBUTE_LABEL,
+		dac.ATTRIBUTE_NAME_VOD__C::varchar(10000) as ATTRIBUTE_NAME,
+		dac.AVAILABLE_VALUES_VOD__C::varchar(10000) as AVAILABLE_VALUES,
+		dac.CONNECTIONRECEIVEDID::varchar(255) as CONNECTIONRECEIVEDID,
+		dac.CONNECTIONSENTID::varchar(255) as CONNECTIONSENTID,
+		dac.CREATEDBYID::varchar(255) as CREATEDBYID,
+		case when dac.CREATEDDATE = '' then null else TO_TIMESTAMP(dac.CREATEDDATE, 'YYYYMMDD HH24:MI:SS') END::datetime as CREATEDDATE,
+		dac.CURRENCYISOCODE::varchar(255) as CURRENCYISOCODE,
+		dac.DESCRIPTION_VOD__C::varchar(10000) as DESCRIPTION,
+		dac.DETAIL_GROUP_VOD__C::varchar(255) as DETAIL_GROUP_ID,
+		dac.DISPLAY_ORDER_VOD__C::varchar(255) as DISPLAY_ORDER,
+		dac.EXTERNAL_ID_VOD__C::varchar(10000) as EXTERNAL_ID,
+		dac.HELP_TEXT_VOD__C::varchar(10000) as HELP_TEXT,
+		dac.ID::varchar(255) as DYNAMIC_ATTRIBUTE_CONFIGURATION_ID,
+		dac.ISDELETED::int as ISDELETED,
+		dac.ISLOCKED::int as ISLOCKED,
+		dac.LASTMODIFIEDBYID::varchar(255) as LASTMODIFIEDBYID,
+		case when dac.LASTMODIFIEDDATE = '' then null else TO_TIMESTAMP(dac.LASTMODIFIEDDATE, 'YYYYMMDD HH24:MI:SS') END::datetime as LASTMODIFIEDDATE,
+		case when dac.LASTREFERENCEDDATE = '' then null else cast(dac.LASTREFERENCEDDATE as datetime) END::datetime as LASTREFERENCEDDATE,
+		case when dac.LASTVIEWEDDATE = '' then null else cast(dac.LASTVIEWEDDATE as datetime) END::datetime as LASTVIEWEDDATE,
+		dac.MAYEDIT::int as MAYEDIT,
+		dac.NAME::varchar(255) as NAME,
+		dac.OWNERID::varchar(255) as OWNERID,
+		dac.PRODUCT_VOD__C::varchar(255) as PRODUCT_ID,
+		dac.READ_ONLY_VOD__C::int as READ_ONLY,
+		dac.RECORDTYPEID::varchar(255) as RECORDTYPEID,
+		dac.SECTION_NAME_VOD__C::varchar(10000) as SECTION_NAME,
+		dac.SHARING_GROUP_VOD__C::varchar(10000) as SHARING_GROUP,
+		dac.STATUS_VOD__C::varchar(10000) as STATUS,
+		case when dac.SYSTEMMODSTAMP = '' then null else TO_TIMESTAMP(dac.SYSTEMMODSTAMP, 'YYYYMMDD HH24:MI:SS') END::datetime as SYSTEMMODSTAMP,
+		dac.TRACK_CHANGES_VOD__C::int as TRACK_CHANGES
+from {{ var('schema') }}.dynamic_attribute_configuration_raw as dac

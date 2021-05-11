@@ -199,3 +199,5 @@ models:
         alias: m_cycle_plan
     m_dynamic_attribute:
         alias: m_dynamic_attribute
+    m_dynamic_attribute_configuration:
+        alias: m_dynamic_attribute_configuration    

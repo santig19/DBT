@@ -195,3 +195,5 @@ models:
         alias: m_channel_permission
     m_clm_presentation:
         alias: m_clm_presentation
+    m_cycle_plan:
+        alias: m_cycle_plan

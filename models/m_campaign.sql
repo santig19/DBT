@@ -89,7 +89,7 @@ FROM {{ ref('tmp_f_campaign') }} AS TMP
 LEFT OUTER JOIN {{ source('raw', 'campaign') }} AS Campaign ON TMP.campaign_id = Campaign.id
 LEFT OUTER JOIN {{ source('raw', 'product') }} AS Product ON Campaign.jj_product__c = Product.id 
 LEFT OUTER JOIN {{ source('raw', 'product_group_map') }} AS PRODUCT_GROUP_MAP ON Campaign.jj_product__c = PRODUCT_GROUP_MAP.Product_vod__c	
-LEFT OUTER JOIN {{ source('raw', 'user_') }} USR ON Campaign.ownerid = USR.id
+LEFT OUTER JOIN {{ source('raw', 'user') }} USR ON Campaign.ownerid = USR.id
 LEFT OUTER JOIN {{ ref('m_product') }} AS M_PRODUCT ON M_PRODUCT.Product_Id = Campaign.jj_product__c
 
 LEFT OUTER JOIN (

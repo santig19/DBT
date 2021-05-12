@@ -10,7 +10,7 @@ SELECT DISTINCT
 	   ,1::numeric(10,2) AS Assignment_Percentage
 	   ,ac.territory2id AS Territory_Assignment_Id
   FROM      {{ source('raw', 'object_territory_association') }} ac
-  LEFT JOIN {{ source('raw', 'accogroupunt') }} gr
+  LEFT JOIN {{ source('raw', 'group') }} gr
     ON gr.relatedid = ac.territory2id 
    AND UPPER(gr.type) = 'TERRITORY'
 

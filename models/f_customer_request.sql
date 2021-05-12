@@ -2,7 +2,7 @@
 	post_hook="grant all privileges on {{ this }} to {{ var('snowflake_user_grant_privileges') }}")
 }}
 
-/*SELECT
+SELECT
     t.Account_Id,
     t.Country_Code,
     t.Brick_Code,
@@ -38,8 +38,8 @@
     t.Customer_Request_Assigned_Employee,
     t.Customer_Request_Owner,
     t.Employee_Id,
-    t.Customer_Request_Department,
-    t.Customer_Request_Employee_Department,
+    /*t.Customer_Request_Department,
+    t.Customer_Request_Employee_Department,*/
     t.Customer_Request_Created_Employee,
     t.Customer_Request_Priority,
     t.Customer_Request_Off_On_Label,
@@ -81,8 +81,8 @@
     t.Customer_Request_Threshold_Working_Time,
     t.Country,
     t.Compliance_Country,
-    t.Customer_Request_1st_2nd_Line,
-    t.Customer_Request_Line_Of_Response,
+    /*t.Customer_Request_1st_2nd_Line,
+    t.Customer_Request_Line_Of_Response,*/
     t.Customer_Request_Link_Id,
     t.parent_id,
     t.number_of_questions,
@@ -142,8 +142,8 @@ SELECT
     Customer_Request_Assigned_Employee,
     Customer_Request_Owner,
     Employee_Id,
-    Customer_Request_Department,
-    Customer_Request_Employee_Department,
+    /*Customer_Request_Department,  --> performance issue on the other select
+    Customer_Request_Employee_Department,*/
     Customer_Request_Created_Employee,
     Customer_Request_Priority,
     Customer_Request_Off_On_Label,
@@ -185,8 +185,8 @@ SELECT
     Customer_Request_Threshold_Working_Time,
     Country,
     Compliance_Country,
-    Customer_Request_1st_2nd_Line,
-    Customer_Request_Line_Of_Response,
+    /*Customer_Request_1st_2nd_Line,
+    Customer_Request_Line_Of_Response,*/
     Customer_Request_Link_Id,
     parent_id,
     number_of_questions,
@@ -199,15 +199,15 @@ SELECT
     pqc_external,
     report_type,
     answer_from_skm
-FROM (*/
+FROM (
     SELECT
         C.AccountId AS Account_Id,
-        /*CASE
+        CASE
             WHEN C.AccountId = A.Id AND LEN(A.CODS_external_id__c)>0 THEN (CASE WHEN A.country_jj__c IS NULL THEN A.jj_country__c ELSE A.country_jj__c END)
             WHEN (U2.Id = CASE WHEN C.JJ_Non_CSC_Assignee__c <> '' THEN C.JJ_Non_CSC_Assignee__c ELSE C.OwnerId END) THEN CS2.jj_Country_iso_code__c
             WHEN C.AccountId = A.Id AND LEN(A.CODS_external_id__c)<1 THEN (CASE WHEN A.country_jj__c IS NULL THEN A.jj_country__c ELSE A.country_jj__c END)
             ELSE 'NM'
-        END::varchar(255) AS Country_Code_c,*/
+        END::varchar(255) AS Country_Code_c,
         CASE
             WHEN LEN(A.Country_JJ__c)>0
                 THEN A.Country_JJ__c
@@ -282,16 +282,16 @@ FROM (*/
                 THEN 'Yes'
                 ELSE 'No'
         END::varchar(255) AS Customer_Request_CSC_Assigned_Flag,
-        /*U2.Name AS Customer_Request_Assigned_Employee,
-        U1.Name AS Customer_Request_Owner,*/
+        U2.Name AS Customer_Request_Assigned_Employee,
+        U1.Name AS Customer_Request_Owner,
         C.CreatedById AS Employee_Id,
-        /*P.Name AS Customer_Request_Department,
-        CASE
+        P.Name AS Customer_Request_Department,
+        /*CASE
             WHEN (P1.Id = U.ProfileId AND ((CASE WHEN(c.JJ_Non_CSC_Assignee__c <> '') THEN c.JJ_Non_CSC_Assignee__c ELSE c.OwnerId END)= U.Id))
                 THEN P1.Name
                 ELSE NULL
-        END AS Customer_Request_Employee_Department,
-        U.Id AS Customer_Request_Created_Employee,*/
+        END AS Customer_Request_Employee_Department,*/
+        U.Id AS Customer_Request_Created_Employee,
         C.Priority AS Customer_Request_Priority,
         CASE
             WHEN C.JJ_Off_Label__c IN ('true' , '1')
@@ -302,7 +302,7 @@ FROM (*/
         C.JJ_Question__c AS Customer_Request_Question,
         C.JJ_Rejection_reason__c AS Customer_Request_Rejection_Reason,
         (C.Id || '-' || C.AccountId)::varchar(255) AS Customer_Request_Survey_Feedback_Id,
-        /*R.Name AS   Customer_Request_Record_Type,*/
+        R.Name AS   Customer_Request_Record_Type,
         C.Status AS Customer_Request_Status,
         C.Subject AS Customer_Request_Subject,
         C.Description AS Customer_Request_Description,
@@ -314,7 +314,7 @@ FROM (*/
                 ELSE TO_CHAR(TO_DATE(C.JJ_End_Date__C, 'YYYYMMDD HH24:MI:SS'), 'YYYYMMDD')
         END::varchar(255) AS Customer_Request_End_Date,
         'Customer Request'::varchar(255) AS Origin,            
-        /*('Non Visited' || '_' || Country_Code_c)::varchar(255) AS Account_Visited_NonVisited_Technical,    */
+        ('Non Visited' || '_' || Country_Code_c)::varchar(255) AS Account_Visited_NonVisited_Technical,
         '1'::varchar(255) AS Sys_Compliance_Visibility,
         'My Region'::varchar(255) AS Compliance_Visibility,
         C.JJ_PV_Reference__c    AS Customer_Request_PV_Reference_1,
@@ -334,7 +334,7 @@ FROM (*/
                 ELSE ''
         END::varchar(255) AS Multichannel_Activity,
         'Null'::varchar(255) AS Multichannel_Activity_Type,
-        'Creator'::varchar(255) AS Creator_Owner/*,
+        'Creator'::varchar(255) AS Creator_Owner,
         CASE WHEN COALESCE(mp.product_therapeutic_area_1,'') = ''
             THEN 'NM' ELSE mp.product_therapeutic_area_1
         END AS Therapeutic_Area_Name,
@@ -388,7 +388,7 @@ FROM (*/
         END::varchar(255) AS Customer_Request_Threshold_Working_Time,
         jC.Name AS Country,
         jC.Name AS Compliance_Country,
-        CASE
+        /*CASE
             WHEN Customer_Request_SKM_Time_Registration != '' AND Customer_Request_SKM_Time_Registration > 0
                 THEN 'Third Line'
             WHEN Customer_Request_Department = 'EMEA_iConnect_CustomerServices'
@@ -401,7 +401,7 @@ FROM (*/
             WHEN Customer_Request_Department = 'EMEA_iConnect_CustomerServices'
                 THEN 'Customer Services'
                 ELSE 'Non Customer Services'
-        END::varchar(255) AS Customer_Request_Line_Of_Response,
+        END::varchar(255) AS Customer_Request_Line_Of_Response,*/
         (Customer_Request_Id || '-' || C.CreatedById)::varchar(255) AS Customer_Request_Link_Id,
         C.PARENTID AS parent_id,
         C.JJ_NUMBER_OF_QUESTIONS__C AS number_of_questions,
@@ -420,7 +420,7 @@ FROM (*/
         CASE WHEN (Position(CHR(92) || CHR(92), C.JJ_ANSWER_FROM_SKM__C) > 0) OR Position(CHR(124) || CHR(34), C.JJ_ANSWER_FROM_SKM__C) > 0 OR Position(CHR(92) || CHR(124), C.JJ_ANSWER_FROM_SKM__C) > 0 OR Position(CHR(92) || CHR(34), C.JJ_ANSWER_FROM_SKM__C) > 0
             THEN REPLACE(REPLACE(REPLACE(REPLACE(C.JJ_ANSWER_FROM_SKM__C, CHR(92) || CHR(92), CHR(92)), CHR(124) || CHR(34), CHR(34)), CHR(92) || CHR(124), CHR(124)), CHR(92) || CHR(34), CHR(34))
             ELSE C.JJ_ANSWER_FROM_SKM__C
-        END::varchar(10000) AS answer_from_skm*/
+        END::varchar(10000) AS answer_from_skm
     FROM {{ source('raw', 'case') }} C
     LEFT OUTER JOIN {{ source('raw', 'account') }} A ON C.AccountId = A.Id
     LEFT OUTER JOIN {{ source('raw', 'user') }} U ON C.CreatedById = U.Id
@@ -432,7 +432,7 @@ FROM (*/
             ELSE C.OwnerId
     END
     LEFT OUTER JOIN {{ source('raw', 'profile') }} P ON U1.ProfileId = P.Id AND C.OwnerId = U1.Id
-    LEFT OUTER JOIN {{ source('raw', 'profile') }} P1 ON P1.Id = U.ProfileId  /*---Possible performance issue*/ 
+    LEFT OUTER JOIN {{ source('raw', 'profile') }} P1 ON P1.Id = U.ProfileId  /*AND  C.CreatedById = P1.Id (1 min 30 s) ---Possible performance issue*/ 
     LEFT OUTER JOIN {{ source('raw', 'record_type') }} R ON C.RecordTypeId = R.Id
     LEFT OUTER JOIN {{ source('raw', 'country_settings') }} jC ON jC.jj_Country_ISO_Code__c = C.country_iso_code
     LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs ON cs.name = U.JJ_user_country__c
@@ -440,7 +440,7 @@ FROM (*/
     LEFT OUTER JOIN {{ source('raw', 'product') }} pv ON pv.id = C.JJ_Product__c
     LEFT OUTER JOIN {{ ref('tmp_user_territory') }} ut ON C.CreatedById= ut.USERID
     LEFT OUTER JOIN {{ ref('m_product') }} mp ON pv.id = mp.product_id
-/*)
+)
 GROUP BY
     Account_Id,
     Country_Code,
@@ -477,8 +477,8 @@ GROUP BY
     Customer_Request_Assigned_Employee,
     Customer_Request_Owner,
     Employee_Id,
-    Customer_Request_Department,
-    Customer_Request_Employee_Department,
+    /*Customer_Request_Department, --> performance issue on the other select
+    Customer_Request_Employee_Department,*/
     Customer_Request_Created_Employee,
     Customer_Request_Priority,
     Customer_Request_Off_On_Label,
@@ -520,8 +520,8 @@ GROUP BY
     Customer_Request_Threshold_Working_Time,
     Country,
     Compliance_Country,
-    Customer_Request_1st_2nd_Line,
-    Customer_Request_Line_Of_Response,
+    /*Customer_Request_1st_2nd_Line,
+    Customer_Request_Line_Of_Response,*/
     Customer_Request_Link_Id,
     parent_id,
     number_of_questions,
@@ -573,8 +573,8 @@ SELECT
     Customer_Request_Assigned_Employee,
     Customer_Request_Owner,
     Employee_Id_c as Employee_Id,
-    Customer_Request_Department,
-    Customer_Request_Employee_Department,
+    /*Customer_Request_Department,
+    Customer_Request_Employee_Department,*/
     Customer_Request_Created_Employee,
     Customer_Request_Priority,
     Customer_Request_Off_On_Label,
@@ -616,8 +616,8 @@ SELECT
     Customer_Request_Threshold_Working_Time,
     Country,
     Compliance_Country,
-    Customer_Request_1st_2nd_Line,
-    Customer_Request_Line_Of_Response,
+    /*Customer_Request_1st_2nd_Line,
+    Customer_Request_Line_Of_Response,*/
     Customer_Request_Link_Id,
     parent_id,
     number_of_questions,
@@ -721,12 +721,12 @@ FROM (
                 THEN C.JJ_Non_CSC_Assignee__c
                 ELSE C.OwnerId
         END::varchar(255) AS Employee_Id_c,
-        P.Name AS Customer_Request_Department,
+        /*P.Name AS Customer_Request_Department,
         CASE
             WHEN (P1.Id = U.ProfileId AND ((CASE WHEN(c.JJ_Non_CSC_Assignee__c <> '') THEN c.JJ_Non_CSC_Assignee__c ELSE c.OwnerId END)= U.Id))
                 THEN P1.Name
                 ELSE NULL
-        END AS Customer_Request_Employee_Department,
+        END AS Customer_Request_Employee_Department,*/
         U.Id AS Customer_Request_Created_Employee,
         C.Priority AS Customer_Request_Priority,
         CASE
@@ -824,7 +824,7 @@ FROM (
         END::varchar(255) AS Customer_Request_Threshold_Working_Time,
         jC.Name AS Country,
         jC.Name AS Compliance_Country,
-        CASE
+        /*CASE
             WHEN Customer_Request_SKM_Time_Registration != '' AND Customer_Request_SKM_Time_Registration > 0
                 THEN 'Third Line'
             WHEN Customer_Request_Department = 'EMEA_iConnect_CustomerServices'
@@ -837,7 +837,7 @@ FROM (
             WHEN Customer_Request_Department = 'EMEA_iConnect_CustomerServices'
                 THEN 'Customer Services'
                 ELSE 'Non Customer Services'
-        END::varchar(255) AS Customer_Request_Line_Of_Response,
+        END::varchar(255) AS Customer_Request_Line_Of_Response,*/
         (Customer_Request_Id || '-' || Employee_Id_c)::varchar(255) AS Customer_Request_Link_Id,
         C.PARENTID AS parent_id,
         C.JJ_NUMBER_OF_QUESTIONS__C AS number_of_questions,
@@ -858,7 +858,7 @@ FROM (
             ELSE C.JJ_ANSWER_FROM_SKM__C
         END::varchar(10000) AS answer_from_skm
          
-    FROM {{ source('raw', 'action_item') }}.case_raw C
+    FROM {{ source('raw', 'case') }} C
     LEFT OUTER JOIN {{ source('raw', 'account') }} A ON C.AccountId = A.Id
     LEFT OUTER JOIN {{ source('raw', 'user') }} U ON C.CreatedById = U.Id
     LEFT OUTER JOIN {{ source('raw', 'user') }} U1 on C.OwnerId = U1.Id
@@ -868,13 +868,13 @@ FROM (
             THEN C.JJ_Non_CSC_Assignee__c
             ELSE C.OwnerId
     END
-    LEFT OUTER JOIN {{ source('raw', 'profile') }} P ON U1.Profileid = P.Id
-    LEFT OUTER JOIN {{ source('raw', 'profile') }} P1 ON P1.Id = U.ProfileId
+    LEFT OUTER JOIN {{ source('raw', 'profile') }} P ON U1.Profileid = P.Id /*AND C.OwnerId = P.Id (1 min 30 s) ---Possible performance issue*/
+    LEFT OUTER JOIN {{ source('raw', 'profile') }} P1 ON P1.Id = U.ProfileId /*AND  C.CreatedById = P1.Id (1 min 30 s) ---Possible performance issue*/ 
     LEFT OUTER JOIN {{ source('raw', 'record_type') }} R ON C.RecordTypeId = R.Id
     LEFT OUTER JOIN {{ source('raw', 'country_settings') }} jC ON jC.jj_Country_ISO_Code__c = C.country_iso_code
     LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs ON cs.name = U.jj_user_country__c
     LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs2 ON cs2.name = U2.jj_user_country__c
-    LEFT OUTER JOIN {{ source('raw', 'product') }}.product_raw pv ON pv.id = C.JJ_Product__c
+    LEFT OUTER JOIN {{ source('raw', 'product') }} pv ON pv.id = C.JJ_Product__c
     LEFT OUTER JOIN {{ ref('tmp_user_territory') }} ut ON C.CreatedById= ut.USERID
     LEFT OUTER JOIN {{ ref('m_product') }} mp ON pv.id = mp.product_id
 )
@@ -914,8 +914,8 @@ GROUP BY
     Customer_Request_Assigned_Employee,
     Customer_Request_Owner,
     Employee_Id,
-    Customer_Request_Department,
-    Customer_Request_Employee_Department,
+    /*Customer_Request_Department,
+    Customer_Request_Employee_Department,*/
     Customer_Request_Created_Employee,
     Customer_Request_Priority,
     Customer_Request_Off_On_Label,
@@ -957,8 +957,8 @@ GROUP BY
     Customer_Request_Threshold_Working_Time,
     Country,
     Compliance_Country,
-    Customer_Request_1st_2nd_Line,
-    Customer_Request_Line_Of_Response,
+    /*--Customer_Request_1st_2nd_Line,
+    --Customer_Request_Line_Of_Response,*/
     Customer_Request_Link_Id,
     parent_id,
     number_of_questions,
@@ -979,4 +979,4 @@ LEFT JOIN (SELECT Account_Id, Territory_Id FROM {{ ref('m_null_country_values') 
 LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ source('raw', 'm_null_country_values_snapshot_monthly_historical') }}
             GROUP BY Account_Id, Territory_Id, yearmonth
           ) mncvs
-    ON t.Account_Id = mncvs.Account_Id AND t.Territory_Nominal_Id = mncvs.Territory_Id AND LEFT(TO_CHAR(TO_DATE(t.Date, 'YYYYMMDD'), 'YYYYMMDD')::varchar(255),6) = mncvs.yearmonth  */
+    ON t.Account_Id = mncvs.Account_Id AND t.Territory_Nominal_Id = mncvs.Territory_Id AND LEFT(TO_CHAR(TO_DATE(t.Date, 'YYYYMMDD'), 'YYYYMMDD')::varchar(255),6) = mncvs.yearmonth  

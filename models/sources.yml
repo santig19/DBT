@@ -259,3 +259,6 @@ sources:
     - name: veeva
       description: none 
       identifier: veeva_raw
+    - name: leading_specialist
+      description: none 
+      identifier: leading_specialist_raw    

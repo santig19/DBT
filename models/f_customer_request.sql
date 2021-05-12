@@ -282,16 +282,16 @@ FROM (*/
                 THEN 'Yes'
                 ELSE 'No'
         END::varchar(255) AS Customer_Request_CSC_Assigned_Flag,
-        U2.Name AS Customer_Request_Assigned_Employee,
-        U1.Name AS Customer_Request_Owner,
+        /*U2.Name AS Customer_Request_Assigned_Employee,
+        U1.Name AS Customer_Request_Owner,*/
         C.CreatedById AS Employee_Id,
-        P.Name AS Customer_Request_Department,
+        /*P.Name AS Customer_Request_Department,
         CASE
             WHEN (P1.Id = U.ProfileId AND ((CASE WHEN(c.JJ_Non_CSC_Assignee__c <> '') THEN c.JJ_Non_CSC_Assignee__c ELSE c.OwnerId END)= U.Id))
                 THEN P1.Name
                 ELSE NULL
         END AS Customer_Request_Employee_Department,
-        U.Id AS Customer_Request_Created_Employee,
+        U.Id AS Customer_Request_Created_Employee,*/
         C.Priority AS Customer_Request_Priority,
         CASE
             WHEN C.JJ_Off_Label__c IN ('true' , '1')
@@ -302,7 +302,7 @@ FROM (*/
         C.JJ_Question__c AS Customer_Request_Question,
         C.JJ_Rejection_reason__c AS Customer_Request_Rejection_Reason,
         (C.Id || '-' || C.AccountId)::varchar(255) AS Customer_Request_Survey_Feedback_Id,
-        R.Name AS   Customer_Request_Record_Type,
+        /*R.Name AS   Customer_Request_Record_Type,*/
         C.Status AS Customer_Request_Status,
         C.Subject AS Customer_Request_Subject,
         C.Description AS Customer_Request_Description,
@@ -432,14 +432,14 @@ FROM (*/
             ELSE C.OwnerId
     END
     LEFT OUTER JOIN {{ source('raw', 'profile') }} P ON U1.ProfileId = P.Id AND C.OwnerId = U1.Id
-    LEFT OUTER JOIN {{ source('raw', 'profile') }} P1 ON P1.Id = U.ProfileId
+    LEFT OUTER JOIN {{ source('raw', 'profile') }} P1 ON P1.Id = U.ProfileId  /*---Possible performance issue*/ 
     LEFT OUTER JOIN {{ source('raw', 'record_type') }} R ON C.RecordTypeId = R.Id
-    /*LEFT OUTER JOIN {{ source('raw', 'country_settings') }} jC ON jC.jj_Country_ISO_Code__c = C.country_iso_code
+    LEFT OUTER JOIN {{ source('raw', 'country_settings') }} jC ON jC.jj_Country_ISO_Code__c = C.country_iso_code
     LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs ON cs.name = U.JJ_user_country__c
     LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs2 ON cs2.name = U2.JJ_user_country__c
-    LEFT OUTER JOIN {{ source('raw', 'product') }}.product_raw pv ON pv.id = C.JJ_Product__c
+    LEFT OUTER JOIN {{ source('raw', 'product') }} pv ON pv.id = C.JJ_Product__c
     LEFT OUTER JOIN {{ ref('tmp_user_territory') }} ut ON C.CreatedById= ut.USERID
-    LEFT OUTER JOIN {{ ref('m_product') }} mp ON pv.id = mp.product_id*/
+    LEFT OUTER JOIN {{ ref('m_product') }} mp ON pv.id = mp.product_id
 /*)
 GROUP BY
     Account_Id,

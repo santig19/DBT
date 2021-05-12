@@ -209,3 +209,34 @@ models:
         alias: m_key_message
     m_knowledge_article_customer_request_mapping:
         alias: m_knowledge_article_customer_request_mapping
+    #new        
+    m_leading_specialist:
+        alias: m_leading_specialist
+    m_mc_cycle_plan:
+        alias: m_mc_cycle_plan
+    m_mc_cycle_plan_detail:
+        alias: m_mc_cycle_plan_detail
+    m_mc_cycle_plan_target_channel:
+        alias: m_mc_cycle_plan_target_channel
+    m_medical_insight:
+        alias: m_medical_insight
+    m_multichannel_consent:
+        alias: m_multichannel_consent
+    m_product_analytic_group:
+        alias: m_product_analytic_group
+    m_product_metrics_country:
+        alias: m_product_metrics_country
+    m_product_metrics_emea:
+        alias: m_product_metrics_emea
+    m_product_metrics_indicators_country_pivoted:
+        alias: m_product_metrics_indicators_country_pivoted
+    m_profile:
+        alias: m_profile
+    m_remote_meeting:
+        alias: m_remote_meeting
+    m_remote_meeting_atendee:
+        alias: m_remote_meeting_atendee
+    m_smart_tagging:
+        alias: m_smart_tagging
+    m_user_territory:
+        alias: m_user_territory

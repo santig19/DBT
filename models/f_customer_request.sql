@@ -2,7 +2,7 @@
 	post_hook="grant all privileges on {{ this }} to {{ var('snowflake_user_grant_privileges') }}")
 }}
 
-SELECT
+/*SELECT
     t.Account_Id,
     t.Country_Code,
     t.Brick_Code,
@@ -199,15 +199,15 @@ SELECT
     pqc_external,
     report_type,
     answer_from_skm
-FROM (
+FROM (*/
     SELECT
         C.AccountId AS Account_Id,
-        CASE
+        /*CASE
             WHEN C.AccountId = A.Id AND LEN(A.CODS_external_id__c)>0 THEN (CASE WHEN A.country_jj__c IS NULL THEN A.jj_country__c ELSE A.country_jj__c END)
             WHEN (U2.Id = CASE WHEN C.JJ_Non_CSC_Assignee__c <> '' THEN C.JJ_Non_CSC_Assignee__c ELSE C.OwnerId END) THEN CS2.jj_Country_iso_code__c
             WHEN C.AccountId = A.Id AND LEN(A.CODS_external_id__c)<1 THEN (CASE WHEN A.country_jj__c IS NULL THEN A.jj_country__c ELSE A.country_jj__c END)
             ELSE 'NM'
-        END::varchar(255) AS Country_Code_c,
+        END::varchar(255) AS Country_Code_c,*/
         CASE
             WHEN LEN(A.Country_JJ__c)>0
                 THEN A.Country_JJ__c
@@ -314,7 +314,7 @@ FROM (
                 ELSE TO_CHAR(TO_DATE(C.JJ_End_Date__C, 'YYYYMMDD HH24:MI:SS'), 'YYYYMMDD')
         END::varchar(255) AS Customer_Request_End_Date,
         'Customer Request'::varchar(255) AS Origin,            
-        ('Non Visited' || '_' || Country_Code_c)::varchar(255) AS Account_Visited_NonVisited_Technical,    
+        /*('Non Visited' || '_' || Country_Code_c)::varchar(255) AS Account_Visited_NonVisited_Technical,    */
         '1'::varchar(255) AS Sys_Compliance_Visibility,
         'My Region'::varchar(255) AS Compliance_Visibility,
         C.JJ_PV_Reference__c    AS Customer_Request_PV_Reference_1,
@@ -334,7 +334,7 @@ FROM (
                 ELSE ''
         END::varchar(255) AS Multichannel_Activity,
         'Null'::varchar(255) AS Multichannel_Activity_Type,
-        'Creator'::varchar(255) AS Creator_Owner,
+        'Creator'::varchar(255) AS Creator_Owner/*,
         CASE WHEN COALESCE(mp.product_therapeutic_area_1,'') = ''
             THEN 'NM' ELSE mp.product_therapeutic_area_1
         END AS Therapeutic_Area_Name,
@@ -420,27 +420,27 @@ FROM (
         CASE WHEN (Position(CHR(92) || CHR(92), C.JJ_ANSWER_FROM_SKM__C) > 0) OR Position(CHR(124) || CHR(34), C.JJ_ANSWER_FROM_SKM__C) > 0 OR Position(CHR(92) || CHR(124), C.JJ_ANSWER_FROM_SKM__C) > 0 OR Position(CHR(92) || CHR(34), C.JJ_ANSWER_FROM_SKM__C) > 0
             THEN REPLACE(REPLACE(REPLACE(REPLACE(C.JJ_ANSWER_FROM_SKM__C, CHR(92) || CHR(92), CHR(92)), CHR(124) || CHR(34), CHR(34)), CHR(92) || CHR(124), CHR(124)), CHR(92) || CHR(34), CHR(34))
             ELSE C.JJ_ANSWER_FROM_SKM__C
-        END::varchar(10000) AS answer_from_skm
-    FROM {{ var('schema') }}.case_raw C
-    LEFT OUTER JOIN {{ var('schema') }}.account_raw A ON C.AccountId = A.Id
-    LEFT OUTER JOIN {{ var('schema') }}.user_raw U ON C.CreatedById = U.Id
-    LEFT OUTER JOIN {{ var('schema') }}.user_raw U1 on C.OwnerId = U1.Id
-    LEFT OUTER JOIN {{ var('schema') }}.user_raw U2 ON U2.Id =
+        END::varchar(10000) AS answer_from_skm*/
+    FROM {{ source('raw', 'case') }} C
+    LEFT OUTER JOIN {{ source('raw', 'account') }} A ON C.AccountId = A.Id
+    LEFT OUTER JOIN {{ source('raw', 'user') }} U ON C.CreatedById = U.Id
+    LEFT OUTER JOIN {{ source('raw', 'user') }} U1 on C.OwnerId = U1.Id
+    LEFT OUTER JOIN {{ source('raw', 'user') }} U2 ON U2.Id =
     CASE
         WHEN C.JJ_Non_CSC_Assignee__c <> ''
             THEN C.JJ_Non_CSC_Assignee__c
             ELSE C.OwnerId
     END
-    LEFT OUTER JOIN {{ var('schema') }}.profile_raw P ON U1.ProfileId = P.Id AND C.OwnerId = U1.Id
-    LEFT OUTER JOIN {{ var('schema') }}.profile_raw P1 ON P1.Id = U.ProfileId
-    LEFT OUTER JOIN {{ var('schema') }}.record_type_raw R ON C.RecordTypeId = R.Id
-    LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw jC ON jC.jj_Country_ISO_Code__c = C.country_iso_code
-    LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw cs ON cs.name = U.JJ_user_country__c
-    LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw cs2 ON cs2.name = U2.JJ_user_country__c
-    LEFT OUTER JOIN {{ var('schema') }}.product_raw pv ON pv.id = C.JJ_Product__c
+    LEFT OUTER JOIN {{ source('raw', 'profile') }} P ON U1.ProfileId = P.Id AND C.OwnerId = U1.Id
+    LEFT OUTER JOIN {{ source('raw', 'profile') }} P1 ON P1.Id = U.ProfileId
+    LEFT OUTER JOIN {{ source('raw', 'record_type') }} R ON C.RecordTypeId = R.Id
+    /*LEFT OUTER JOIN {{ source('raw', 'country_settings') }} jC ON jC.jj_Country_ISO_Code__c = C.country_iso_code
+    LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs ON cs.name = U.JJ_user_country__c
+    LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs2 ON cs2.name = U2.JJ_user_country__c
+    LEFT OUTER JOIN {{ source('raw', 'product') }}.product_raw pv ON pv.id = C.JJ_Product__c
     LEFT OUTER JOIN {{ ref('tmp_user_territory') }} ut ON C.CreatedById= ut.USERID
-    LEFT OUTER JOIN {{ ref('m_product') }} mp ON pv.id = mp.product_id
-)
+    LEFT OUTER JOIN {{ ref('m_product') }} mp ON pv.id = mp.product_id*/
+/*)
 GROUP BY
     Account_Id,
     Country_Code,
@@ -858,23 +858,23 @@ FROM (
             ELSE C.JJ_ANSWER_FROM_SKM__C
         END::varchar(10000) AS answer_from_skm
          
-    FROM {{ var('schema') }}.case_raw C
-    LEFT OUTER JOIN {{ var('schema') }}.account_raw A ON C.AccountId = A.Id
-    LEFT OUTER JOIN {{ var('schema') }}.user_raw U ON C.CreatedById = U.Id
-    LEFT OUTER JOIN {{ var('schema') }}.user_raw U1 on C.OwnerId = U1.Id
-    LEFT OUTER JOIN {{ var('schema') }}.user_raw U2 ON U2.Id =
+    FROM {{ source('raw', 'action_item') }}.case_raw C
+    LEFT OUTER JOIN {{ source('raw', 'account') }} A ON C.AccountId = A.Id
+    LEFT OUTER JOIN {{ source('raw', 'user') }} U ON C.CreatedById = U.Id
+    LEFT OUTER JOIN {{ source('raw', 'user') }} U1 on C.OwnerId = U1.Id
+    LEFT OUTER JOIN {{ source('raw', 'user') }} U2 ON U2.Id =
     CASE
         WHEN C.JJ_Non_CSC_Assignee__c <> ''
             THEN C.JJ_Non_CSC_Assignee__c
             ELSE C.OwnerId
     END
-    LEFT OUTER JOIN {{ var('schema') }}.profile_raw P ON U1.Profileid = P.Id
-    LEFT OUTER JOIN {{ var('schema') }}.profile_raw P1 ON P1.Id = U.ProfileId
-    LEFT OUTER JOIN {{ var('schema') }}.record_type_raw R ON C.RecordTypeId = R.Id
-    LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw jC ON jC.jj_Country_ISO_Code__c = C.country_iso_code
-    LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw cs ON cs.name = U.jj_user_country__c
-    LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw cs2 ON cs2.name = U2.jj_user_country__c
-    LEFT OUTER JOIN {{ var('schema') }}.product_raw pv ON pv.id = C.JJ_Product__c
+    LEFT OUTER JOIN {{ source('raw', 'profile') }} P ON U1.Profileid = P.Id
+    LEFT OUTER JOIN {{ source('raw', 'profile') }} P1 ON P1.Id = U.ProfileId
+    LEFT OUTER JOIN {{ source('raw', 'record_type') }} R ON C.RecordTypeId = R.Id
+    LEFT OUTER JOIN {{ source('raw', 'country_settings') }} jC ON jC.jj_Country_ISO_Code__c = C.country_iso_code
+    LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs ON cs.name = U.jj_user_country__c
+    LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs2 ON cs2.name = U2.jj_user_country__c
+    LEFT OUTER JOIN {{ source('raw', 'product') }}.product_raw pv ON pv.id = C.JJ_Product__c
     LEFT OUTER JOIN {{ ref('tmp_user_territory') }} ut ON C.CreatedById= ut.USERID
     LEFT OUTER JOIN {{ ref('m_product') }} mp ON pv.id = mp.product_id
 )
@@ -976,7 +976,7 @@ LEFT JOIN (SELECT Account_Id, Territory_Id FROM {{ ref('m_null_country_values') 
             GROUP BY Account_Id, Territory_Id
           ) mncv
     ON t.Account_Id = mncv.Account_Id AND t.Territory_Nominal_Id = mncv.Territory_Id
-LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ var('schema') }}.buw_alignment_m_null_country_values_snapshot_monthly_historical
+LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ source('raw', 'm_null_country_values_snapshot_monthly_historical') }}
             GROUP BY Account_Id, Territory_Id, yearmonth
           ) mncvs
-    ON t.Account_Id = mncvs.Account_Id AND t.Territory_Nominal_Id = mncvs.Territory_Id AND LEFT(TO_CHAR(TO_DATE(t.Date, 'YYYYMMDD'), 'YYYYMMDD')::varchar(255),6) = mncvs.yearmonth  
+    ON t.Account_Id = mncvs.Account_Id AND t.Territory_Nominal_Id = mncvs.Territory_Id AND LEFT(TO_CHAR(TO_DATE(t.Date, 'YYYYMMDD'), 'YYYYMMDD')::varchar(255),6) = mncvs.yearmonth  */

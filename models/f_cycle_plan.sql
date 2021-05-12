@@ -161,12 +161,12 @@ FROM
             end :: varchar(255) as Region
           ,(Account_Id || '-' || Employee_Id) :: varchar(255) as Security_Key
           ,('Non Visited' || '_' || Country_Code) :: varchar(255) as Account_Visited_NonVisited_Technical
-        FROM {{ var('schema') }}.cycle_plan_detail_raw cpd
-        LEFT JOIN {{ var('schema') }}.cycle_plan_target_raw cpt ON cpd.cycle_plan_target_vod__c = cpt.id
-        LEFT JOIN {{ var('schema') }}.cycle_plan_raw cp ON cp.id = cpt.cycle_plan_vod__c
-        LEFT JOIN {{ var('schema') }}.account_raw ac ON ac.id=cpt.cycle_plan_account_vod__c
-        LEFT JOIN {{ var('schema') }}.country_settings_raw cs ON cs.jj_Country_ISO_Code__c=cpd.country_iso_code
-	   LEFT JOIN {{ var('schema') }}.user_raw ur ON cpt.lastmodifiedbyid = ur.id
+        FROM {{ source('raw', 'cycle_plan_detail') }} cpd
+        LEFT JOIN {{ source('raw', 'cycle_plan_target') }} cpt ON cpd.cycle_plan_target_vod__c = cpt.id
+        LEFT JOIN {{ source('raw', 'cycle_plan') }} cp ON cp.id = cpt.cycle_plan_vod__c
+        LEFT JOIN {{ source('raw', 'account') }} ac ON ac.id=cpt.cycle_plan_account_vod__c
+        LEFT JOIN {{ source('raw', 'country_settings') }} cs ON cs.jj_Country_ISO_Code__c=cpd.country_iso_code
+	   LEFT JOIN {{ source('raw', 'user') }} ur ON cpt.lastmodifiedbyid = ur.id
         LEFT JOIN {{ ref('m_product') }} mp ON cpd.product_vod__c = mp.product_id
     )
     B
@@ -310,9 +310,9 @@ SELECT DISTINCT
            WHEN (Account_Id = ac.Id) THEN Country_Code || '_' || CASE WHEN Len(ac.Brick_Number_JJ__c) > 0 THEN ac.Brick_Number_JJ__c ELSE 'No Value' END
            ELSE 'NM'
        END::Varchar(255) AS Brick_Code
-	FROM {{ var('schema') }}.cycle_plan_target_raw cpt
-	LEFT JOIN {{ var('schema') }}.account_raw ac ON ac.id = cpt.cycle_plan_account_vod__c
-	LEFT JOIN {{ var('schema') }}.country_settings_raw cs ON cs.jj_Country_ISO_Code__c = cpt.country_iso_code
-	LEFT JOIN {{ var('schema') }}.cycle_plan_raw cp ON cp.id = cpt.cycle_plan_vod__c
-	LEFT JOIN {{ var('schema') }}.user_raw ur ON cpt.lastmodifiedbyid = ur.id
+	FROM {{ source('raw', 'action_item') }} cpt
+	LEFT JOIN {{ source('raw', 'account') }} ac ON ac.id = cpt.cycle_plan_account_vod__c
+	LEFT JOIN {{ source('raw', 'country_settings') }} cs ON cs.jj_Country_ISO_Code__c = cpt.country_iso_code
+	LEFT JOIN {{ source('raw', 'cycle_plan') }} cp ON cp.id = cpt.cycle_plan_vod__c
+	LEFT JOIN {{ source('raw', 'user') }} ur ON cpt.lastmodifiedbyid = ur.id
 	) C

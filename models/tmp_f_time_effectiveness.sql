@@ -49,9 +49,9 @@ SELECT
   , time_off.jj_therapeutical_area__c                               AS Aux_Therapeutic_Area
   , time_off.hours_vod__c                                           AS Time_Effectiveness_Hours
   , NULL::varchar(255)                                              AS Time_Effectiveness_Percentage
-FROM {{ var('schema') }}.time_off_territory_raw AS time_off
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS country_settings ON time_off.country_iso_code = country_settings.jj_country_iso_code__c
-LEFT OUTER JOIN {{ var('schema') }}.record_type_raw AS recordtype ON time_off.recordtypeid = recordtype.id
+FROM {{ source('raw', 'time_off_territory') }} AS time_off
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS country_settings ON time_off.country_iso_code = country_settings.jj_country_iso_code__c
+LEFT OUTER JOIN {{ source('raw', 'record_type') }} AS recordtype ON time_off.recordtypeid = recordtype.id
 LEFT OUTER JOIN {{ ref('tmp_user_territory') }} AS UT ON time_off.ownerid = UT.userid
 WHERE time_off.country_iso_code != 'DE' AND extract(year from TO_DATE(time_off.createddate, 'YYYYMMDD HH24:MI:SS')) >= extract(year from GETDATE())-2
 
@@ -133,11 +133,11 @@ SELECT
   , NULL::varchar(255)                             AS Aux_Therapeutic_Area
   , NULL::varchar(255)                             AS Time_Effectiveness_Hours
   , TR.jj_system_percentage__c                     AS Time_Effectiveness_Percentage
-FROM {{ var('schema') }}.time_registration_raw AS TR
-LEFT OUTER JOIN {{ var('schema') }}.user_raw USR ON TR.ownerid = USR.id
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS CS ON USR.JJ_User_Country__c = CS.name
-LEFT OUTER JOIN {{ var('schema') }}.time_effectiveness_type_raw AS TET ON TR.jj_time_off__c = TET.time_effectiveness_reason
-LEFT OUTER JOIN {{ var('schema') }}.time_effectiveness_record_type_raw AS TERT ON TR.jj_time_off__c = TERT.time_effectiveness_reason
+FROM {{ source('raw', 'time_registration') }} AS TR
+LEFT OUTER JOIN {{ source('raw', 'user') }} USR ON TR.ownerid = USR.id
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS CS ON USR.JJ_User_Country__c = CS.name
+LEFT OUTER JOIN {{ source('raw', 'time_effectiveness_type') }} AS TET ON TR.jj_time_off__c = TET.time_effectiveness_reason
+LEFT OUTER JOIN {{ source('raw', 'time_effectiveness_record_type') }} AS TERT ON TR.jj_time_off__c = TERT.time_effectiveness_reason
 LEFT OUTER JOIN {{ ref('tmp_user_territory') }} AS UT ON TR.ownerid = UT.userid
 WHERE CASE
           WHEN TR.ownerid = USR.id AND USR.jj_user_country__c = CS.name

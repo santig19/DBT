@@ -57,4 +57,4 @@ select action__c::varchar(200) as action,
        user_country__c::varchar(2600) as user_country,
        user_feedback__c::varchar(10000) as user_feedback,
        user_profile__c::varchar(2600) as user_profile
-  from {{ var('schema') }}.myinsights_analytics_raw
+  from {{ source('raw', 'myinsights_analytics') }}

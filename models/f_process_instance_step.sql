@@ -16,4 +16,4 @@ select country_iso_code::varchar(4) as country_iso_code,
        case when createddate = '' then null else to_timestamp_ntz(createddate,'YYYYMMDD HH24:MI:SS') end::datetime as created_date,
        createdbyid::varchar(36) as created_by_id,
        case when systemmodstamp = '' then null else to_timestamp_ntz(systemmodstamp,'YYYYMMDD HH24:MI:SS') end::datetime as system_mod_stamp
-  from {{ var('schema') }}.process_instance_step_raw
+  from {{ source('raw', 'process_instance_step') }}

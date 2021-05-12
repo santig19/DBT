@@ -979,4 +979,4 @@ LEFT JOIN (SELECT Account_Id, Territory_Id FROM {{ ref('m_null_country_values') 
 LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ var('schema') }}.buw_alignment_m_null_country_values_snapshot_monthly_historical
             GROUP BY Account_Id, Territory_Id, yearmonth
           ) mncvs
-    ON t.Account_Id = mncvs.Account_Id AND t.Territory_Nominal_Id = mncvs.Territory_Id AND LEFT(TO_CHAR(TO_DATE(t.Date, 'YYYYMMDD HH24:MI:SS'), 'YYYYMMDD')::varchar(255),6) = mncvs.yearmonth  
+    ON t.Account_Id = mncvs.Account_Id AND t.Territory_Nominal_Id = mncvs.Territory_Id AND LEFT(TO_CHAR(TO_DATE(t.Date, 'YYYYMMDD'), 'YYYYMMDD')::varchar(255),6) = mncvs.yearmonth  

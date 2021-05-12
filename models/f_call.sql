@@ -117,8 +117,8 @@ LEFT JOIN (
 SELECT
 min(an.id) as product_analytic_group_id
 ,pg.product_vod__c as product_id
-FROM {{ var('schema') }}.analytics_product_group_raw an
-JOIN {{ var('schema') }}.product_group_map_raw pg ON an.id = pg.analytics_product_group_vod__c
+FROM {{ source('raw', 'analytics_product_group') }} an
+JOIN {{ source('raw', 'product_group_map') }} pg ON an.id = pg.analytics_product_group_vod__c
 WHERE pg.product_vod__c IS NOT NULL AND pg.product_vod__c <> ''
 GROUP BY pg.product_vod__c
 ) M on M.Product_Id = h.Product_Id
@@ -126,14 +126,14 @@ GROUP BY pg.product_vod__c
 LEFT JOIN (
  
 SELECT DISTINCT(ID), Medical_Event_vod__c AS Medical_Event from
-{{ var('schema') }}.call_raw) b
+{{ source('raw', 'call') }}) b
 on H.Call_Id = b.id
  
 LEFT JOIN (SELECT Account_Id, Territory_Id FROM {{ ref('m_null_country_values') }}
 GROUP BY Account_Id, Territory_Id) mncv
 ON h.Account_Id = mncv.Account_Id AND h.Territory_Nominal_Id = mncv.Territory_Id
  
-LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ var('schema') }}.buw_alignment_m_null_country_values_snapshot_monthly_historical
+LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ source('raw', 'm_null_country_values_snapshot_monthly_historical') }}
 GROUP BY Account_Id, Territory_Id, yearmonth) mncvs
 ON h.Account_Id = mncvs.Account_Id AND h.Territory_Nominal_Id = mncvs.Territory_Id AND (split_part(h.Date,'-',3) || split_part(h.Date,'-',2)) = mncvs.yearmonth
  

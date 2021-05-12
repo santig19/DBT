@@ -31,4 +31,4 @@ FROM (
 	GROUP BY compliance_country, aux_event_attendee_framework_key
 )
 
-LEFT OUTER JOIN {{ var('schema') }}.slider_threshold_raw ST ON ST.Country=Compliance_Country /*Excel File*/
+LEFT OUTER JOIN {{ source('raw', 'slider_threshold') }} ST ON ST.Country=Compliance_Country /*Excel File*/

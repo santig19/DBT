@@ -8,7 +8,7 @@ select nvl(cp.id,'')                           as id,
        nvl(cp.jj_channel_preferences__c,'')    as jj_channel_preferences__c,
        nvl(cp.jj_last_confirmation_date__c,'') as jj_last_confirmation_date__c,
        nvl(cp.jj_status_flag__c,'')            as jj_status_flag__c
-  from {{ var('schema') }}.channel_preferences_raw as cp
+  from {{ source('raw', 'channel_preferences') }} as cp
  where nvl(cp.isdeleted,'') = '0'
  group by nvl(cp.id,''),
           nvl(cp.isdeleted,''),

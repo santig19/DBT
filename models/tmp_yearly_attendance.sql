@@ -28,4 +28,4 @@ FROM (
 	GROUP BY Compliance_Country, Aux_Event_Attendee_Framework_Key
 )
 
-LEFT OUTER JOIN {{ var('schema') }}.slider_threshold_raw ST ON ST.Country=Compliance_Country
+LEFT OUTER JOIN {{ source('raw', 'slider_threshold') }} ST ON ST.Country=Compliance_Country

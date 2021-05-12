@@ -12,10 +12,10 @@ select distinct
 	   CS.name::varchar(255) as account_country,
 	   CS.jj_region__c::varchar(20) as account_region,
 	   TM.jj_system_unique_team_member__c::varchar(255) as account_plan_system_unique_team_member   
-  from      {{ var('schema') }}.account_plan_team_member_raw as TM
- inner join {{ var('schema') }}.account_plan_raw            as AP
+  from      {{ source('raw', 'account_plan_team_member') }} as TM
+ inner join {{ source('raw', 'account_plan') }}            as AP
     on  TM.JJ_Account_Plan__c                                                = AP.Id
-  left join {{ var('schema') }}.user_raw 			                as US
+  left join {{ source('raw', 'user') }} 			                as US
     on TM.JJ_Team_Member__c 					                             = US.Id
-  left join {{ var('schema') }}.country_settings_raw         as CS
+  left join {{ source('raw', 'country_settings') }}         as CS
     on AP.country_iso_code                                                   = CS.JJ_COUNTRY_ISO_CODE__C

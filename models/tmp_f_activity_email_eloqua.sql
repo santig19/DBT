@@ -89,31 +89,31 @@ FROM (
 	FROM (
 		SELECT DISTINCT ActivityId, ActivityType, ActivityDate, AssetId, AssetName, CampaignId, CampaignCrmId, ContactId, 
 		'CJANS' || left('00000000000000000',12-length(ContactId)) || ContactId as Contact_Id, null as EmailClickedThruLink, null as EmailAddress, Contactsfdcid
-		FROM {{ var('schema') }}.eloqua_emailopen_raw
+		FROM {{ source('raw', 'eloqua_emailopen') }}
 		
 		UNION
 		
 		SELECT DISTINCT ActivityId, ActivityType, ActivityDate, AssetId, AssetName, CampaignId, CampaignCrmId, null as ContactId, 
 		null as Contact_Id, null as EmailClickedThruLink, EmailAddress, Contactsfdcid
-		FROM {{ var('schema') }}.eloqua_bounceback_raw
+		FROM {{ source('raw', 'eloqua_bounceback') }}
 		
 		UNION
 		
 		SELECT DISTINCT ActivityId, ActivityType, ActivityDate, AssetId, AssetName, CampaignId, CampaignCrmId, ContactId, 
 		'CJANS' || left('00000000000000000',12-length(ContactId)) || ContactId as Contact_Id, EmailClickedThruLink, null as EmailAddress, Contactsfdcid
-		FROM {{ var('schema') }}.eloqua_emailclickthrough_raw
+		FROM {{ source('raw', 'eloqua_emailclickthrough') }}
 		
 		UNION
 		
 		SELECT DISTINCT ActivityId, ActivityType, ActivityDate, null as assetid, AssetName, CampaignId, CampaignCrmId, ContactId, 
 		'CJANS' || left('00000000000000000',12-length(ContactId)) || ContactId as Contact_Id, null as EmailClickedThruLink, null as EmailAddress, Contactsfdcid
-		FROM {{ var('schema') }}.eloqua_emailsend_raw
+		FROM {{ source('raw', 'eloqua_emailsend') }}
 		
 		UNION
 	
 		SELECT DISTINCT ActivityId, ActivityType, ActivityDate, null as assetid, AssetName, CampaignId, CampaignCrmId, null as ContactId,	
 		'CJANS' || left('00000000000000000',12-length(ContactId)) || ContactId as Contact_Id, null as EmailClickedThruLink, null as EmailAddress, Contactsfdcid
-		FROM {{ var('schema') }}.eloqua_formsubmit_raw
+		FROM {{ source('raw', 'eloqua_formsubmit') }}
 		)
 	
 	UNION
@@ -151,11 +151,11 @@ FROM (
 			NPV.NumberPageViews,
 			wv.Duration,
 			wv.FirstPageViewUrl
-		FROM {{ var('schema') }}.eloqua_pageview_raw pv
-		LEFT OUTER JOIN {{ var('schema') }}.eloqua_webvisit_raw wv ON wv.ActivityId = pv.WebVisitId
+		FROM {{ source('raw', 'eloqua_pageview') }} pv
+		LEFT OUTER JOIN {{ source('raw', 'eloqua_webvisit') }} wv ON wv.ActivityId = pv.WebVisitId
 		LEFT OUTER JOIN (
 			SELECT COUNT(DISTINCT(pvw.ActivityId)) as NumberPageViews, pvw.WebVisitId as WVID  
-			FROM {{ var('schema') }}.eloqua_pageview_raw pvw
+			FROM {{ source('raw', 'eloqua_pageview') }} pvw
 			GROUP BY pvw.WebVisitId
 		) AS NPV ON NPV.WVID = pv.WebVisitId
 	)
@@ -163,10 +163,10 @@ FROM (
 
 LEFT OUTER JOIN ( select * from (
 select * , ROW_NUMBER() OVER(PARTITION BY ID ORDER BY SYSTEMMODSTAMP DESC) AS row1
-  from {{ var('schema') }}.campaign_raw ) a
+  from {{ source('raw', 'campaign') }} ) a
  where a.row1 = 1 ) c ON ELOQUA.Campaign_CrmId = c.id 
 
 -- us-48166
 -- edit left outer join because of multiple countrys associated to the same campaign_id 
 
-LEFT OUTER JOIN {{ var('schema') }}.account_raw a ON ELOQUA.Contactsfdcid = a.id
+LEFT OUTER JOIN {{ source('raw', 'account') }} a ON ELOQUA.Contactsfdcid = a.id

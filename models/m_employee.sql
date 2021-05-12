@@ -41,10 +41,10 @@ select u.ALIAS as "Employee_Alias",
 	   case when u.profile_name_vod__c = 'EMEA_iConnect_Sales' and u.jj_position_type__c = 'Sales Rep' then 'true' else 'false' end as employee_is_salesrep,
 	   u.jj_user_group__c as employee_user_group,
 	   case when u.JJ_MSL_PRCT__C = '' then null else u.JJ_MSL_PRCT__C end as MSL_percentage
-  from      {{ var('schema') }}.user_raw u
-  left join {{ var('schema') }}.country_settings_raw cs
+  from      {{ source('raw', 'user') }} u
+  left join {{ source('raw', 'country_settings') }} cs
     on u.COUNTRY_ISO_CODE = cs.COUNTRY_ISO_CODE
-  left join {{ var('schema') }}.profile_raw pr
+  left join {{ source('raw', 'profile') }} pr
     on pr.ID = u.PROFILEID
  group by u.ALIAS,
           u.CITY, 

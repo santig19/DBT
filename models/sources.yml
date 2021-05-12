@@ -31,7 +31,7 @@ sources:
     - name: assessment
       description: none 
       identifier: assessment_raw
-    - name: buw_alignment_m_null_country_values_snapshot_monthly_historical
+    - name: m_null_country_values_snapshot_monthly_historical
       description: none 
       identifier: buw_alignment_m_null_country_values_snapshot_monthly_historical
     - name: calculatedfields
@@ -124,7 +124,7 @@ sources:
     - name: elq_activity
       description: none 
       identifier: elq_activity_raw
-    - name: event_attendee_vod__c
+    - name: event_attendee
       description: none 
       identifier: event_attendee_vod__c_raw
     - name: focus_area
@@ -136,7 +136,7 @@ sources:
     - name: group_speciality_segment_setting
       description: none 
       identifier: group_speciality_segment_setting_raw
-    - name: jj_eligible_event_attendee__c
+    - name: eligible_event_attendee
       description: none 
       identifier: jj_eligible_event_attendee__c_raw
     - name: key_message
@@ -175,7 +175,7 @@ sources:
     - name: mc_multichannel_activity
       description: none 
       identifier: mc_multichannel_activity_raw
-    - name: medical_event_vod__c
+    - name: medical_event
       description: none 
       identifier: medical_event_vod__c_raw
     - name: multichannel_consent
@@ -205,7 +205,7 @@ sources:
     - name: question
       description: none 
       identifier: question_raw
-    - name: question_response_vod__c
+    - name: question_response
       description: none 
       identifier: question_response_vod__c_raw
     - name: record_type_localization
@@ -229,7 +229,7 @@ sources:
     - name: survey
       description: none 
       identifier: survey_raw
-    - name: survey_target_vod__c
+    - name: survey_target
       description: none 
       identifier: survey_target_vod__c_raw
     - name: task

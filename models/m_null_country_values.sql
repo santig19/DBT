@@ -14,12 +14,12 @@ SELECT account.id AS account_id,
 	   MAX(ObjectTerritory2Association.territory2id) AS territory_id,
 	   ObjectTerritory2Association.territory2id AS security_key,
 	   MAX(UserTerritory.UserId) AS employee_id
-  FROM      {{ var('schema') }}.account_raw                     AS account
-  LEFT JOIN {{ var('schema') }}.country_settings_raw      AS country_settings
+  FROM      {{ source('raw', 'account') }}                     AS account
+  LEFT JOIN {{ source('raw', 'country_settings') }}      AS country_settings
   	ON country_settings.JJ_COUNTRY_ISO_CODE__C                         = account.country_iso_code
-  LEFT JOIN {{ var('schema') }}.object_territory_association_raw AS ObjectTerritory2Association
+  LEFT JOIN {{ source('raw', 'object_territory_association') }} AS ObjectTerritory2Association
   	ON ObjectTerritory2Association.ObjectId                            = account.id
-  LEFT JOIN {{ var('schema') }}.user_territory_association_raw   AS UserTerritory
+  LEFT JOIN {{ source('raw', 'user_territory_association') }}   AS UserTerritory
   	ON UserTerritory.Territory2Id                                      = ObjectTerritory2Association.territory2id
  WHERE LEN(ObjectTerritory2Association.territory2id) > 0
  GROUP BY account_id,

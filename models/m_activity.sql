@@ -54,4 +54,4 @@ SELECT
 		WHEN Position(CHR(92) || CHR(34), JJ_ELQ_URL__C) > 0 THEN TRANSLATE(JJ_ELQ_URL__C, CHR(92) || CHR(34), CHR(34))
 		ELSE JJ_ELQ_URL__C END AS URL			
 	,JJ_ELQ_WEBVISITID__C AS WEBVISITID
-FROM {{ var('schema') }}.elq_activity_raw
+FROM {{ source('raw', 'elq_activity') }}

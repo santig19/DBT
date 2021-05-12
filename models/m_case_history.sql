@@ -12,8 +12,8 @@ SELECT
 	,case_history.FIELD         AS changed_field
 	,case_history.OLDVALUE      AS old_value
 	,case_history.NEWVALUE      AS new_value
-FROM {{ var('schema') }}.case_history_raw AS case_history
-LEFT JOIN {{ var('schema') }}.user_raw AS "user" 
+FROM {{ source('raw', 'case_history') }} AS case_history
+LEFT JOIN {{ source('raw', 'user') }} AS "user" 
 	ON "user".ID = case_history.CREATEDBYID
 WHERE 
 	case_history.FIELD IN ('Owner')

@@ -124,14 +124,14 @@ f.Product_Id as Product_Id,
 f.ISO_Country_Code as ISO_Country_Code,
 case when c.JJ_NPS_Score__c = '' then null else c.JJ_NPS_Score__c end::decimal(2,0) as event_attendee_nps
 
-FROM {{ var('schema') }}.event_attendee_vod__c_raw c
+FROM {{ source('raw', 'event_attendee') }} c
 LEFT OUTER JOIN {{ ref('f_event_approval_process') }} e on e.Event_Id = c.id
-LEFT OUTER JOIN {{ var('schema') }}.record_type_raw rtea on rtea.id = c.recordtypeid
-LEFT OUTER JOIN {{ var('schema') }}.currency_type_raw ct on ct.IsoCode = c.CurrencyIsoCode
-LEFT OUTER JOIN {{ var('schema') }}.medical_event_vod__c_raw m on m.Id = c.Medical_Event_vod__c
-LEFT OUTER JOIN {{ var('schema') }}.record_type_raw rtme on rtme.id = m.recordtypeid
-LEFT OUTER JOIN {{ var('schema') }}.account_raw a on a.Id = c.Account_vod__c
-LEFT OUTER JOIN {{ var('schema') }}.user_raw u on u.Id = c.CreatedById
+LEFT OUTER JOIN {{ source('raw', 'record_type') }} rtea on rtea.id = c.recordtypeid
+LEFT OUTER JOIN {{ source('raw', 'currency_type') }} ct on ct.IsoCode = c.CurrencyIsoCode
+LEFT OUTER JOIN {{ source('raw', 'medical_event') }} m on m.Id = c.Medical_Event_vod__c
+LEFT OUTER JOIN {{ source('raw', 'record_type') }} rtme on rtme.id = m.recordtypeid
+LEFT OUTER JOIN {{ source('raw', 'account') }} a on a.Id = c.Account_vod__c
+LEFT OUTER JOIN {{ source('raw', 'user') }} u on u.Id = c.CreatedById
 JOIN (
 	SELECT 
 		Event_Id,

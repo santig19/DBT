@@ -34,6 +34,6 @@ SELECT
 	CS.name AS Approved_Email_Counters_Country,
 	CS.jj_region__c AS Approved_Email_Counters_Region
 	
-FROM {{ var('schema') }}.sent_email_raw AS SENT_EMAIL
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS CS ON CS.country_iso_code = SENT_EMAIL.country_iso_code
+FROM {{ source('raw', 'sent_email') }} AS SENT_EMAIL
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS CS ON CS.country_iso_code = SENT_EMAIL.country_iso_code
 WHERE SENT_EMAIL.originating_from_1_to_1_email__c IN ('0', 'false')

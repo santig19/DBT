@@ -42,8 +42,8 @@ SELECT
 FROM aggr1
 LEFT OUTER JOIN {{ ref('f_survey_target') }} AS st ON st.event_id=aggr1.event_id and st.account_id=aggr1.account_id 
 	and st.survey_last_modified_date_time=aggr1.survey_last_modified_date_time
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw cs ON cs.jj_country_iso_code__c = st.country_code
-LEFT OUTER JOIN {{ var('schema') }}.account_raw acc ON acc.Id = st.account_id
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs ON cs.jj_country_iso_code__c = st.country_code
+LEFT OUTER JOIN {{ source('raw', 'account') }} acc ON acc.Id = st.account_id
 GROUP BY st.event_id, st.account_id, st.survey_target_id, acc.Country_JJ__c, acc.JJ_country__c, cs.jj_region__c
 
 UNION ALL
@@ -64,8 +64,8 @@ SELECT
 FROM aggr2_anonym_surv aggr2
 LEFT OUTER JOIN {{ ref('f_survey_target') }} AS st ON st.event_id=aggr2.event_id and st.survey_target_id=aggr2.survey_target_id 
 	and st.survey_last_modified_date_time=aggr2.survey_last_modified_date_time
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS cs ON cs.jj_country_iso_code__c = st.country_code
-LEFT OUTER JOIN {{ var('schema') }}.account_raw AS acc ON acc.Id = st.account_id
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS cs ON cs.jj_country_iso_code__c = st.country_code
+LEFT OUTER JOIN {{ source('raw', 'account') }} AS acc ON acc.Id = st.account_id
 GROUP BY st.event_id, st.account_id, st.survey_target_id, acc.Country_JJ__c, acc.JJ_country__c, cs.jj_region__c
 
 UNION ALL
@@ -86,6 +86,6 @@ SELECT
 FROM aggr3_event_null aggr3
 LEFT OUTER JOIN {{ ref('f_survey_target') }} AS st ON st.account_id=aggr3.account_id 
 	and st.survey_last_modified_date_time=aggr3.survey_last_modified_date_time
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS cs ON cs.jj_country_iso_code__c = st.country_code
-LEFT OUTER JOIN {{ var('schema') }}.account_raw AS acc ON acc.Id = st.account_id
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS cs ON cs.jj_country_iso_code__c = st.country_code
+LEFT OUTER JOIN {{ source('raw', 'account') }} AS acc ON acc.Id = st.account_id
 GROUP BY st.event_id, st.account_id, st.survey_target_id, acc.Country_JJ__c, acc.JJ_country__c, cs.jj_region__c

@@ -86,10 +86,10 @@ FROM (SELECT
 	NULL as Campaign_Email_Link
 
 FROM {{ ref('tmp_f_campaign') }} AS TMP
-LEFT OUTER JOIN {{ var('schema') }}.campaign_raw AS Campaign ON TMP.campaign_id = Campaign.id
-LEFT OUTER JOIN {{ var('schema') }}.product_raw AS Product ON Campaign.jj_product__c = Product.id 
-LEFT OUTER JOIN {{ var('schema') }}.product_group_map_raw AS PRODUCT_GROUP_MAP ON Campaign.jj_product__c = PRODUCT_GROUP_MAP.Product_vod__c	
-LEFT OUTER JOIN {{ var('schema') }}.user_raw USR ON Campaign.ownerid = USR.id
+LEFT OUTER JOIN {{ source('raw', 'campaign') }} AS Campaign ON TMP.campaign_id = Campaign.id
+LEFT OUTER JOIN {{ source('raw', 'product') }} AS Product ON Campaign.jj_product__c = Product.id 
+LEFT OUTER JOIN {{ source('raw', 'product_group_map') }} AS PRODUCT_GROUP_MAP ON Campaign.jj_product__c = PRODUCT_GROUP_MAP.Product_vod__c	
+LEFT OUTER JOIN {{ source('raw', 'user_') }} USR ON Campaign.ownerid = USR.id
 LEFT OUTER JOIN {{ ref('m_product') }} AS M_PRODUCT ON M_PRODUCT.Product_Id = Campaign.jj_product__c
 
 LEFT OUTER JOIN (
@@ -97,24 +97,24 @@ LEFT OUTER JOIN (
 		Target.campaign_vod__c as Campaign_Target_Id,
 		Target.target_account_vod__c as Account_Id, 
 		Target.JJ_Call_Status__c as Call_Stat		
-	FROM {{ var('schema') }}.campaign_target_raw AS Target
-	LEFT OUTER JOIN {{ var('schema') }}.account_raw AS Acc ON Acc.Id = Target.target_account_vod__c
-	LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS CS ON CS.jj_country_ISO_Code__c = (CASE WHEN Acc.Id = Target.target_account_vod__c THEN ACC.country_iso_code ELSE 'NM' END)
-     LEFT OUTER JOIN {{ var('schema') }}.campaign_raw AS Campaign ON Campaign.Id = Target.campaign_vod__c
-	LEFT OUTER JOIN {{ var('schema') }}.record_type_raw AS RT ON Campaign.recordtypeid = RT.id
+	FROM {{ source('raw', 'campaign_target') }} AS Target
+	LEFT OUTER JOIN {{ source('raw', 'account') }} AS Acc ON Acc.Id = Target.target_account_vod__c
+	LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS CS ON CS.jj_country_ISO_Code__c = (CASE WHEN Acc.Id = Target.target_account_vod__c THEN ACC.country_iso_code ELSE 'NM' END)
+     LEFT OUTER JOIN {{ source('raw', 'campaign') }} AS Campaign ON Campaign.Id = Target.campaign_vod__c
+	LEFT OUTER JOIN {{ source('raw', 'record_type') }} AS RT ON Campaign.recordtypeid = RT.id
 	WHERE LOWER(RT.name) NOT IN ('customer journey', 'email', 'sms')
 	) AS F_CAMPAIGN_TARGET ON TMP.Campaign_Id = F_CAMPAIGN_TARGET.Campaign_Target_Id
 		
-LEFT OUTER JOIN {{ var('schema') }}.account_raw AS ACC ON ACC.id = F_CAMPAIGN_TARGET.Account_Id
+LEFT OUTER JOIN {{ source('raw', 'account') }} AS ACC ON ACC.id = F_CAMPAIGN_TARGET.Account_Id
 
 LEFT OUTER JOIN (
 	SELECT Ass.id as Campaign_Response_Id, Ass.jj_Campaign_Target__c as CAMPAIGN_TARGET_ID
-	FROM {{ var('schema') }}.assessment_raw AS Ass
-	LEFT OUTER JOIN {{ var('schema') }}.account_raw AS Acc ON Ass.jj_Campaign_Target__c = Acc.Id
-	LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS CS ON CS.jj_country_ISO_Code__c = (CASE WHEN Ass.jj_campaign_target__c = Acc.Id THEN Acc.country_iso_code ELSE 'NM' END)
+	FROM {{ source('raw', 'assessment') }} AS Ass
+	LEFT OUTER JOIN {{ source('raw', 'account') }} AS Acc ON Ass.jj_Campaign_Target__c = Acc.Id
+	LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS CS ON CS.jj_country_ISO_Code__c = (CASE WHEN Ass.jj_campaign_target__c = Acc.Id THEN Acc.country_iso_code ELSE 'NM' END)
 	) AS F_CAMPAIGN_RESPONSE ON F_CAMPAIGN_TARGET.Campaign_Target_Id = F_CAMPAIGN_RESPONSE.Campaign_Target_Id
 
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS COUNTRY ON 
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS COUNTRY ON 
 	CASE
 		WHEN F_CAMPAIGN_TARGET.Account_Id = ACC.id THEN ACC.country_iso_code
 		WHEN Campaign.ownerid = USR.id THEN USR.country_iso_code
@@ -238,7 +238,7 @@ FROM (
 		AVG(COALESCE(AUX_ELOQUA.Campaign_pageview_duration::numeric(10,2),0))::numeric(10,2) as Campaign_pageview_duration
 
 	FROM {{ ref('tmp_f_activity_email_eloqua') }} AS AUX_ELOQUA
-	LEFT OUTER JOIN {{ var('schema') }}.campaign_raw AS campaign ON campaign.Id = aux_eloqua.campaign_id
+	LEFT OUTER JOIN {{ source('raw', 'campaign') }} AS campaign ON campaign.Id = aux_eloqua.campaign_id
 	WHERE aux_eloqua.account_id IS NOT NULL
 	GROUP BY aux_eloqua.campaign_email_status,aux_eloqua.campaign_id,campaign.id,campaign.jj_start_date__c,aux_eloqua.date,
 		aux_eloqua.account_id,aux_eloqua.assetid,aux_eloqua.campaign_email_name,aux_eloqua.origin,aux_eloqua.campaign_pageview_url,
@@ -246,8 +246,8 @@ FROM (
 	) AS F_ACTIVITY_EMAIL_ELOQUA
 
 LEFT OUTER JOIN {{ ref('tmp_f_campaign') }} AS TMP ON F_ACTIVITY_EMAIL_ELOQUA.Campaign_Id = TMP.Campaign_Id
-LEFT OUTER JOIN {{ var('schema') }}.account_raw AS ACCOUNT ON F_ACTIVITY_EMAIL_ELOQUA.Account_Id = Account.Id
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS CS ON TMP.Campaign_Country_Code = CS.jj_Country_ISO_Code__C
-LEFT OUTER JOIN {{ var('schema') }}.product_raw AS P ON (CASE WHEN F_ACTIVITY_EMAIL_ELOQUA.Campaign_Id = TMP.Campaign_Id THEN TMP.Product_Id ELSE 'NM' END) = P.Id
-LEFT OUTER JOIN {{ var('schema') }}.product_group_map_raw AS P_GROUP_MAP ON (CASE WHEN F_ACTIVITY_EMAIL_ELOQUA.Campaign_Id = TMP.Campaign_Id THEN TMP.Product_Id ELSE 'NM' END) = P_GROUP_MAP.Product_vod__c
+LEFT OUTER JOIN {{ source('raw', 'account') }} AS ACCOUNT ON F_ACTIVITY_EMAIL_ELOQUA.Account_Id = Account.Id
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS CS ON TMP.Campaign_Country_Code = CS.jj_Country_ISO_Code__C
+LEFT OUTER JOIN {{ source('raw', 'product') }} AS P ON (CASE WHEN F_ACTIVITY_EMAIL_ELOQUA.Campaign_Id = TMP.Campaign_Id THEN TMP.Product_Id ELSE 'NM' END) = P.Id
+LEFT OUTER JOIN {{ source('raw', 'product_group_map') }} AS P_GROUP_MAP ON (CASE WHEN F_ACTIVITY_EMAIL_ELOQUA.Campaign_Id = TMP.Campaign_Id THEN TMP.Product_Id ELSE 'NM' END) = P_GROUP_MAP.Product_vod__c
 LEFT OUTER JOIN {{ ref('m_product') }} AS M_PRODUCT ON (CASE WHEN F_ACTIVITY_EMAIL_ELOQUA.Campaign_Id = TMP.Campaign_Id THEN TMP.Product_Id ELSE 'NM' END) = M_PRODUCT.Product_id)

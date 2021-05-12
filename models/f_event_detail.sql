@@ -194,8 +194,8 @@ CASE WHEN mncvs.Account_Id IS NOT NULL AND mncvs.Territory_Id IS NOT NULL AND ye
           
 FROM {{ ref('tmp_f_event_detail_4') }} AS evdet4
  
-LEFT OUTER JOIN {{ var('schema') }}.slider_threshold_raw AS ST ON ST.country = evdet4.Compliance_Country /*Excel File*/
-LEFT OUTER JOIN {{ var('schema') }}.currency_type_raw CT ON CT.isocode = ST.Currency
+LEFT OUTER JOIN {{ source('raw', 'slider_threshold') }} AS ST ON ST.country = evdet4.Compliance_Country /*Excel File*/
+LEFT OUTER JOIN {{ source('raw', 'currency_type') }} CT ON CT.isocode = ST.Currency
  
 LEFT OUTER JOIN (
     SELECT DISTINCT *
@@ -217,6 +217,6 @@ LEFT JOIN (SELECT Account_Id, Territory_Id FROM {{ ref('m_null_country_values') 
             GROUP BY Account_Id, Territory_Id) mncv
        ON evdet4.account_id = mncv.Account_Id AND evdet4.territory_nominal_id = mncv.Territory_Id
    
-LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ var('schema') }}.buw_alignment_m_null_country_values_snapshot_monthly_historical
+LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ source('raw', 'm_null_country_values_snapshot_monthly_historical') }}
             GROUP BY Account_Id, Territory_Id, yearmonth) mncvs
        ON evdet4.account_id = mncvs.Account_Id AND evdet4.territory_nominal_id = mncvs.Territory_Id AND left(to_char(to_date('1899-12-30', 'YYYY-MM-DD') + evdet4.date::integer,'YYYYMMDD')::varchar(8),6) = mncvs.yearmonth

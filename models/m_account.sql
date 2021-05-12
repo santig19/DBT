@@ -222,31 +222,31 @@ select base.account_subtype,
 					else 'No Value'
 				end::varchar(255) as account_available_email
 								
-          from {{ var('schema')}}.account_raw as account
+          from {{ source('raw', 'account') }} as account
           left join (
                       select  min(jj_group_specialty__c) as jj_group_specialty__c,
                               jj_codsid__c as jj_codsid__c 
-                        from {{ var('schema')}}.group_speciality_segment_setting_raw
+                        from {{ source('raw', 'group_speciality_segment_setting') }}
                        group by jj_codsid__c
                     ) as gsss1 
                 on account.group_specialty_1_vod__c = gsss1.jj_codsid__c
           left join (
                       select  min(jj_group_specialty__c) as jj_group_specialty__c,
                               jj_codsid__c as jj_codsid__c 
-                        from {{ var('schema')}}.group_speciality_segment_setting_raw
+                        from {{ source('raw', 'group_speciality_segment_setting') }}
                        group by jj_codsid__c
                     ) as gsss2
                  on account.group_specialty_2_vod__c = gsss2.jj_codsid__c
           left join (
                       select  min(jj_group_specialty__c) as jj_group_specialty__c,
                               jj_codsid__c as jj_codsid__c 
-                        from {{ var('schema')}}.group_speciality_segment_setting_raw
+                        from {{ source('raw', 'group_speciality_segment_setting') }}
                        group by jj_codsid__c
                     ) as gsss3
                  on account.jj_group_specialty_3__c = gsss3.jj_codsid__c
-          left join {{ var('schema')}}.map_account_type_account_type_description_raw as mp1
+          left join {{ source('raw', 'map_account_type_account_type_description') }} as mp1
 				on trim(mp1.code) = trim(account.jj_individual_type_code__c)
-          left join {{ var('schema')}}.map_account_type_account_type_description_raw as mp2 
+          left join {{ source('raw', 'map_account_type_account_type_description') }} as mp2 
 				on trim(mp2.code) = trim(account.jj_account_type_code__c)
           left join (
                       select id,
@@ -257,8 +257,8 @@ select base.account_subtype,
                                       select rt.id, 
                                              value as mappedname, 
                                              rt.name
-                                        from      {{ var('schema')}}.record_type_raw as rt
-                                        left join {{ var('schema')}}.record_type_localization_raw as rtl 
+                                        from      {{ source('raw', 'record_type') }} as rt
+                                        left join {{ source('raw', 'record_type_localization') }} as rtl 
                                           on rtl.parentid = rt.id
                                        where rtl.language = 'en_US'
                                       ) as rt 
@@ -270,20 +270,20 @@ select base.account_subtype,
           left join (
                       select sum(c.jj_number_of_traditional_mails_sent__c) as jj_number_of_traditional_mails_sent__c,
                              ct.target_account_vod__c                      as target_account_vod__c
-                        from      {{ var('schema')}}.campaign_target_raw as ct
-                        left join {{ var('schema')}}.campaign_raw        as c
+                        from      {{ source('raw', 'campaign_target') }} as ct
+                        left join {{ source('raw', 'campaign') }}        as c
                           on c.id                                                       = ct.campaign_vod__c
                        group by ct.target_account_vod__c                       
                     ) as campaign
                  on campaign.target_account_vod__c = account.id     
           left join (
                      select id, name 
-                     from {{ var('schema')}}.account_raw as account_name
+                     from {{ source('raw', 'account') }} as account_name
                     ) as  account_name
                   on account_name.id  = account.primary_parent_vod__c
           left join (
                      select country_iso_code, name 
-                       from {{ var('schema')}}.country_settings_raw as country
+                       from {{ source('raw', 'country_settings') }} as country
 					  group by country_iso_code, name
                     ) as  country
                   on country.country_iso_code  = ifnull(account.country_jj__c, account.jj_country__c)

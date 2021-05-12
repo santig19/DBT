@@ -34,4 +34,4 @@ select 	dac.APPLIES_TO_VOD__C::varchar(10000) as APPLIES_TO,
 		dac.STATUS_VOD__C::varchar(10000) as STATUS,
 		case when dac.SYSTEMMODSTAMP = '' then null else TO_TIMESTAMP(dac.SYSTEMMODSTAMP, 'YYYYMMDD HH24:MI:SS') END::datetime as SYSTEMMODSTAMP,
 		dac.TRACK_CHANGES_VOD__C::int as TRACK_CHANGES
-from {{ var('schema') }}.dynamic_attribute_configuration_raw as dac
+from {{ source('raw', 'dynamic_attribute_configuration') }} as dac

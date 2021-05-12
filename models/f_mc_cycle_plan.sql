@@ -34,18 +34,18 @@ select case when LEN(cs.jj_Region__c) > 0 then cs.jj_Region__c else 'NM' end::va
         THEN 1
             ELSE 0
                 END AS historical_flag_territory_belong
-  from      {{ var('schema') }}.mc_cycle_plan_raw         as cplan
-  left join {{ var('schema') }}.mc_cycle_plan_target_raw  as cpt
+  from      {{ source('raw', 'mc_cycle_pla') }}         as cplan
+  left join {{ source('raw', 'mc_cycle_plan_target') }}  as cpt
     on cpt.CYCLE_PLAN_VOD__C                                            = cplan.ID
-  left join {{ var('schema') }}.mc_cycle_plan_channel_raw as cpc
+  left join {{ source('raw', 'mc_cycle_plan_channel') }} as cpc
     on cpc.Cycle_Plan_Target_vod__c                                     = cpt.ID
-  left join {{ var('schema') }}.mc_cycle_plan_product_raw as cpp
+  left join {{ source('raw', 'mc_cycle_plan_product') }} as cpp
     on cpp.Cycle_Plan_Channel_vod__c                                    = cpc.ID
-  left join {{ var('schema') }}.mc_cycle_product_raw      as cprod
+  left join {{ source('raw', 'mc_cycle_product') }}      as cprod
     on cprod.ID                                                         = cpp.Cycle_Product_vod__c
-  left join {{ var('schema') }}.product_raw               as prod 
+  left join {{ source('raw', 'product') }}               as prod 
     on prod.ID                                                          = cprod.PRODUCT_VOD__C
-  left join {{ var('schema') }}.country_settings_raw       as cs
+  left join {{ source('raw', 'country_settings') }}       as cs
     on cs.JJ_COUNTRY_ISO_CODE__C                                        = cpt.country_iso_code
   left join {{ ref('m_product') }}                          as mprod
     on mprod.PRODUCT_ID                                                 = cprod.PRODUCT_VOD__C
@@ -54,7 +54,7 @@ left join {{ ref('tmp_user_territory') }}                    as ut
   LEFT JOIN (SELECT Account_Id, Territory_Id FROM {{ ref('m_null_country_values') }}
             GROUP BY Account_Id, Territory_Id) mncv
     ON cpt.TARGET_VOD__C = mncv.Account_Id AND CASE WHEN LEN(ut.territoryid) > 0 THEN ut.territoryid ELSE 'NM' END = mncv.Territory_Id
-  LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ var('schema') }}.buw_alignment_m_null_country_values_snapshot_monthly_historical
+  LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ source('raw', 'm_null_country_values_snapshot_monthly_historical') }}
             GROUP BY Account_Id, Territory_Id, yearmonth) mncvs
     ON cpt.TARGET_VOD__C = mncvs.Account_Id AND CASE WHEN LEN(ut.territoryid) > 0 THEN ut.territoryid ELSE 'NM' END = mncvs.Territory_Id AND substring(cplan.LASTMODIFIEDDATE,1,6) = mncvs.yearmonth
  group by cs.jj_Region__c,

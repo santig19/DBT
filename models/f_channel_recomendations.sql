@@ -34,4 +34,4 @@ SELECT COUNTRY_ISO_CODE::varchar(100) AS COUNTRY_ISO_CODE
       ,JJ_TRAFFIC_LIGHT__C::varchar(510) AS JJ_TRAFFIC_LIGHT__C
       ,JJ_ADDITIONAL_FILTERS__C::varchar(510) AS JJ_ADDITIONAL_FILTERS__C
       ,JJ_FURTHER_POTENTIAL__C::varchar(510) AS JJ_FURTHER_POTENTIAL__C
-  FROM {{ var('schema') }}.channel_recommendations_raw
+  FROM {{ source('raw', 'channel_recommendations') }}

@@ -39,10 +39,10 @@ select livechattranscript.id as live_chat_id,
        account.name as 	account_name,
        account.country_jj__c as account_country_code,     
        'Live Chat' as touch_point
- from {{ var('schema') }}.livechattranscript_raw as livechattranscript
- left join {{ var('schema') }}.user_raw as u
+ from {{ source('raw', 'livechattranscript') }} as livechattranscript
+ left join {{ source('raw', 'user') }} as u
  on u.id = livechattranscript.ownerid  
- left join {{ var('schema') }}.livechatvisitor_raw as livechatvisitor
+ left join {{ source('raw', 'livechatvisitor') }} as livechatvisitor
  on livechatvisitor.id = livechattranscript.livechatvisitorid 
- left join {{ var('schema') }}.account_raw as account
+ left join {{ source('raw', 'account') }} as account
  on account.id = livechattranscript.accountid

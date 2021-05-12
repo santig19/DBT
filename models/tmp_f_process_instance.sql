@@ -18,7 +18,7 @@ FROM
           , ins.TargetObjectId                           as Event_Id
           , ins.STATUS                                   as Process_Instance_Status
           , ins.id                                       as Process_Instance_Id
-        FROM {{ var('schema') }}.process_instance_raw ins
+        FROM {{ source('raw', 'process_instance') }} ins
     ) ins
-LEFT OUTER JOIN {{ var('schema') }}.process_instance_step_raw ins_step ON ins.Process_Instance_Id=ins_step.PROCESSINSTANCEID
+LEFT OUTER JOIN {{ source('raw', 'process_instance_step') }} ins_step ON ins.Process_Instance_Id=ins_step.PROCESSINSTANCEID
 WHERE ins.rowid=1

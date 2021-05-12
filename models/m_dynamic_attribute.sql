@@ -28,4 +28,4 @@ select da.account_vod__c::varchar(255)                                          
 	   da.name::varchar(255)                                                                                                               as name,
 	   da.recordtypeid::varchar(255)                                                                                                       as recordtypeid,
 	   case when da.systemmodstamp = '' then null else TO_TIMESTAMP(da.systemmodstamp, 'YYYYMMDD HH24:MI:SS') end::datetime                                                     as systemmodstamp
-  from {{ var('schema') }}.dynamic_attribute_raw as da
+  from {{ source('raw', 'dynamic_attribute') }} as da

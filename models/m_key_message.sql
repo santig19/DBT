@@ -53,7 +53,7 @@ CASE WHEN (Position(CHR(92) || CHR(92), km.JJ_Key_Message_Sub_Group__c) > 0) OR 
     THEN REPLACE(REPLACE(REPLACE(REPLACE(km.JJ_Key_Message_Sub_Group__c, CHR(92) || CHR(92), CHR(92)), CHR(124) || CHR(34), CHR(34)), CHR(92) || CHR(124), CHR(124)), CHR(92) || CHR(34), CHR(34))
 ELSE km.JJ_Key_Message_Sub_Group__c END AS key_message_sub_group,
 km.JJ_KEY_MESSAGE_GROUP__C as Key_Message_Group	
-FROM {{ var('schema') }}.key_message_raw km 	
-LEFT OUTER JOIN {{ var('schema') }}.record_type_raw rt ON rt.ID = km.RECORDTYPEID 	
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw cs ON cs.JJ_COUNTRY_ISO_CODE__C = km.COUNTRY_ISO_CODE 	
+FROM {{ source('raw', 'key_message') }} km 	
+LEFT OUTER JOIN {{ source('raw', 'record_type') }} rt ON rt.ID = km.RECORDTYPEID 	
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs ON cs.JJ_COUNTRY_ISO_CODE__C = km.COUNTRY_ISO_CODE 	
 LEFT OUTER JOIN {{ ref('m_product') }} AS M_PRODUCT ON M_PRODUCT.product_id = product_vod__c

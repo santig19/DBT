@@ -41,4 +41,4 @@ SELECT
 	nvl(mc.to_account_record_type_vod__c,'') as to_account_record_type_id,
 	nvl(mc.to_account_vod__c,'') as to_account_id,
 	nvl(mc.to_contact_vod__c,'') as to_contact_id
-FROM {{ var('schema') }}.affiliation_raw as mc
+FROM {{ source('raw', 'affiliation') }} as mc

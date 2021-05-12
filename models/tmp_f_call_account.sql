@@ -74,8 +74,8 @@ LEFT JOIN (
             SELECT max(id) as id, userid
             FROM (
                   SELECT ut.territory2id as id, ut.UserId
-                  FROM {{ var('schema') }}.user_territory_association_raw ut
-                  JOIN {{ var('schema') }}.user_raw u on u.id = ut.userid AND u.isactive != 0
+                  FROM {{ source('raw', 'user_territory_association') }} ut
+                  JOIN {{ source('raw', 'user') }} u on u.id = ut.userid AND u.isactive != 0
                   JOIN {{ ref('m_territory') }} mt on ut.territory2id=mt.territory_id	
                  )
             GROUP BY userid

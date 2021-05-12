@@ -20,7 +20,7 @@ f3.Process_Instance_Step_Status::varchar(255) as	Event_Approval_step3_Status,
 f3.Process_Instance_Step_Date::varchar(255) as	Event_Approval_step3_Timestamp
 
 FROM {{ ref('tmp_f_process_instance') }} F	
-LEFT OUTER JOIN {{ var('schema') }}.user_raw u on f.Employee_Nominal_Id = u.Id
+LEFT OUTER JOIN {{ source('raw', 'user') }} u on f.Employee_Nominal_Id = u.Id
 
 LEFT OUTER JOIN (
 	select rowid,Event_Id,Employee_Nominal_Id,Process_Instance_Id,Process_Instance_Status,process_Instance_Step_Date,Process_Instance_Step_Status
@@ -35,7 +35,7 @@ LEFT OUTER JOIN (
 			from {{ ref('tmp_f_process_instance') }}
 			where Process_Instance_Step_Status not in ('Reassigned','Started'))) f1
 		where f1.rowid=1) f1 on f.Process_Instance_Id=f1.Process_Instance_Id
-LEFT OUTER JOIN {{ var('schema') }}.user_raw u1 on f1.Employee_Nominal_Id = u1.Id
+LEFT OUTER JOIN {{ source('raw', 'user') }} u1 on f1.Employee_Nominal_Id = u1.Id
 
 LEFT OUTER JOIN (
 	select rowid,Event_Id,Employee_Nominal_Id,Process_Instance_Id,Process_Instance_Status,process_Instance_Step_Date,Process_Instance_Step_Status
@@ -50,7 +50,7 @@ LEFT OUTER JOIN (
 			from {{ ref('tmp_f_process_instance') }}
 			where Process_Instance_Step_Status not in ('Reassigned','Started'))) f2
 		where f2.rowid=2) f2 on F.Process_Instance_Id=F2.Process_Instance_Id
-LEFT OUTER JOIN {{ var('schema') }}.user_raw u2 on f1.Employee_Nominal_Id = u2.Id
+LEFT OUTER JOIN {{ source('raw', 'user') }} u2 on f1.Employee_Nominal_Id = u2.Id
 
 LEFT OUTER JOIN (
 	select rowid,Event_Id,Employee_Nominal_Id,Process_Instance_Id,Process_Instance_Status,process_Instance_Step_Date,Process_Instance_Step_Status
@@ -65,6 +65,6 @@ LEFT OUTER JOIN (
 			from {{ ref('tmp_f_process_instance') }}
 			where Process_Instance_Step_Status not in ('Reassigned','Started'))) f3
 		where f3.rowid=3) f3 on F.Process_Instance_Id=F3.Process_Instance_Id
-LEFT OUTER JOIN {{ var('schema') }}.user_raw u3 on f1.Employee_Nominal_Id = u3.Id
+LEFT OUTER JOIN {{ source('raw', 'user') }} u3 on f1.Employee_Nominal_Id = u3.Id
 
 WHERE f.Process_Instance_Step_Status = 'Started'

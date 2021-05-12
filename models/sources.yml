@@ -261,4 +261,10 @@ sources:
       identifier: veeva_raw
     - name: leading_specialist
       description: none 
-      identifier: leading_specialist_raw    
+      identifier: leading_specialist_raw
+    - name: mc_cycle_channel
+      description: none 
+      identifier: mc_cycle_channel_raw
+    - name: medical_insight
+      description: none 
+      identifier: medical_insight_raw                                     

@@ -17,12 +17,12 @@ FROM (
 			ROW_NUMBER() OVER (PARTITION BY profileid ORDER BY lastmodifieddate DESC) as rowid, 
 			USR.id as userid, 
 			USR.profileid as profileid
-		FROM {{ var('schema') }}.user_raw as USR 
+		FROM {{ source('raw', 'user') }} as USR 
 	 ) AS u1	
-	LEFT OUTER JOIN {{ var('schema') }}.user_raw as u2 ON u1.userid = u2.id
+	LEFT OUTER JOIN {{ source('raw', 'user') }} as u2 ON u1.userid = u2.id
 	WHERE u1.rowid=1) 
 
-LEFT OUTER JOIN {{ var('schema') }}.profile_raw as profileTable ON profileTable.id = profile_id
+LEFT OUTER JOIN {{ source('raw', 'profile') }} as profileTable ON profileTable.id = profile_id
 )							
 							
 SELECT DISTINCT
@@ -47,10 +47,10 @@ CASE
 END::varchar(255) AS account_plan_profile_region,
 1::integer as account_plan_profile_counter
 		
-FROM {{ var('schema') }}.account_plan_team_member_raw AS JJTeamMember 
+FROM {{ source('raw', 'account_plan') }} AS JJTeamMember 
 LEFT OUTER JOIN extended_profiletable ON JJTeammember.jj_team_member__c = extended_profiletable.user_id
-LEFT OUTER JOIN {{ var('schema') }}.account_raw AS acc ON user_id = JJTeamMember.jj_team_member__c
-LEFT OUTER JOIN {{ var('schema') }}.account_plan_raw AS accplan on acc.id = accplan.account_vod__c
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS jjc on jjc.JJ_COUNTRY_ISO_CODE__C =
+LEFT OUTER JOIN {{ source('raw', 'account') }} AS acc ON user_id = JJTeamMember.jj_team_member__c
+LEFT OUTER JOIN {{ source('raw', 'account_plan') }} AS accplan on acc.id = accplan.account_vod__c
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS jjc on jjc.JJ_COUNTRY_ISO_CODE__C =
 	CASE WHEN len(acc.country_jj__c) > 0 THEN acc.country_jj__c ELSE acc.JJ_country__c END
 WHERE JJTeamMember.jj_team_member__c = extended_profiletable.user_id AND accplan.ACCOUNT_VOD__C = acc.id

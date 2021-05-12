@@ -82,7 +82,7 @@ select country_iso_code
      , nvmcontactworld__calltalktimeinseconds__c
      , nvmcontactworld__interactionquality__c
      , nvmcontactworld__was_call_recorded__c
-  from {{ var('schema') }}.task_raw aux2
+  from {{ source('raw', 'task') }} aux2
  where LOWER(type) = 'email'
  group by country_iso_code
         , id
@@ -247,12 +247,12 @@ select country_iso_code
      , nvmcontactworld__calltalktimeinseconds__c
      , nvmcontactworld__interactionquality__c
      , nvmcontactworld__was_call_recorded__c
-  from {{ var('schema') }}.task_raw
+  from {{ source('raw', 'task') }}
  where LOWER(type) = 'email' 
    and LOWER(jj_response_type__c) = 'clickthrough'
    and (trim(subject) || '-' || accountid || '-' || ownerid) not in (
                                                                   select trim(subject) || '-' || accountid || '-' || ownerid
-                                                                    from {{ var('schema') }}.task_raw
+                                                                    from {{ source('raw', 'task') }}
                                                                    where LOWER(jj_Response_Type__c) = 'email opened'
                                                                 )
  group by country_iso_code

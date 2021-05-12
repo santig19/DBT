@@ -136,7 +136,7 @@ SELECT
 
 FROM {{ ref('tmp_f_event_detail_1') }} ev
 LEFT JOIN {{ ref('m_product') }} m on m.product_id=ev.Product_Id
-LEFT JOIN {{ var('schema') }}.rgb_raw rgb on rgb.Field_Value = 
+LEFT JOIN {{ source('raw', 'rgb') }} rgb on rgb.Field_Value = 
 	--Event_Attendee_Contract_Reception
 	case when (lower(ev.Event_Attendee_Received_Signed_Contract) ='yes' and
 			COALESCE(ev.Event_Attendee_Date_Received_Signed_Contract,'') != '' AND COALESCE(ev.Event_Date,'')!= '' AND

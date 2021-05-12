@@ -10,10 +10,10 @@ SELECT
   ,CASE WHEN LEN(st.JJ_EVENT__C)>0 THEN st.JJ_EVENT__C ELSE NULL END as event_id
   ,TO_CHAR(TO_DATE(st.LASTMODIFIEDDATE, 'YYYYMMDD HH24:MI:SS'), 'YYYYMMDD') as date  
   ,st.name as survey_target_name
-FROM {{ var('schema') }}.survey_target_vod__c_raw st
-LEFT OUTER JOIN {{ var('schema') }}.account_raw ac on ac.ID = st.ACCOUNT_VOD__C
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw cs ON cs.JJ_COUNTRY_ISO_CODE__C = ac.country_iso_code
-LEFT OUTER JOIN {{ var('schema') }}.question_response_vod__c_raw qr ON st.ID = qr.SURVEY_TARGET_VOD__C
+FROM {{ source('raw', 'survey_target') }} st
+LEFT OUTER JOIN {{ source('raw', 'account') }} ac on ac.ID = st.ACCOUNT_VOD__C
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs ON cs.JJ_COUNTRY_ISO_CODE__C = ac.country_iso_code
+LEFT OUTER JOIN {{ source('raw', 'question_response') }} qr ON st.ID = qr.SURVEY_TARGET_VOD__C
 WHERE LOWER(st.STATUS_VOD__C) IN ('saved_vod', 'pending_vod', 'late_submission_vod', 'submitted_vod') 
 AND TO_CHAR(TO_DATE(st.LASTMODIFIEDDATE,'YYYYMMDD HH24:MI:SS'),'yyyymmdd') BETWEEN 
 	to_char(add_months(CURRENT_DATE,-36),'YYYYMM')+'01' AND TO_CHAR(current_date(), 'yyyymmdd')

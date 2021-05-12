@@ -90,4 +90,4 @@ select  country_iso_code,
         jj_sss_sst_jj_sss_userrole__c, 
 	jj_midas_jj_vault_document_id__c, 
 	jj_sss_sst_jj_sss_question_escalated__c 
-from {{ var('schema') }}.knowledge_kav_raw
+from {{ source('raw', 'knowledge_kav') }}

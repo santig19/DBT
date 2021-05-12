@@ -48,12 +48,12 @@ SELECT
 	c.JJ_Key_Message_Sub_Group__c 	AS 	Key_Message_Sub_Group,
 	c.JJ_Purpose__c 				AS	Purpose
 	
-FROM {{ var('schema') }}.campaign_raw AS c 
+FROM {{ source('raw', 'campaign') }} AS c 
 --LEFT OUTER JOIN emea_mto.product_vod__c_business AS Product ON c.jj_product__c = p.id
-LEFT OUTER JOIN {{ var('schema') }}.user_raw U ON c.ownerid = U.id
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS CS ON c.country_iso_code = CS.jj_country_iso_code__c
-LEFT OUTER JOIN {{ var('schema') }}.record_type_raw AS RT ON c.recordtypeid = RT.id
-LEFT OUTER JOIN {{ var('schema') }}.campaign_step_raw AS Campaign_Step ON c.id = Campaign_Step.jj_campaign_name__c
+LEFT OUTER JOIN {{ source('raw', 'user') }} U ON c.ownerid = U.id
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS CS ON c.country_iso_code = CS.jj_country_iso_code__c
+LEFT OUTER JOIN {{ source('raw', 'record_type') }} AS RT ON c.recordtypeid = RT.id
+LEFT OUTER JOIN {{ source('raw', 'campaign_step') }} AS Campaign_Step ON c.id = Campaign_Step.jj_campaign_name__c
 LEFT OUTER JOIN {{ ref('tmp_user_territory') }} ut ON ut.USERID = c.ownerid 
 LEFT OUTER JOIN (
 	SELECT *, CASE WHEN product_brand_therapeutic_area_1 = 'No Value' THEN NULL ELSE product_brand_therapeutic_area_1 END as product_brand_therapeutic_area_1_null 

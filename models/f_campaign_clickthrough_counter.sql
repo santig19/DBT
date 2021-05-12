@@ -25,8 +25,8 @@ SELECT
 	END)::varchar(255) AS Campaign_email_clickthrough_region,
 	aux_eloqua.assetid::varchar(255) AS Asset_Id
 FROM {{ ref('tmp_f_activity_email_eloqua') }} AS aux_eloqua      
-LEFT OUTER JOIN {{ var('schema') }}.account_raw AS account ON aux_eloqua.account_id = account.id
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS JJ_Country_settings ON account.country_JJ__c = jj_country_settings.jj_country_iso_code__c
+LEFT OUTER JOIN {{ source('raw', 'account') }} AS account ON aux_eloqua.account_id = account.id
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS JJ_Country_settings ON account.country_JJ__c = jj_country_settings.jj_country_iso_code__c
 JOIN (
 	select
 		 campaign_id || '-' || account_id || '-' || assetid as Campaign_clickthrough_Id

@@ -29,6 +29,6 @@ CASE
     		ELSE 'NM'
 END::varchar(255) AS "Cycle_Plan_Current_Previous_Flag"
 
-FROM {{ var('schema') }}.cycle_plan_raw AS CP 
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS cs ON CP.country_iso_code = cs.country_iso_code
-LEFT OUTER JOIN {{ var('schema') }}.user_raw USR ON CP.id = USR.JJ_Active_Cycle_plan__c
+FROM {{ source('raw', 'cycle_plan') }} AS CP 
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS cs ON CP.country_iso_code = cs.country_iso_code
+LEFT OUTER JOIN {{ source('raw', 'user') }} USR ON CP.id = USR.JJ_Active_Cycle_plan__c

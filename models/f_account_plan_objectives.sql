@@ -35,14 +35,14 @@ select AT.Account_Plan_vod__c::varchar(255) as account_plan_id,
 	   AT.Status_vod__c::varchar(510) as account_plan_objective_status,
 	   left (AT.jj_Start_Date__c, 8)::varchar(8) as account_plan_objective_start_date,
 	   AT.recordtypeid::varchar(36) as account_plan_objective_record_type
-  from {{ var('schema') }}.account_tactic_raw       as AT
- inner join {{ var('schema') }}.account_plan_raw    as AP
+  from {{ source('raw', 'account_tactic') }}       as AT
+ inner join {{ source('raw', 'account_plan') }}    as AP
     on  AT.Account_Plan_vod__c                                    = AP.Id
-  left join {{ var('schema') }}.country_settings_raw as CS
+  left join {{ source('raw', 'country_settings') }} as CS
 	on AT.country_iso_code                                        = CS.jj_Country_ISO_Code__c
-  left join {{ var('schema') }}.user_raw                   as UB
+  left join {{ source('raw', 'user') }}                   as UB
 	on AT.createdbyid                                             = UB.id	
-  left join {{ var('schema') }}.profile_raw                as PB
+  left join {{ source('raw', 'profile') }}                as PB
 	on PB.id                                                      = UB.profileid 
    and AT.createdbyid                                             = UB.id
  group by account_plan_id,

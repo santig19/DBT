@@ -28,10 +28,10 @@ SELECT
 	 END 								 										AS Channel_Value
    ,cp.JJ_Primary_Additional__c													AS Primary_Additional
 FROM 
-	{{ var('schema') }}.multichannel_consent_raw AS cp
-LEFT JOIN {{ var('schema') }}.country_settings_raw AS cs
+	{{ source('raw', 'multichannel_consent') }} AS cp
+LEFT JOIN {{ source('raw', 'country_settings') }} AS cs
     ON cs.jj_Country_ISO_Code__c = cp.COUNTRY_ISO_CODE
-LEFT JOIN {{ var('schema') }}.account_raw AS ac
+LEFT JOIN {{ source('raw', 'account') }} AS ac
     ON cp.ACCOUNT_VOD__C = ac.ID
 WHERE 
 	cp.OPT_EXPIRATION_DATE_VOD__C = ''

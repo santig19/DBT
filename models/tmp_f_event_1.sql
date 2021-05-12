@@ -225,23 +225,23 @@ FROM (
 		me.jj_eloqua_access_token__c::varchar(510) as event_eloqua_access_token,
 		case when me.jj_automatic_registration__c = '' then null else me.jj_automatic_registration__c end::integer as event_automatic_registration,
 		me.JJ_EVENT_LINK__C::varchar(2600) as event_link
-	FROM {{ var('schema') }}.medical_event_vod__c_raw me 
+	FROM {{ source('raw', 'medical_event') }} me 
 	LEFT OUTER JOIN (
 		SELECT max(id) as territory2id, userid
 		FROM (
 			SELECT ut.territory2id as id, ut.UserId
-			FROM {{ var('schema') }}.user_territory_association_raw ut
-			JOIN {{ var('schema') }}.user_raw u on u.id = ut.userid AND u.isactive != 0
+			FROM {{ source('raw', 'user_territory_association') }} ut
+			JOIN {{ source('raw', 'user') }} u on u.id = ut.userid AND u.isactive != 0
 			JOIN {{ ref('m_territory') }} mt on ut.territory2id=mt.territory_id
 		)
 		GROUP BY userid
 	) ut on ut.UserId =  me.OwnerId
-	LEFT OUTER JOIN {{ var('schema') }}.user_raw u ON u.id = me.createdbyid
-	LEFT OUTER JOIN {{ var('schema') }}.user_raw uu ON uu.id = me.event_requestor_jj__c
-	LEFT OUTER JOIN {{ var('schema') }}.account_raw ac ON ac.id = me.jj_account__c
-	LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw cs ON cs.country_iso_code = me.country_iso_code
-	LEFT OUTER JOIN {{ var('schema') }}.record_type_raw rt ON rt.id = me.recordtypeid
-	LEFT OUTER JOIN {{ var('schema') }}.currency_type_raw ct ON ct.isocode = me.currencyisocode
+	LEFT OUTER JOIN {{ source('raw', 'user') }} u ON u.id = me.createdbyid
+	LEFT OUTER JOIN {{ source('raw', 'user') }} uu ON uu.id = me.event_requestor_jj__c
+	LEFT OUTER JOIN {{ source('raw', 'account') }} ac ON ac.id = me.jj_account__c
+	LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs ON cs.country_iso_code = me.country_iso_code
+	LEFT OUTER JOIN {{ source('raw', 'record_type') }} rt ON rt.id = me.recordtypeid
+	LEFT OUTER JOIN {{ source('raw', 'currency_type') }} ct ON ct.isocode = me.currencyisocode
 ) E
 LEFT OUTER JOIN (
 	SELECT f.Event_Id::varchar(255) as Event_Id,
@@ -260,7 +260,7 @@ LEFT OUTER JOIN (
 	f3.Process_Instance_Step_Date::varchar(255) as	Event_Approval_step3_Timestamp
 
 	FROM {{ ref('tmp_f_process_instance') }} F	
-	LEFT OUTER JOIN {{ var('schema') }}.user_raw u on f.Employee_Nominal_Id = u.Id	
+	LEFT OUTER JOIN {{ source('raw', 'user') }} u on f.Employee_Nominal_Id = u.Id	
 	LEFT OUTER JOIN (
 		select rowid,Event_Id,Employee_Nominal_Id,Process_Instance_Id,Process_Instance_Status,process_Instance_Step_Date,Process_Instance_Step_Status
 			from (
@@ -274,7 +274,7 @@ LEFT OUTER JOIN (
 				from {{ ref('tmp_f_process_instance') }}
 				where Process_Instance_Step_Status not in ('Reassigned','Started')))f1
 			where f1.rowid=1)f1 on f.Process_Instance_Id=f1.Process_Instance_Id
-	LEFT OUTER JOIN {{ var('schema') }}.user_raw u1 on f1.Employee_Nominal_Id = u1.Id
+	LEFT OUTER JOIN {{ source('raw', 'user') }} u1 on f1.Employee_Nominal_Id = u1.Id
 	LEFT OUTER JOIN (
 		select rowid,Event_Id,Employee_Nominal_Id,Process_Instance_Id,Process_Instance_Status,process_Instance_Step_Date,Process_Instance_Step_Status
 			from (
@@ -288,7 +288,7 @@ LEFT OUTER JOIN (
 				from {{ ref('tmp_f_process_instance') }}
 				where Process_Instance_Step_Status not in ('Reassigned','Started')))f2
 			where f2.rowid=2)f2 on F.Process_Instance_Id=F2.Process_Instance_Id
-	LEFT OUTER JOIN {{ var('schema') }}.user_raw u2 on f2.Employee_Nominal_Id = u2.Id
+	LEFT OUTER JOIN {{ source('raw', 'user') }} u2 on f2.Employee_Nominal_Id = u2.Id
 	LEFT OUTER JOIN (
 		select rowid,Event_Id,Employee_Nominal_Id,Process_Instance_Id,Process_Instance_Status,process_Instance_Step_Date,Process_Instance_Step_Status
 			from (
@@ -302,6 +302,6 @@ LEFT OUTER JOIN (
 				from {{ ref('tmp_f_process_instance') }}
 				where Process_Instance_Step_Status not in ('Reassigned','Started')))f3
 			where f3.rowid=3)f3 on F.Process_Instance_Id=F3.Process_Instance_Id
-	LEFT OUTER JOIN {{ var('schema') }}.user_raw u3 on f3.Employee_Nominal_Id = u3.Id
+	LEFT OUTER JOIN {{ source('raw', 'user') }} u3 on f3.Employee_Nominal_Id = u3.Id
 	WHERE f.Process_Instance_Step_Status = 'Started'
 ) P on E.Event_id= P.Event_id

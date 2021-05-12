@@ -77,4 +77,4 @@ select
 	nvl(mc.vexternal_id_vod__c,'') as vexternal_id,
 	nvl(mc.viewport_height_vod__c,'') as viewport_height,
 	nvl(mc.viewport_width_vod__c,'') as viewport_width
-from {{ var('schema') }}.mc_multichannel_activity_raw as mc
+from {{ source('raw', 'mc_multichannel_activity') }} as mc

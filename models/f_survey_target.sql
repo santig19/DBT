@@ -58,16 +58,16 @@ CASE WHEN mncvs.Account_Id IS NOT NULL AND mncvs.Territory_Id IS NOT NULL AND ye
   , NULLIF(st.JJ_CSAT_Score__c,'')::decimal(2,0)    as CSAT_Score
   , NULLIF(st.JJ_NPS_Score__c,'')::decimal(2,0)         as NPS_Score
   , qr.ID::varchar(36)                      as Question_Response_id
-FROM {{ var('schema') }}.survey_target_vod__c_raw st
-LEFT OUTER JOIN {{ var('schema') }}.account_raw ac on ac.ID = st.ACCOUNT_VOD__C
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw cs ON cs.JJ_COUNTRY_ISO_CODE__C = ac.country_iso_code
-LEFT OUTER JOIN {{ var('schema') }}.question_response_vod__c_raw qr ON st.ID = qr.SURVEY_TARGET_VOD__C
+FROM {{ source('raw', 'survey_target') }} st
+LEFT OUTER JOIN {{ source('raw', 'account') }} ac on ac.ID = st.ACCOUNT_VOD__C
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs ON cs.JJ_COUNTRY_ISO_CODE__C = ac.country_iso_code
+LEFT OUTER JOIN {{ source('raw', 'question_response') }} qr ON st.ID = qr.SURVEY_TARGET_VOD__C
 LEFT JOIN {{ ref('tmp_user_territory') }} ut 
 	on ut.USERID = CASE WHEN qr.JJ_CLICKTOOLS_ANSWER__C <> '' THEN st.OWNERID ELSE st.LASTMODIFIEDBYID END
 LEFT JOIN (SELECT Account_Id, Territory_Id FROM {{ ref('m_null_country_values') }}
             GROUP BY Account_Id, Territory_Id) mncv
        ON st.ACCOUNT_VOD__C = mncv.Account_Id AND CASE WHEN LEN(ut.territoryid) > 0 THEN ut.territoryid ELSE 'NM' END = mncv.Territory_Id
-LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ var('schema') }}.buw_alignment_m_null_country_values_snapshot_monthly_historical
+LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ source('raw', 'm_null_country_values_snapshot_monthly_historical') }}
             GROUP BY Account_Id, Territory_Id, yearmonth) mncvs
        ON st.ACCOUNT_VOD__C = mncvs.Account_Id AND CASE WHEN LEN(ut.territoryid) > 0 THEN ut.territoryid ELSE 'NM' END = mncvs.Territory_Id AND left(TO_CHAR(TO_DATE(st.LASTMODIFIEDDATE, 'YYYYMMDD HH24:MI:SS'), 'YYYYMMDD')::numeric(8,0),6) = mncvs.yearmonth
 WHERE LOWER(st.STATUS_VOD__C) IN ('saved_vod', 'pending_vod', 'late_submission_vod', 'submitted_vod')

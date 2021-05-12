@@ -35,48 +35,48 @@ select distinct
 	,L3_GROUP.product_group::varchar(255) as product_group
 	,L3_CASE.product_case::varchar(255) as product_case
 	,L4_TOPIC.product_topic::varchar(255) as product_topic
-from {{ var('schema') }}.product_raw root
-left join {{ var('schema') }}.country_settings_raw cs on cs.country_iso_code = root.country_iso_code
+from {{ source('raw', 'product') }} root
+left join {{ source('raw', 'country_settings') }} cs on cs.country_iso_code = root.country_iso_code
 left join (
 	select id as product_id, parent_product_vod__c as parent_product_id, name as product_topic, 'Topic' as product_type
-	from {{ var('schema') }}.product_raw
+	from {{ source('raw', 'product') }}
 	where lower(product_type_vod__c) = 'detail topic'
 ) L4_TOPIC on L4_TOPIC.product_id = root.id
 left join (
 	select id as product_id, parent_product_vod__c as parent_product_id, name as product_call, 'Call' as product_type
-	from {{ var('schema') }}.product_raw
+	from {{ source('raw', 'product') }}
 	where lower(product_type_vod__c) = 'detail' and lower(JJ_Detail_Sub_Type__c) = 'call'
 ) L3_CALL on L3_CALL.product_id = COALESCE(L4_TOPIC.parent_product_id, root.id)
 left join (
 	select id as product_id, parent_product_vod__c as parent_product_id, name as product_metric, 'Metric' as product_type
-	from {{ var('schema') }}.product_raw
+	from {{ source('raw', 'product') }}
 	where lower(product_type_vod__c) = 'detail' and lower(JJ_Detail_Sub_Type__c) = 'metric'
 ) L3_METRIC on L3_METRIC.product_id = COALESCE(L4_TOPIC.parent_product_id, root.id)
 left join (
 	select id as product_id, parent_product_vod__c as parent_product_id, name as product_group, 'Group' as product_type
-	from {{ var('schema') }}.product_raw
+	from {{ source('raw', 'product') }}
 	where lower(product_type_vod__c) = 'detail group'
 ) L3_GROUP on L3_GROUP.product_id = COALESCE(L4_TOPIC.parent_product_id, root.id)
 left join (
 	select id as product_id, parent_product_vod__c as parent_product_id, name as product_case, 'Case' as product_type
-	from {{ var('schema') }}.product_raw
+	from {{ source('raw', 'product') }}
 	where lower(product_type_vod__c) = 'put-up'
 ) L3_CASE on L3_CASE.product_id = COALESCE(L4_TOPIC.parent_product_id, root.id)
 left join (
 	select id as product_id, parent_product_vod__c as parent_product_id, name as product_detail, 'Detail' as product_type
-	from {{ var('schema') }}.product_raw
+	from {{ source('raw', 'product') }}
 	where lower(product_type_vod__c) = 'detail' and lower(JJ_Detail_Sub_Type__c) = 'country'
 ) L2_DETAIL on L2_DETAIL.product_id = COALESCE(L3_CALL.parent_product_id, L3_METRIC.parent_product_id, L3_GROUP.parent_product_id, L3_CASE.parent_product_id, root.id)
 --brand is higest level -> no parents
 left join (
 	select id as product_id, name as product_brand, 'Brand' as product_type
-	from {{ var('schema') }}.product_raw
+	from {{ source('raw', 'product') }}
 	where lower(product_type_vod__c) = 'brand'	
 ) L1_BRAND on L1_BRAND.product_id = COALESCE(L2_DETAIL.parent_product_id, root.id)
 --join on brand level
 left join (
 	select name, Therapeutic_Area_vod__c as product_brand_therapeutic_area_1
-	from {{ var('schema') }}.product_raw
+	from {{ source('raw', 'product') }}
 	where lower(product_type_vod__c) = 'brand'	
 ) BRAND_TA on BRAND_TA.name = L1_BRAND.product_brand
 where lower(root.product_type_vod__c) in ('brand', 'detail', 'detail group', 'put-up', 'detail topic')

@@ -29,7 +29,7 @@ select approved_vod__c,
        product_vod__c,
        systemmodstamp,
        training_vod__c
-  from {{ var('schema') }}.clm_presentation_raw     
+  from {{ source('raw', 'clm_presentation') }}     
  group by approved_vod__c,
           copied_from_vod__c,
           copy_date_vod__c,

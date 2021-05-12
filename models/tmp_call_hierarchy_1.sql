@@ -127,8 +127,8 @@ a.average_call_expenses_lc,
 a.total_call_expenses_lc,
 a.call_attachments
 FROM {{ ref('tmp_f_call_user') }} a
-LEFT JOIN {{ var('schema') }}.account_raw as ACC ON a.account_id = ACC.id
-LEFT JOIN {{ var('schema') }}.user_raw AS USR ON USR.id = a.aux_owner_id
-LEFT JOIN {{ var('schema') }}.country_settings_raw cs on A.Country_Code = cs.jj_Country_ISO_Code__c
-LEFT JOIN {{ var('schema') }}.country_settings_raw cs2 ON USR.jj_user_country__C = cs2.name
+LEFT JOIN {{ source('raw', 'account') }} as ACC ON a.account_id = ACC.id
+LEFT JOIN {{ source('raw', 'user') }} AS USR ON USR.id = a.aux_owner_id
+LEFT JOIN {{ source('raw', 'country_settings') }} cs on A.Country_Code = cs.jj_Country_ISO_Code__c
+LEFT JOIN {{ source('raw', 'country_settings') }} cs2 ON USR.jj_user_country__C = cs2.name
 ) rj on ch.call_id=rj.call_id

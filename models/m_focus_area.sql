@@ -39,4 +39,4 @@ SELECT
 	,JJ_THERAPEUTIC_AREA__C
 	,JJ_CT_FOCUS_SCORE__C
 	,JJ_JP_INVESTIGATOR__C
-FROM {{ var('schema') }}.focus_area_raw
+FROM {{ source('raw', 'focus_area') }}

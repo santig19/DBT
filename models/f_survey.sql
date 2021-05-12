@@ -30,4 +30,4 @@ SELECT
 	,su.JJ_UNITAS_NUMBER__C::varchar(20) as Survey_RRA_Number
 	,1::integer as Survey_Counter
 	,su.JJ_EXT_SURVEY_ID__C::varchar(60) as Ext_Survey_Id
-FROM {{ var('schema') }}.survey_raw su
+FROM {{ source('raw', 'survey') }} su

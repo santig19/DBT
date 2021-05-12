@@ -23,7 +23,7 @@ select f_oto_email.one_to_one_email_subject || '-' || f_oto_email.account_id || 
         			 case when aux2.country_iso_code=cs2.jj_Country_ISO_Code__c then cs2.name else 'NM' end as one_to_one_email_country,
         			 case when aux2.country_iso_code=cs2.jj_Country_ISO_Code__c then cs2.jj_Region__c else 'NM' end as one_to_one_email_region
           from      {{ ref('tmp_f_one_to_one_email') }} aux2
-          left join {{ var('schema') }}.country_settings_raw cs2 ON aux2.country_iso_code=cs2.jj_Country_ISO_Code__c       
+          left join {{ source('raw', 'country_settings') }} cs2 ON aux2.country_iso_code=cs2.jj_Country_ISO_Code__c       
        ) as f_oto_email        
  group by f_oto_email.one_to_one_email_subject || '-' || f_oto_email.account_id || '-' || f_oto_email.employee_id,
           f_oto_email.one_to_one_email_country,
@@ -75,18 +75,18 @@ select (case when (aux.ownerid=us.id) then prf.name else 'NM' end)::varchar(255)
 	   aux.isarchived
   from      {{ ref('tmp_f_one_to_one_email') }} aux
   left join {{ ref('tmp_user_territory') }} ut on aux.ownerid=ut.userid
-  left join {{ var('schema') }}.user_raw us on aux.ownerid=us.id
-  left join {{ var('schema') }}.profile_raw prf on us.profileid=prf.id
-  left join {{ var('schema') }}.account_raw ac on aux.accountid = ac.id
-  left join {{ var('schema') }}.country_settings_raw cs on aux.country_iso_code=cs.jj_Country_ISO_Code__c
+  left join {{ source('raw', 'user') }} us on aux.ownerid=us.id
+  left join {{ source('raw', 'profile') }} prf on us.profileid=prf.id
+  left join {{ source('raw', 'account') }} ac on aux.accountid = ac.id
+  left join {{ source('raw', 'country_settings') }} cs on aux.country_iso_code=cs.jj_Country_ISO_Code__c
   left join {{ ref('m_product') }} mprd on (case when substring(aux.whatid,1,3)='a00' then aux.whatid else null end) = mprd.product_id
   left join
         		(
               	select an.id             as product_analytic_group_id ,
                        pg.product_vod__c as product_id,
                        1::varchar(1)     as Indication_Flag
-              	  from {{ var('schema') }}.analytics_product_group_raw an
-                 inner join {{ var('schema') }}.product_group_map_raw pg on an.id = pg.analytics_product_group_vod__c 
+              	  from {{ source('raw', 'analytics_product_group') }} an
+                 inner join {{ source('raw', 'product_group_map') }} pg on an.id = pg.analytics_product_group_vod__c 
 			       ) mpag on (case when substring(aux.whatid,1,3)='a00' then aux.whatid else null end)= mpag.product_id
   left join cte_counts as f_oto_email_counter on (case when lower(aux.jj_response_type__c)='email sent' then trim(ltrim(ltrim(trim(replace(aux.subject,'E-Mail','Email')),'Email:'),'-mail :')) || '-' || aux.accountid || '-' || aux.ownerid else (trim(aux.subject) || '-' || aux.accountid || '-' || aux.ownerid) end) = f_oto_email_counter.one_to_one_key_f_oto_email_counter
  group by (case when (aux.ownerid=us.id) then prf.name else 'NM' end)::varchar(255),

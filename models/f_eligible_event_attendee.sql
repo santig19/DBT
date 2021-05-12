@@ -54,4 +54,4 @@ SELECT
 	EEA.JJ_Authorisation_Status__c::varchar(510)	as Authorisation_Status,
 	EEA.JJ_Authorisation_required__c::varchar(2600)	as Authorisation_required,
 	EEA.JJ_Nb_Of_Authorisation_Forms__c::decimal(18, 0)	as Nb_Of_Authorisation_Forms
-FROM {{ var('schema') }}.jj_eligible_event_attendee__c_raw EEA
+FROM {{ source('raw', 'eligible_event_attendee') }} EEA

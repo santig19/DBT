@@ -140,13 +140,13 @@ from (
 		from {{ ref('m_product') }} 
 		group by Product_Detail_Id,product_id
 	) mp on mp.product_id=e.product_id
-	left join {{ var('schema') }}.user_raw u on e.Employee_Id = u.Id
-	left join {{ var('schema') }}.medical_event_vod__c_raw m on e.Event_Id = m.Id
-	left join {{ var('schema') }}.record_type_raw rt on rt.id = m.recordtypeid
-	left join {{ var('schema') }}.product_raw p on p.Id=e.product_id
-	left join {{ var('schema') }}.account_raw ac on e.Account_Id = ac.ID 
-	left join {{ var('schema') }}.country_settings_raw cs1 on cs1.name=u.jj_User_Country__c
-	left join {{ var('schema') }}.country_settings_raw cs2 on cs2.jj_Country_ISO_Code__c=e.ISO_Country_Code
+	left join {{ source('raw', 'user') }} u on e.Employee_Id = u.Id
+	left join {{ source('raw', 'medical_event') }} m on e.Event_Id = m.Id
+	left join {{ source('raw', 'record_type') }} rt on rt.id = m.recordtypeid
+	left join {{ source('raw', 'product') }} p on p.Id=e.product_id
+	left join {{ source('raw', 'account') }} ac on e.Account_Id = ac.ID 
+	left join {{ source('raw', 'country_settings') }} cs1 on cs1.name=u.jj_User_Country__c
+	left join {{ source('raw', 'country_settings') }} cs2 on cs2.jj_Country_ISO_Code__c=e.ISO_Country_Code
 /*
 	left join emea_mto.zz_fwk_icon_jj_country_settings__c_business cs3 on cs3.JJ_COUNTRY_ISO_CODE__C= 	
 		CASE WHEN e.account_id = ac.Id AND LEN(ac.CODS_external_id__c)>0 
@@ -161,7 +161,7 @@ from (
 			ELSE CASE WHEN e.employee_id=u.id THEN u.jj_User_Country__c ELSE 'NM' END
 		END
 */  		
-	left join {{ var('schema') }}.country_settings_raw cs5 ON cs5.JJ_COUNTRY_ISO_CODE__C = 
+	left join {{ source('raw', 'country_settings') }} cs5 ON cs5.JJ_COUNTRY_ISO_CODE__C = 
 		CASE WHEN ac.Country_JJ__c is not null 
 			THEN ac.Country_JJ__c 
 			ELSE CASE WHEN e.Account_Id=ac.Id THEN ac.JJ_Country__c ELSE CASE WHEN e.employee_id=u.id AND u.jj_User_Country__c = cs5.Name THEN cs1.jj_Country_ISO_Code__c END END
@@ -293,19 +293,19 @@ SELECT
 		SELECT max(id) as territory2id, userid
 		FROM (
 			SELECT ut.territory2id as id, ut.UserId
-			FROM {{ var('schema') }}.user_territory_association_raw ut
-			JOIN {{ var('schema') }}.user_raw u on u.id = ut.userid AND u.isactive != 0
+			FROM {{ source('raw', 'user_territory_association') }} ut
+			JOIN {{ source('raw', 'user') }} u on u.id = ut.userid AND u.isactive != 0
 			JOIN {{ ref('m_territory') }} mt on ut.territory2id=mt.territory_id
 		)
 		GROUP BY userid
 	) ut on F.Employee_Id = ut.UserId
-	left join {{ var('schema') }}.user_raw u on f.employee_id=u.id
-	left join {{ var('schema') }}.medical_event_vod__c_raw m on f.event_id=m.Id
-	left join {{ var('schema') }}.record_type_raw rt on m.RecordTypeId=rt.id
-	left join {{ var('schema') }}.account_raw a on f.event_account_id=a.id
-	left join {{ var('schema') }}.country_settings_raw cs1 on cs1.name=u.jj_User_Country__c
-	left join {{ var('schema') }}.country_settings_raw cs2 on cs2.jj_Country_ISO_Code__c=f.iso_country_code
-	left join {{ var('schema') }}.country_settings_raw cs3 on cs3.JJ_COUNTRY_ISO_CODE__C = 
+	left join {{ source('raw', 'user') }} u on f.employee_id=u.id
+	left join {{ source('raw', 'medical_event') }} m on f.event_id=m.Id
+	left join {{ source('raw', 'record_type') }} rt on m.RecordTypeId=rt.id
+	left join {{ source('raw', 'account') }} a on f.event_account_id=a.id
+	left join {{ source('raw', 'country_settings') }} cs1 on cs1.name=u.jj_User_Country__c
+	left join {{ source('raw', 'country_settings') }} cs2 on cs2.jj_Country_ISO_Code__c=f.iso_country_code
+	left join {{ source('raw', 'country_settings') }} cs3 on cs3.JJ_COUNTRY_ISO_CODE__C = 
 		case when f.event_Type in ('Charitable Contribution','Educational Grant/Support','Patient Organisation Support','Sponsorship') 
 			then case when (a.Country_JJ__c <> '') then a.Country_JJ__c else a.JJ_Country__c end
 			else case when cs1.country_iso_code is not null then cs1.country_iso_code ELSE 'NM' end

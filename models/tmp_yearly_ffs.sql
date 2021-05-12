@@ -36,5 +36,5 @@ FROM (
 	GROUP BY Compliance_Country, Aux_Event_Speaker_Framework_Key
 )
 
-LEFT OUTER JOIN {{ var('schema') }}.slider_threshold_raw ST on ST.Country=Compliance_Country
-LEFT OUTER JOIN {{ var('schema') }}.currency_type_raw CT ON CT.isocode = ST.Currency 
+LEFT OUTER JOIN {{ source('raw', 'slider_threshold') }} ST on ST.Country=Compliance_Country
+LEFT OUTER JOIN {{ source('raw', 'currency_type') }} CT ON CT.isocode = ST.Currency 

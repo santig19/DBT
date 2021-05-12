@@ -95,48 +95,48 @@ FROM ( select * from (
  
 LEFT OUTER JOIN ( select * from (
                     select * , ROW_NUMBER() OVER(PARTITION BY ID ORDER BY SYSTEMMODSTAMP DESC) AS row1
-                      from {{ var('schema') }}.campaign_raw ) a
+                      from {{ source('raw', 'campaign') }} ) a
                      where a.row1 = 1
                 ) AS Campaign ON TMP.campaign_id = Campaign.id
  
-LEFT OUTER JOIN {{ var('schema') }}.product_raw AS Product ON Campaign.jj_product__c = Product.id 
+LEFT OUTER JOIN {{ source('raw', 'product') }} AS Product ON Campaign.jj_product__c = Product.id 
  
-LEFT OUTER JOIN {{ var('schema') }}.user_raw USR ON Campaign.ownerid = USR.id
+LEFT OUTER JOIN {{ source('raw', 'user') }} USR ON Campaign.ownerid = USR.id
  
 LEFT OUTER JOIN {{ ref('m_product') }} AS M_PRODUCT ON M_PRODUCT.Product_Id = Campaign.jj_product__c
  
 LEFT OUTER JOIN (
     SELECT an.id as product_analytic_group_id, pg.product_vod__c as product_id
-    FROM {{ var('schema') }}.analytics_product_group_raw an   
-    JOIN {{ var('schema') }}.product_group_map_raw pg ON an.id = pg.analytics_product_group_vod__c
+    FROM {{ source('raw', 'analytics_product_group') }} an   
+    JOIN {{ source('raw', 'product_group_map') }} pg ON an.id = pg.analytics_product_group_vod__c
     WHERE COALESCE(pg.product_vod__c, '') != ''
 ) AS P_GROUP_MAP ON Campaign.jj_product__c = P_GROUP_MAP.Product_id
  
 LEFT OUTER JOIN (
     SELECT Target.campaign_vod__c as Campaign_Id, Target.target_account_vod__c as Account_Id, Target.JJ_Call_Status__c as Call_Stat, target.id as Campaign_Target_Id
-    FROM {{ var('schema') }}.campaign_target_raw AS Target
-    LEFT OUTER JOIN {{ var('schema') }}.account_raw AS Acc ON Acc.Id = Target.target_account_vod__c
-    LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS CS ON CS.jj_country_ISO_Code__c = (CASE WHEN Acc.Id = Target.target_account_vod__c THEN ACC.country_iso_code ELSE 'NM' END)
+    FROM {{ source('raw', 'campaign_target') }} AS Target
+    LEFT OUTER JOIN {{ source('raw', 'account') }} AS Acc ON Acc.Id = Target.target_account_vod__c
+    LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS CS ON CS.jj_country_ISO_Code__c = (CASE WHEN Acc.Id = Target.target_account_vod__c THEN ACC.country_iso_code ELSE 'NM' END)
   LEFT OUTER JOIN( select * from (
                                   select * , ROW_NUMBER() OVER(PARTITION BY ID ORDER BY SYSTEMMODSTAMP DESC) AS row1
-                                  from {{ var('schema') }}.campaign_raw
+                                  from {{ source('raw', 'campaign') }}
                                   ) a
                     where a.row1 = 1
                  ) AS Campaign ON Campaign.Id = Target.campaign_vod__c
-    LEFT OUTER JOIN {{ var('schema') }}.record_type_raw AS RT ON Campaign.recordtypeid = RT.id
+    LEFT OUTER JOIN {{ source('raw', 'record_type') }} AS RT ON Campaign.recordtypeid = RT.id
     WHERE LOWER(RT.name) NOT IN ('customer journey', 'email', 'sms')
  ) AS F_CAMPAIGN_TARGET ON TMP.Campaign_Id = F_CAMPAIGN_TARGET.Campaign_Id 
   
-LEFT OUTER JOIN {{ var('schema') }}.account_raw AS ACC ON ACC.id = F_CAMPAIGN_TARGET.Account_Id
+LEFT OUTER JOIN {{ source('raw', 'account') }} AS ACC ON ACC.id = F_CAMPAIGN_TARGET.Account_Id
  
 LEFT OUTER JOIN (
     SELECT Ass.id as Campaign_Response_Id, Ass.jj_Campaign_Target__c as Campaign_Target_Id
-    FROM {{ var('schema') }}.assessment_raw AS Ass
-    LEFT OUTER JOIN {{ var('schema') }}.account_raw AS Acc ON Ass.jj_Campaign_Target__c = Acc.Id
-    LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS CS ON CS.jj_country_ISO_Code__c = (CASE WHEN Ass.jj_campaign_target__c = Acc.Id THEN Acc.country_iso_code ELSE 'NM' END)
+    FROM {{ source('raw', 'assessment') }} AS Ass
+    LEFT OUTER JOIN {{ source('raw', 'account') }} AS Acc ON Ass.jj_Campaign_Target__c = Acc.Id
+    LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS CS ON CS.jj_country_ISO_Code__c = (CASE WHEN Ass.jj_campaign_target__c = Acc.Id THEN Acc.country_iso_code ELSE 'NM' END)
 ) AS F_CAMPAIGN_RESPONSE ON F_CAMPAIGN_TARGET.Campaign_Target_Id = F_CAMPAIGN_RESPONSE.Campaign_Target_Id
  
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS COUNTRY ON
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS COUNTRY ON
     CASE
         WHEN F_CAMPAIGN_TARGET.Account_Id = ACC.id THEN ACC.country_iso_code
         WHEN Campaign.ownerid = USR.id THEN USR.country_iso_code
@@ -146,8 +146,8 @@ LEFT OUTER JOIN (
     SELECT max(id) as id, userid
     FROM (
         SELECT ut.territory2id as id, ut.UserId
-        FROM {{ var('schema') }}.user_territory_association_raw ut
-        JOIN {{ var('schema') }}.user_raw u on u.id = ut.userid AND u.isactive != 0
+        FROM {{ source('raw', 'user_territory_association') }} ut
+        JOIN {{ source('raw', 'user') }} u on u.id = ut.userid AND u.isactive != 0
         JOIN {{ ref('m_territory') }} mt on ut.territory2id=mt.territory_id          
     )
     GROUP BY userid
@@ -156,7 +156,7 @@ LEFT JOIN (SELECT Account_Id, Territory_Id FROM {{ ref('m_null_country_values') 
             GROUP BY Account_Id, Territory_Id
           ) mncv
   ON F_CAMPAIGN_TARGET.Account_Id = mncv.Account_Id AND CASE WHEN TRIM(utn.userid)='' OR utn.userid IS NULL THEN 'NM' ELSE utn.Id END = mncv.Territory_Id
-LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ var('schema') }}.buw_alignment_m_null_country_values_snapshot_monthly_historical
+LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ source('raw', 'm_null_country_values_snapshot_monthly_historical') }}
             GROUP BY Account_Id, Territory_Id, yearmonth
           ) mncvs
   ON F_CAMPAIGN_TARGET.Account_Id = mncvs.Account_Id AND CASE WHEN TRIM(utn.userid)='' OR utn.userid IS NULL THEN 'NM' ELSE utn.Id END = mncvs.Territory_Id AND CASE WHEN LEN(TMP.Date) = 0 THEN NULL ELSE (split_part(TO_CHAR(TO_DATE(TMP.date, 'DD-MM-YYYY'), 'YYYY-MM-DD'),'-',1) || split_part(TO_CHAR(TO_DATE(TMP.date, 'DD-MM-YYYY'), 'YYYY-MM-DD'),'-',2)) END = mncvs.yearmonth 
@@ -283,7 +283,7 @@ FROM (
     FROM {{ ref('tmp_f_activity_email_eloqua') }} AS AUX_ELOQUA
     LEFT OUTER JOIN ( select * from (
                     select * , ROW_NUMBER() OVER(PARTITION BY ID ORDER BY SYSTEMMODSTAMP DESC) AS row1
-                      from {{ var('schema') }}.campaign_raw ) a
+                      from {{ source('raw', 'campaign') }} ) a
                      where a.row1 = 1
                   ) AS campaign ON campaign.Id = aux_eloqua.campaign_id
     GROUP BY aux_eloqua.campaign_id,campaign.id,aux_eloqua.campaign_email_status,campaign.jj_start_date__c,LEFT(aux_eloqua.date, 10),
@@ -302,21 +302,21 @@ LEFT OUTER JOIN (select *
                  )
  AS TMP ON F_ACTIVITY_EMAIL_ELOQUA.Campaign_Id = TMP.Campaign_Id
  
-LEFT OUTER JOIN {{ var('schema') }}.account_raw AS ACCOUNT ON F_ACTIVITY_EMAIL_ELOQUA.Account_Id = Account.Id
+LEFT OUTER JOIN {{ source('raw', 'account') }} AS ACCOUNT ON F_ACTIVITY_EMAIL_ELOQUA.Account_Id = Account.Id
  
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS CS ON
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS CS ON
     (CASE WHEN (F_ACTIVITY_EMAIL_ELOQUA.Campaign_Email_Status = 'Bounceback')
         THEN (CASE WHEN F_ACTIVITY_EMAIL_ELOQUA.Campaign_Id = TMP.Campaign_id THEN TMP.Campaign_Country_Code ELSE 'NM' END)
         ELSE (CASE WHEN (F_ACTIVITY_EMAIL_ELOQUA.Account_Id = ACCOUNT.Id AND LEN(ACCOUNT.country_iso_code)>0) THEN ACCOUNT.country_iso_code
                    WHEN F_ACTIVITY_EMAIL_ELOQUA.Account_Id = ACCOUNT.Id THEN ACCOUNT.country_iso_code ELSE 'NM' END)
     END) = CS.jj_Country_ISO_Code__C
      
-LEFT OUTER JOIN {{ var('schema') }}.product_raw AS P ON (CASE WHEN F_ACTIVITY_EMAIL_ELOQUA.Campaign_Id = TMP.Campaign_Id THEN TMP.Product_Id ELSE 'NM' END) = P.Id
+LEFT OUTER JOIN {{ source('raw', 'product') }} AS P ON (CASE WHEN F_ACTIVITY_EMAIL_ELOQUA.Campaign_Id = TMP.Campaign_Id THEN TMP.Product_Id ELSE 'NM' END) = P.Id
  
 LEFT OUTER JOIN (
     SELECT an.id as product_analytic_group_id, pg.product_vod__c as product_id
-    FROM {{ var('schema') }}.analytics_product_group_raw an   
-    JOIN {{ var('schema') }}.product_group_map_raw pg ON an.id = pg.analytics_product_group_vod__c
+    FROM {{ source('raw', 'analytics_product_group') }} an   
+    JOIN {{ source('raw', 'product_group_map') }} pg ON an.id = pg.analytics_product_group_vod__c
     WHERE COALESCE(pg.product_vod__c, '') != ''
 ) AS P_GROUP_MAP ON P_GROUP_MAP.Product_id = COALESCE(TMP.Product_Id,'NM')
  
@@ -329,8 +329,8 @@ LEFT OUTER JOIN (
     SELECT max(id) as id, userid
     FROM (
         SELECT ut.territory2id as id, ut.UserId
-        FROM {{ var('schema') }}.user_territory_association_raw ut
-        JOIN {{ var('schema') }}.user_raw u on u.id = ut.userid AND u.isactive != 0
+        FROM {{ source('raw', 'user_territory_association') }} ut
+        JOIN {{ source('raw', 'user') }} u on u.id = ut.userid AND u.isactive != 0
         JOIN {{ ref('m_territory') }} mt on ut.territory2id=mt.territory_id          
         )
     GROUP BY userid
@@ -341,7 +341,7 @@ LEFT JOIN (SELECT Account_Id, Territory_Id FROM {{ ref('m_null_country_values') 
           ) mncv
        ON F_ACTIVITY_EMAIL_ELOQUA.Account_Id = mncv.Account_Id AND CASE WHEN F_ACTIVITY_EMAIL_ELOQUA.Campaign_Id = TMP.Campaign_Id THEN CASE WHEN TRIM(utn.userid)='' OR utn.userid IS NULL THEN 'NM' ELSE utn.Id END ELSE 'NM' END = mncv.Territory_Id
  
-LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ var('schema') }}.buw_alignment_m_null_country_values_snapshot_monthly_historical
+LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ source('raw', 'm_null_country_values_snapshot_monthly_historical') }}
             GROUP BY Account_Id, Territory_Id, yearmonth
           ) mncvs
        ON F_ACTIVITY_EMAIL_ELOQUA.Account_Id = mncvs.Account_Id AND CASE WHEN F_ACTIVITY_EMAIL_ELOQUA.Campaign_Id = TMP.Campaign_Id THEN CASE WHEN TRIM(utn.userid)='' OR utn.userid IS NULL THEN 'NM' ELSE utn.Id END ELSE 'NM' END = mncvs.Territory_Id AND CASE WHEN LEN(F_ACTIVITY_EMAIL_ELOQUA.date) = 0 THEN NULL ELSE (split_part(TO_CHAR(TO_DATE(F_ACTIVITY_EMAIL_ELOQUA.date, 'YYYYMMDD HH24:MI:SS'), 'YYYY-MM-DD')::varchar(10),'-',1) || split_part(TO_CHAR(TO_DATE(F_ACTIVITY_EMAIL_ELOQUA.date, 'YYYYMMDD HH24:MI:SS'), 'YYYY-MM-DD')::varchar(10),'-',2)) END = mncvs.yearmonth 

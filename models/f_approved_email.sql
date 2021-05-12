@@ -92,21 +92,21 @@ SELECT DISTINCT
     NULL as channel_new
   
      
-FROM {{ var('schema') }}.sent_email_raw AS SE
-LEFT OUTER JOIN {{ var('schema') }}.user_raw USR ON SE.ownerid = USR.Id
-LEFT OUTER JOIN {{ var('schema') }}.account_raw AS ACC ON SE.account_vod__c = ACC.id
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw AS CS ON CS.country_iso_code = SE.country_iso_code
-LEFT OUTER JOIN {{ var('schema') }}.profile_raw AS PRF ON USR.Profileid = PRF.Id
-LEFT OUTER JOIN {{ var('schema') }}.approved_document_raw AS APPDOC ON APPDOC.id = SE.approved_email_template_vod__c
-LEFT OUTER JOIN {{ var('schema') }}.product_group_map_raw AS PROD_GROUP_MAP ON SE.product_vod__c = PROD_GROUP_MAP.product_vod__c
-LEFT OUTER JOIN {{ var('schema') }}.product_raw AS PRODUCT ON SE.product_vod__c = PRODUCT.id
+FROM {{ source('raw', 'sent_email') }} AS SE
+LEFT OUTER JOIN {{ source('raw', 'user') }} USR ON SE.ownerid = USR.Id
+LEFT OUTER JOIN {{ source('raw', 'account') }} AS ACC ON SE.account_vod__c = ACC.id
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS CS ON CS.country_iso_code = SE.country_iso_code
+LEFT OUTER JOIN {{ source('raw', 'profile') }} AS PRF ON USR.Profileid = PRF.Id
+LEFT OUTER JOIN {{ source('raw', 'approved_document') }} AS APPDOC ON APPDOC.id = SE.approved_email_template_vod__c
+LEFT OUTER JOIN {{ source('raw', 'product_group_map') }} AS PROD_GROUP_MAP ON SE.product_vod__c = PROD_GROUP_MAP.product_vod__c
+LEFT OUTER JOIN {{ source('raw', 'product') }} .product_raw AS PRODUCT ON SE.product_vod__c = PRODUCT.id
 LEFT OUTER JOIN {{ ref('m_product') }} AS M_PRODUCT ON PRODUCT.id = M_PRODUCT.product_id
 LEFT OUTER JOIN {{ ref('tmp_user_territory') }} UT ON UT.USERID = SE.ownerid
-LEFT OUTER JOIN {{ var('schema') }}.record_type_raw RT ON RT.id = SE.recordtypeid 
+LEFT OUTER JOIN {{ source('raw', 'record_type') }} RT ON RT.id = SE.recordtypeid 
 LEFT JOIN (SELECT Account_Id, Territory_Id FROM {{ ref('m_null_country_values') }}
             GROUP BY Account_Id, Territory_Id) mncv
        ON SE.account_vod__c = mncv.Account_Id AND CASE WHEN SE.ownerid = UT.USERID THEN UT.TERRITORYID ELSE 'NM' END = mncv.Territory_Id
-LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ var('schema') }}.buw_alignment_m_null_country_values_snapshot_monthly_historical
+LEFT JOIN (SELECT Account_Id, Territory_Id, yearmonth FROM {{ source('raw', 'm_null_country_values_snapshot_monthly_historical') }}
             GROUP BY Account_Id, Territory_Id, yearmonth) mncvs
        ON SE.account_vod__c = mncvs.Account_Id AND CASE WHEN SE.ownerid = UT.USERID THEN UT.TERRITORYID ELSE 'NM' END = mncvs.Territory_Id AND LEFT(SE.createddate,6) = mncvs.yearmonth
 WHERE SE.originating_from_1_to_1_email__c IN ('0', 'false')

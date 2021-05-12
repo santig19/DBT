@@ -94,64 +94,64 @@ SELECT
 	,case when t.lastmodifieddate = '' then null else to_date(t.lastmodifieddate,'YYYYMMDD HH24:MI:SS') end::datetime as last_modified_date	
 	,t.developername as developer_name
 	,t.description as description
-FROM {{ var('schema') }}.territory_raw t
+FROM {{ source('raw', 'territory') }} t
 LEFT OUTER JOIN (
 	SELECT ID, NAME, PARENTTERRITORY2ID
-	FROM {{ var('schema') }}.territory_raw
+	FROM {{ source('raw', 'territory') }}
 	WHERE NAME LIKE 'L8%') t8 ON t8.ID = t.ID
 LEFT OUTER JOIN (
 	SELECT ID, NAME, PARENTTERRITORY2ID
-	FROM {{ var('schema') }}.territory_raw
+	FROM {{ source('raw', 'territory') }}
 	WHERE NAME LIKE 'L7%') t7 ON COALESCE(t8.PARENTTERRITORY2ID, t.ID) = t7.ID 
 LEFT OUTER JOIN (
 	SELECT ID, NAME, PARENTTERRITORY2ID
-	FROM {{ var('schema') }}.territory_raw
+	FROM {{ source('raw', 'territory') }}
 	WHERE NAME LIKE 'L6%') t6 ON COALESCE(t7.PARENTTERRITORY2ID, t.ID) = t6.ID 
 LEFT OUTER JOIN (
 	SELECT ID, NAME, PARENTTERRITORY2ID
-	FROM {{ var('schema') }}.territory_raw
+	FROM {{ source('raw', 'territory') }}
 	WHERE NAME LIKE 'L5%') t5 ON COALESCE(t6.PARENTTERRITORY2ID, t.ID) = t5.ID 
 LEFT OUTER JOIN (
 	SELECT ID, NAME, PARENTTERRITORY2ID
-	FROM {{ var('schema') }}.territory_raw
+	FROM {{ source('raw', 'territory') }}
 	WHERE NAME LIKE 'L4%') t4 ON COALESCE(t5.PARENTTERRITORY2ID, t.ID) = t4.ID
 LEFT OUTER JOIN (
 	SELECT ID, NAME, PARENTTERRITORY2ID
-	FROM {{ var('schema') }}.territory_raw
+	FROM {{ source('raw', 'territory') }}
 	WHERE NAME LIKE 'L3%') t3 ON COALESCE(t4.PARENTTERRITORY2ID, t.ID) = t3.ID
 LEFT OUTER JOIN (
 	SELECT ID, NAME, PARENTTERRITORY2ID
-	FROM {{ var('schema') }}.territory_raw
+	FROM {{ source('raw', 'territory') }}
 	WHERE NAME LIKE 'L2%') t2 ON COALESCE(t3.PARENTTERRITORY2ID, t.ID) = t2.ID
 LEFT OUTER JOIN (
 	SELECT ID, NAME, PARENTTERRITORY2ID
-	FROM {{ var('schema') }}.territory_raw
+	FROM {{ source('raw', 'territory') }}
 	WHERE NAME LIKE 'L1%') t1 ON COALESCE(t2.PARENTTERRITORY2ID, t.ID) = t1.ID 
 WHERE (UPPER(t1.NAME) = 'L1-EMEA' OR UPPER(t.NAME) = 'L1-EMEA')
 AND t.ID not in(
-	select id from {{ var('schema') }}.territory_raw where name like '%L4%Consumer%'
+	select id from {{ source('raw', 'territory') }} where name like '%L4%Consumer%'
 union
-	select id from {{ var('schema') }}.territory_raw where parentterritory2id in
-		(select id from {{ var('schema') }}.territory_raw where name like '%L4%Consumer%')
+	select id from {{ source('raw', 'territory') }} where parentterritory2id in
+		(select id from {{ source('raw', 'territory') }} where name like '%L4%Consumer%')
 union
-	select id from {{ var('schema') }}.territory_raw where parentterritory2id in
-		(select id from {{ var('schema') }}.territory_raw where parentterritory2id in
-			(select id from {{ var('schema') }}.territory_raw where name like '%L4%Consumer%'))
+	select id from {{ source('raw', 'territory') }} where parentterritory2id in
+		(select id from {{ source('raw', 'territory') }} where parentterritory2id in
+			(select id from {{ source('raw', 'territory') }} where name like '%L4%Consumer%'))
 union
-	select id from {{ var('schema') }}.territory_raw where parentterritory2id in
-		(select id from {{ var('schema') }}.territory_raw where parentterritory2id in
-			(select id from {{ var('schema') }}.territory_raw where parentterritory2id in
-				(select id from {{ var('schema') }}.territory_raw where name like '%L4%Consumer%')))
+	select id from {{ source('raw', 'territory') }} where parentterritory2id in
+		(select id from {{ source('raw', 'territory') }} where parentterritory2id in
+			(select id from {{ source('raw', 'territory') }} where parentterritory2id in
+				(select id from {{ source('raw', 'territory') }} where name like '%L4%Consumer%')))
 union
-	select id from {{ var('schema') }}.territory_raw where parentterritory2id in
-		(select id from {{ var('schema') }}.territory_raw where parentterritory2id in
-			(select id from {{ var('schema') }}.territory_raw where parentterritory2id in
-				(select id from {{ var('schema') }}.territory_raw where parentterritory2id in
-					(select id from {{ var('schema') }}.territory_raw where name like '%L4%Consumer%'))))
+	select id from {{ source('raw', 'territory') }} where parentterritory2id in
+		(select id from {{ source('raw', 'territory') }} where parentterritory2id in
+			(select id from {{ source('raw', 'territory') }} where parentterritory2id in
+				(select id from {{ source('raw', 'territory') }} where parentterritory2id in
+					(select id from {{ source('raw', 'territory') }} where name like '%L4%Consumer%'))))
 union
-	select id from {{ var('schema') }}.territory_raw where parentterritory2id in
-		(select id from {{ var('schema') }}.territory_raw where parentterritory2id in
-			(select id from {{ var('schema') }}.territory_raw where parentterritory2id in
-				(select id from {{ var('schema') }}.territory_raw where parentterritory2id in
-					(select id from {{ var('schema') }}.territory_raw where parentterritory2id in
-						(select id from {{ var('schema') }}.territory_raw where name like '%L4%Consumer%'))))))
+	select id from {{ source('raw', 'territory') }} where parentterritory2id in
+		(select id from {{ source('raw', 'territory') }} where parentterritory2id in
+			(select id from {{ source('raw', 'territory') }} where parentterritory2id in
+				(select id from {{ source('raw', 'territory') }} where parentterritory2id in
+					(select id from {{ source('raw', 'territory') }} where parentterritory2id in
+						(select id from {{ source('raw', 'territory') }} where name like '%L4%Consumer%'))))))

@@ -22,6 +22,6 @@ tr.JJ_TIME_OFF__C as Time_Registration_Time_Off,
 tr.COUNTRY_ISO_CODE as Country_Code,
 cs.JJ_REGION__C as Region 
 
-FROM {{ var('schema') }}.time_registration_raw tr 
-LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw cs ON tr.COUNTRY_ISO_CODE = cs.COUNTRY_ISO_CODE 
+FROM {{ source('raw', 'time_registration') }} tr 
+LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs ON tr.COUNTRY_ISO_CODE = cs.COUNTRY_ISO_CODE 
 LEFT OUTER JOIN {{ ref('tmp_user_territory') }} ut ON ut.USERID = tr.OWNERID

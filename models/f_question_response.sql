@@ -27,7 +27,7 @@ SELECT DISTINCT
 		THEN NULL 
 		ELSE TO_CHAR(TO_DATE(qr.DATETIME_VOD__C, 'YYYYMMDD HH24:MI:SS'), 'YYYYMMDD') 
     END::varchar(255) AS question_response_datetime
-FROM {{ var('schema') }}.question_response_vod__c_raw qr
+FROM {{ source('raw', 'question_response') }} qr
 LEFT OUTER JOIN
 	(
 	SELECT *, ROW_NUMBER() OVER (PARTITION BY survey_target_id ORDER BY survey_last_modified_date_time DESC) as rowid
@@ -40,10 +40,10 @@ LEFT OUTER JOIN
 	              		ELSE 'NM'
 	      	END AS region
 			, st.LASTMODIFIEDDATE AS survey_last_modified_date_time
-		FROM {{ var('schema') }}.survey_target_vod__c_raw st
-		LEFT OUTER JOIN {{ var('schema') }}.account_raw ac on ac.ID = st.ACCOUNT_VOD__C
-		LEFT OUTER JOIN {{ var('schema') }}.country_settings_raw cs ON cs.JJ_COUNTRY_ISO_CODE__C = ac.country_iso_code
-		LEFT OUTER JOIN {{ var('schema') }}.question_response_vod__c_raw qr ON st.ID = qr.SURVEY_TARGET_VOD__C
+		FROM {{ source('raw', 'survey_target') }} st
+		LEFT OUTER JOIN {{ source('raw', 'account') }} ac on ac.ID = st.ACCOUNT_VOD__C
+		LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs ON cs.JJ_COUNTRY_ISO_CODE__C = ac.country_iso_code
+		LEFT OUTER JOIN {{ source('raw', 'question_response') }} qr ON st.ID = qr.SURVEY_TARGET_VOD__C
 		WHERE LOWER(st.STATUS_VOD__C) IN ('saved_vod', 'pending_vod', 'late_submission_vod', 'submitted_vod') 
 		AND TO_DATE(st.LASTMODIFIEDDATE, 'YYYYMMDD HH24:MI:SS') BETWEEN TO_DATE((extract(year from GETDATE())-2)::varchar(4) || RIGHT('0' || RTRIM(extract(month from GETDATE())), 2) || '01', 'YYYYMMDD') AND GETDATE()
 		AND TO_DATE(st.CREATEDDATE, 'YYYYMMDD HH24:MI:SS') >= TO_DATE((extract(year from GETDATE())-2)::varchar || '0101','YYYYMMDD')	

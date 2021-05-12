@@ -34,7 +34,7 @@ select case when LEN(cs.jj_Region__c) > 0 then cs.jj_Region__c else 'NM' end::va
         THEN 1
             ELSE 0
                 END AS historical_flag_territory_belong
-  from      {{ source('raw', 'mc_cycle_pla') }}         as cplan
+  from      {{ source('raw', 'mc_cycle_plan') }}         as cplan
   left join {{ source('raw', 'mc_cycle_plan_target') }}  as cpt
     on cpt.CYCLE_PLAN_VOD__C                                            = cplan.ID
   left join {{ source('raw', 'mc_cycle_plan_channel') }} as cpc

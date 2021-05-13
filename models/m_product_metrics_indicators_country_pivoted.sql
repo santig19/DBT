@@ -5,7 +5,7 @@
 with COUNTRIES_FILTER as
 (
 select country_iso_code, name, upper(name)
-  from {{ source('raw', 'Country_Settings') }}
+  from {{ source('raw', 'country_settings') }}
  where upper(name) in ('ALGERIA','ARMENIA','AUSTRIA','AZERBAIJAN','BAHRAIN','BELARUS','BELGIUM','BULGARIA','CROATIA','CZECH REPUBLIC','DEMOLAND','DEMOTRA',
                        'EGYPT','EMEA','ESTONIA','FRANCE','GERMANY','GHANA','GREECE','HUNGARY','IRAN','IRAQ','IRELAND','ISRAEL','ITALY','JORDAN','KAZAKHSTAN',
                        'KENYA','KUWAIT','LATVIA','LEBANON','LIBYA','LITHUANIA','LUXEMBOURG','MAURITIUS','MOLDOVA','MOROCCO','NETHERLANDS','NIGERIA','OMAN',

@@ -44,6 +44,7 @@ models:
     #materialized: ephemeral
     materialized: table
     m_territory:
+        schema: PROCESSING_SCHEMA
         alias: m_territory        
     m_product:
         alias: m_product

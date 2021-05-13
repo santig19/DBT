@@ -42,229 +42,233 @@ models:
   sf_poc_dbt:
       # Applies to all files under models/example/
     #materialized: ephemeral
-    materialized: table
-    m_territory:        
-        alias: buw_alignment_m_territory        
-    m_product:        
-        alias: buw_m_product
-    m_null_country_values:        
-        alias: buw_alignment_m_null_country_values
-    tmp_call_hierarchy:
-        schema: processing_schema
-        alias: tmp_call_hierarchy
-    tmp_f_call:
-        schema: processing_schema
-        alias: tmp_f_call
-    tmp_f_call_account:
-        schema: processing_schema
-        alias: tmp_f_call_account
-    tmp_f_call_user:
-        schema: processing_schema        
-        alias: tmp_f_call_user
-    tmp_call_hierarchy_1:
-        schema: processing_schema
-        alias: tmp_call_hierarchy_1
-    tmp_call_hierarchy_2:
-        schema: processing_schema
-        alias: tmp_call_hierarchy_2
-    tmp_call:
-        schema: processing_schema
-        alias: tmp_call    
-    tmp_user_territory:
-        schema: processing_schema
-        alias: tmp_user_territory                
-    f_survey_target:
-        alias: buw_real_world_data_surveys_f_survey_target                
-    tmp_f_process_instance:
-        schema: processing_schema
-        alias: tmp_f_process_instance                
-    f_event_approval_process:
-        schema: processing_schema
-        alias: f_event_approval_process        
-    tmp_f_event_1:
-        schema: processing_schema
-        alias: tmp_f_event_1        
-    tmp_f_event_2:
-        schema: processing_schema
-        alias: tmp_f_event_2        
-    tmp_event_attendee:
-        schema: processing_schema
-        alias: tmp_event_attendee        
-    tmp_f_event_detail_1:
-        schema: processing_schema
-        alias: tmp_f_event_detail_1        
-    tmp_f_event_detail_2_3:
-        schema: processing_schema
-        alias: tmp_f_event_detail_2_3        
-    tmp_anonymous_surveys:
-        schema: processing_schema
-        alias: tmp_anonymous_surveys        
-    tmp_f_event_detail_4:
-        schema: processing_schema
-        alias: tmp_f_event_detail_4        
-    tmp_yearly_ffs:
-        schema: processing_schema
-        alias: tmp_yearly_ffs        
-    tmp_yearly_attendance:
-        schema: processing_schema
-        alias: tmp_yearly_attendance        
-    tmp_yearly_attendance_main_kpi:
-        schema: processing_schema
-        alias: tmp_yearly_attendance_main_kpi
-    tmp_f_campaign:
-        schema: processing_schema
-        alias: tmp_f_campaign
-    tmp_f_activity_email_eloqua:
-        schema: processing_schema
-        alias: tmp_f_activity_email_eloqua
-    f_survey_target_events:                                
-        alias: buw_real_world_data_surveys_f_survey_target_events
-    f_eligible_event_attendee:
-        alias: buw_event_speaker_program_f_eligible_event_attendee
-    f_process_instance_step:
-        schema: processing_schema
-        alias: f_process_instance_step
-    f_call:
-        alias: buw_calls_calls_f_call        
-    f_event:
-        alias: buw_events_speaker_program_f_event        
-    f_event_detail:
-        alias: f_event_detail
-    f_campaign:
-        alias: buw_marketing_market_plan_f_campaign    
-    f_campaign_clickthrough_counter:
-        alias: buw_marketing_market_plan_f_campaign_clickthrough_counter
-    f_campaign_open_counter:
-        alias: buw_marketing_market_plan_f_campaign_open_counter
-    f_iconnect_campaign:
-        alias: buw_marketing_market_plan_f_iconnect_campaign
-    f_account_plan:
-        alias: buw_calls_call_planning_f_account_plan
-    f_account_plan_actions:
-        alias: buw_calls_call_planning_f_account_plan_actions
-    f_account_plan_activities_counter:
-        alias: buw_customer_f_account_plan_activities_counter
-    f_account_plan_counter:
-        alias: buw_customer_f_account_plan_counter
-    f_account_plan_objectives:
-        alias: buw_calls_call_planning_f_account_plan_objectives
-    f_account_plan_objectives_counter:
-        alias: buw_customer_f_account_plan_objectives_counter
-    f_account_plan_profile:
-        alias: buw_customer_f_account_plan_profile
-    f_approved_email:
-        alias: buw_marketing_market_plan_f_approved_email
-    f_approved_email_counters:
-        alias: buw_marketing_market_plan_f_approved_email_counters
-    f_channel_recomendations:
-        alias: buw_referencedata_employee_f_omnichannel_engagement_channel_recommendations
-    f_content_recomendations:
-        alias: buw_referencedata_employee_f_omnichannel_engagement_content_recommendations
-    f_customer_request:
-        alias: buw_services_customer_service_f_customer_request
-    f_cycle_plan:
-        alias: buw_referencedata_employee_f_cycle_plan
-    f_key_message_link:
-        alias: buw_calls_calls_f_key_message_link
-    f_knowledge_kav:
-        alias: buw_knowledge_kav
-    f_livechat_transcript:
-        alias: buw_digital_jmc_livechat
-    f_mc_cycle_plan:
-        alias: buw_referencedata_employee_f_multichannel_cycle_plan
-    f_multichannel_activity:
-        alias: buw_referencedata_employee_f_multichannel_activity
-    f_my_insights_analytics:
-        alias: buw_joe_adoption_metrics_f_my_insights_analytics
-    tmp_f_one_to_one_email:
-        schema: processing_schema
-        alias: tmp_f_one_to_one_email
-    f_one_to_one_email:
-        alias: buw_marketing_market_plan_f_one_to_one_email
-    f_question:
-        alias: buw_real_world_data_surveys_f_question
-    f_question_response:
-        alias: buw_real_world_data_surveys_f_question_response
-    f_survey:
-        alias: buw_real_world_data_surveys_f_survey
-    f_survey_question:
-        alias: buw_real_world_data_surveys_f_survey_question
-    tmp_f_time_effectiveness:
-        schema: processing_schema
-        alias: tmp_f_time_effectiveness
-    f_time_effectiveness:
-        alias: buw_referencedata_employee_f_time_effectiveness
-    f_time_effectiveness_employee:
-        alias: buw_referencedata_employee_f_time_effectiveness_employee
-    f_time_registration:
-        alias: buw_referencedata_employee_f_time_registration
-    m_account:
-        alias: buw_customer_m_account
-    m_account_plan_key_stakeholders:
-        alias: buw_calls_call_planning_m_account_plan_key_stakeholders
-    m_account_plan_team_members:
-        alias: buw_calls_call_planning_m_account_plan_team_members
-    m_activity:
-        alias: elq_activity
-    m_affiliation:
-        alias: buw_customer_m_affiliation
-    m_assignment:
-        alias: buw_alignment_m_assignment
-    m_campaign:
-        schema: processing_schema
-        alias: m_campaign
-    m_channel_preference_completeness:
-        alias: buw_referencedata_email_m_channel_preferences
-    m_case_history:
-        alias: buw_services_customer_service_f_customer_request_history
-    m_channel_permission:
-        alias: buw_customer_customer_m_channel_permission
-    m_clm_presentation:
-        alias: buw_referencedata_email_m_clm_presentation
-    m_cycle_plan:
-        alias: buw_referencedata_employee_m_cycle_plan
-    m_dynamic_attribute:
-        alias: buw_referencedata_dynamic_attribute_m_dynamic_attribute
-    m_dynamic_attribute_configuration:
-        alias: buw_referencedata_dynamic_attribute_m_dynamic_attribute_configuration
-    m_employee:
-        alias: buw_referencedata_employee_m_employee
-    m_focus_area:
-        alias: buw_focus_area
-    m_key_message:
-        alias: buw_calls_call_activity_m_key_message
-    m_knowledge_article_customer_request_mapping:
-        alias: buw_knowledge_article_customer_request_mapping
+    business:
+        materialized: table
+        m_territory:        
+            alias: buw_alignment_m_territory        
+        m_product:        
+            alias: buw_m_product
+        m_null_country_values:        
+            alias: buw_alignment_m_null_country_values
+        f_survey_target:
+            alias: buw_real_world_data_surveys_f_survey_target
+        f_survey_target_events:                                
+            alias: buw_real_world_data_surveys_f_survey_target_events
+        f_eligible_event_attendee:
+            alias: buw_event_speaker_program_f_eligible_event_attendee
+        f_call:
+            alias: buw_calls_calls_f_call        
+        f_event:
+            alias: buw_events_speaker_program_f_event        
+        f_event_detail:
+            alias: f_event_detail
+        f_campaign:
+            alias: buw_marketing_market_plan_f_campaign    
+        f_campaign_clickthrough_counter:
+            alias: buw_marketing_market_plan_f_campaign_clickthrough_counter
+        f_campaign_open_counter:
+            alias: buw_marketing_market_plan_f_campaign_open_counter
+        f_iconnect_campaign:
+            alias: buw_marketing_market_plan_f_iconnect_campaign
+        f_account_plan:
+            alias: buw_calls_call_planning_f_account_plan
+        f_account_plan_actions:
+            alias: buw_calls_call_planning_f_account_plan_actions
+        f_account_plan_activities_counter:
+            alias: buw_customer_f_account_plan_activities_counter
+        f_account_plan_counter:
+            alias: buw_customer_f_account_plan_counter
+        f_account_plan_objectives:
+            alias: buw_calls_call_planning_f_account_plan_objectives
+        f_account_plan_objectives_counter:
+            alias: buw_customer_f_account_plan_objectives_counter
+        f_account_plan_profile:
+            alias: buw_customer_f_account_plan_profile
+        f_approved_email:
+            alias: buw_marketing_market_plan_f_approved_email
+        f_approved_email_counters:
+            alias: buw_marketing_market_plan_f_approved_email_counters
+        f_channel_recomendations:
+            alias: buw_referencedata_employee_f_omnichannel_engagement_channel_recommendations
+        f_content_recomendations:
+            alias: buw_referencedata_employee_f_omnichannel_engagement_content_recommendations
+        f_customer_request:
+            alias: buw_services_customer_service_f_customer_request
+        f_cycle_plan:
+            alias: buw_referencedata_employee_f_cycle_plan
+        f_key_message_link:
+            alias: buw_calls_calls_f_key_message_link
+        f_knowledge_kav:
+            alias: buw_knowledge_kav
+        f_livechat_transcript:
+            alias: buw_digital_jmc_livechat
+        f_mc_cycle_plan:
+            alias: buw_referencedata_employee_f_multichannel_cycle_plan
+        f_multichannel_activity:
+            alias: buw_referencedata_employee_f_multichannel_activity
+        f_my_insights_analytics:
+            alias: buw_joe_adoption_metrics_f_my_insights_analytics
+        f_one_to_one_email:
+            alias: buw_marketing_market_plan_f_one_to_one_email
+        f_question:
+            alias: buw_real_world_data_surveys_f_question
+        f_question_response:
+            alias: buw_real_world_data_surveys_f_question_response
+        f_survey:
+            alias: buw_real_world_data_surveys_f_survey
+        f_survey_question:
+            alias: buw_real_world_data_surveys_f_survey_question
+        f_time_effectiveness:
+            alias: buw_referencedata_employee_f_time_effectiveness
+        f_time_effectiveness_employee:
+            alias: buw_referencedata_employee_f_time_effectiveness_employee
+        f_time_registration:
+            alias: buw_referencedata_employee_f_time_registration
+        m_account:
+            alias: buw_customer_m_account
+        m_account_plan_key_stakeholders:
+            alias: buw_calls_call_planning_m_account_plan_key_stakeholders
+        m_account_plan_team_members:
+            alias: buw_calls_call_planning_m_account_plan_team_members
+        m_activity:
+            alias: elq_activity
+        m_affiliation:
+            alias: buw_customer_m_affiliation
+        m_assignment:
+            alias: buw_alignment_m_assignment
+        m_channel_preference_completeness:
+            alias: buw_referencedata_email_m_channel_preferences
+        m_case_history:
+            alias: buw_services_customer_service_f_customer_request_history
+        m_channel_permission:
+            alias: buw_customer_customer_m_channel_permission
+        m_clm_presentation:
+            alias: buw_referencedata_email_m_clm_presentation
+        m_cycle_plan:
+            alias: buw_referencedata_employee_m_cycle_plan
+        m_dynamic_attribute:
+            alias: buw_referencedata_dynamic_attribute_m_dynamic_attribute
+        m_dynamic_attribute_configuration:
+            alias: buw_referencedata_dynamic_attribute_m_dynamic_attribute_configuration
+        m_employee:
+            alias: buw_referencedata_employee_m_employee
+        m_focus_area:
+            alias: buw_focus_area
+        m_key_message:
+            alias: buw_calls_call_activity_m_key_message
+        m_knowledge_article_customer_request_mapping:
+            alias: buw_knowledge_article_customer_request_mapping
     #new        
-    m_leading_specialist:
-        alias: buw_leading_specialist
-    m_mc_cycle_plan:
-        alias: buw_referencedata_employee_m_multichannel_cycle_plan
-    m_mc_cycle_plan_detail:
-        alias: buw_referencedata_employee_m_multichannel_cycle_plan_detail
-    m_mc_cycle_plan_target_channel:
-        alias: buw_referencedata_employee_m_multichannel_cycle_plan_target_channel
-    m_medical_insight:
-        alias: buw_medical_insight
-    m_multichannel_consent:
-        alias: buw_referencedata_email_m_multichannel_consent
-    m_product_analytic_group:
-        alias: buw_product_market_product_m_analytic_group
-    m_product_metrics_country:
-        alias: buw_marketing_market_segmentation_m_product_metrics_country
-    m_product_metrics_emea:
-        alias: buw_marketing_market_segmentation_m_product_metrics_emea
-    m_product_metrics_indicators_country_pivoted:
-        alias: buw_marketing_market_segmentation_m_product_metrics_indicators_country_pivoted
-    m_profile:
-        alias: buw_referencedata_employee_m_profile
-    m_remote_meeting:
-        alias: elq_remote_meeting
-    m_remote_meeting_atendee:
-        alias: elq_remote_meeting_attendee
-    m_smart_tagging:
-        alias: buw_content_tagging_m_smart_tagging
-    m_user_territory:
-        alias: buw_alignment_m_user_territory
-    f_key_message:
-        alias: buw_calls_call_activity_f_key_message
+        m_leading_specialist:
+            alias: buw_leading_specialist
+        m_mc_cycle_plan:
+            alias: buw_referencedata_employee_m_multichannel_cycle_plan
+        m_mc_cycle_plan_detail:
+            alias: buw_referencedata_employee_m_multichannel_cycle_plan_detail
+        m_mc_cycle_plan_target_channel:
+            alias: buw_referencedata_employee_m_multichannel_cycle_plan_target_channel
+        m_medical_insight:
+            alias: buw_medical_insight
+        m_multichannel_consent:
+            alias: buw_referencedata_email_m_multichannel_consent
+        m_product_analytic_group:
+            alias: buw_product_market_product_m_analytic_group
+        m_product_metrics_country:
+            alias: buw_marketing_market_segmentation_m_product_metrics_country
+        m_product_metrics_emea:
+            alias: buw_marketing_market_segmentation_m_product_metrics_emea
+        m_product_metrics_indicators_country_pivoted:
+            alias: buw_marketing_market_segmentation_m_product_metrics_indicators_country_pivoted
+        m_profile:
+            alias: buw_referencedata_employee_m_profile
+        m_remote_meeting:
+            alias: elq_remote_meeting
+        m_remote_meeting_atendee:
+            alias: elq_remote_meeting_attendee
+        m_smart_tagging:
+            alias: buw_content_tagging_m_smart_tagging
+        m_user_territory:
+            alias: buw_alignment_m_user_territory
+        f_key_message:
+            alias: buw_calls_call_activity_f_key_message
+    #end new            
+    processing:
+        materialized: table        
+        tmp_call_hierarchy:
+            schema: processing_schema
+            alias: tmp_call_hierarchy
+        tmp_f_call:
+            schema: processing_schema
+            alias: tmp_f_call
+        tmp_f_call_account:
+            schema: processing_schema
+            alias: tmp_f_call_account
+        tmp_f_call_user:
+            schema: processing_schema        
+            alias: tmp_f_call_user
+        tmp_call_hierarchy_1:
+            schema: processing_schema
+            alias: tmp_call_hierarchy_1
+        tmp_call_hierarchy_2:
+            schema: processing_schema
+            alias: tmp_call_hierarchy_2
+        tmp_call:
+            schema: processing_schema
+            alias: tmp_call    
+        tmp_user_territory:
+            schema: processing_schema
+            alias: tmp_user_territory                                   
+        tmp_f_process_instance:
+            schema: processing_schema
+            alias: tmp_f_process_instance                
+        f_event_approval_process:
+            schema: processing_schema
+            alias: f_event_approval_process        
+        tmp_f_event_1:
+            schema: processing_schema
+            alias: tmp_f_event_1        
+        tmp_f_event_2:
+            schema: processing_schema
+            alias: tmp_f_event_2        
+        tmp_event_attendee:
+            schema: processing_schema
+            alias: tmp_event_attendee        
+        tmp_f_event_detail_1:
+            schema: processing_schema
+            alias: tmp_f_event_detail_1        
+        tmp_f_event_detail_2_3:
+            schema: processing_schema
+            alias: tmp_f_event_detail_2_3        
+        tmp_anonymous_surveys:
+            schema: processing_schema
+            alias: tmp_anonymous_surveys        
+        tmp_f_event_detail_4:
+            schema: processing_schema
+            alias: tmp_f_event_detail_4        
+        tmp_yearly_ffs:
+            schema: processing_schema
+            alias: tmp_yearly_ffs        
+        tmp_yearly_attendance:
+            schema: processing_schema
+            alias: tmp_yearly_attendance        
+        tmp_yearly_attendance_main_kpi:
+            schema: processing_schema
+            alias: tmp_yearly_attendance_main_kpi
+        tmp_f_campaign:
+            schema: processing_schema
+            alias: tmp_f_campaign
+        tmp_f_activity_email_eloqua:
+            schema: processing_schema
+            alias: tmp_f_activity_email_eloqua    
+        f_process_instance_step:
+            schema: processing_schema
+            alias: f_process_instance_step    
+        tmp_f_one_to_one_email:
+            schema: processing_schema
+            alias: tmp_f_one_to_one_email    
+        tmp_f_time_effectiveness:
+            schema: processing_schema
+            alias: tmp_f_time_effectiveness    
+        m_campaign:
+            schema: processing_schema
+            alias: m_campaign        

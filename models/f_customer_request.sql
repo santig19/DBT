@@ -38,8 +38,8 @@ SELECT
     t.Customer_Request_Assigned_Employee,
     t.Customer_Request_Owner,
     t.Employee_Id,
-    /*t.Customer_Request_Department,
-    t.Customer_Request_Employee_Department,*/
+    t.Customer_Request_Department,
+    t.Customer_Request_Employee_Department,
     t.Customer_Request_Created_Employee,
     t.Customer_Request_Priority,
     t.Customer_Request_Off_On_Label,
@@ -81,8 +81,8 @@ SELECT
     t.Customer_Request_Threshold_Working_Time,
     t.Country,
     t.Compliance_Country,
-    /*t.Customer_Request_1st_2nd_Line,
-    t.Customer_Request_Line_Of_Response,*/
+    t.Customer_Request_1st_2nd_Line,
+    t.Customer_Request_Line_Of_Response,
     t.Customer_Request_Link_Id,
     t.parent_id,
     t.number_of_questions,
@@ -142,8 +142,8 @@ SELECT
     Customer_Request_Assigned_Employee,
     Customer_Request_Owner,
     Employee_Id,
-    /*Customer_Request_Department,  --> performance issue on the other select
-    Customer_Request_Employee_Department,*/
+    Customer_Request_Department,
+    Customer_Request_Employee_Department,
     Customer_Request_Created_Employee,
     Customer_Request_Priority,
     Customer_Request_Off_On_Label,
@@ -185,8 +185,8 @@ SELECT
     Customer_Request_Threshold_Working_Time,
     Country,
     Compliance_Country,
-    /*Customer_Request_1st_2nd_Line,
-    Customer_Request_Line_Of_Response,*/
+    Customer_Request_1st_2nd_Line,
+    Customer_Request_Line_Of_Response,
     Customer_Request_Link_Id,
     parent_id,
     number_of_questions,
@@ -286,11 +286,11 @@ FROM (
         U1.Name AS Customer_Request_Owner,
         C.CreatedById AS Employee_Id,
         P.Name AS Customer_Request_Department,
-        /*CASE
+        CASE
             WHEN (P1.Id = U.ProfileId AND ((CASE WHEN(c.JJ_Non_CSC_Assignee__c <> '') THEN c.JJ_Non_CSC_Assignee__c ELSE c.OwnerId END)= U.Id))
                 THEN P1.Name
                 ELSE NULL
-        END AS Customer_Request_Employee_Department,*/
+        END AS Customer_Request_Employee_Department,
         U.Id AS Customer_Request_Created_Employee,
         C.Priority AS Customer_Request_Priority,
         CASE
@@ -388,7 +388,7 @@ FROM (
         END::varchar(255) AS Customer_Request_Threshold_Working_Time,
         jC.Name AS Country,
         jC.Name AS Compliance_Country,
-        /*CASE
+        CASE
             WHEN Customer_Request_SKM_Time_Registration != '' AND Customer_Request_SKM_Time_Registration > 0
                 THEN 'Third Line'
             WHEN Customer_Request_Department = 'EMEA_iConnect_CustomerServices'
@@ -401,7 +401,7 @@ FROM (
             WHEN Customer_Request_Department = 'EMEA_iConnect_CustomerServices'
                 THEN 'Customer Services'
                 ELSE 'Non Customer Services'
-        END::varchar(255) AS Customer_Request_Line_Of_Response,*/
+        END::varchar(255) AS Customer_Request_Line_Of_Response,
         (Customer_Request_Id || '-' || C.CreatedById)::varchar(255) AS Customer_Request_Link_Id,
         C.PARENTID AS parent_id,
         C.JJ_NUMBER_OF_QUESTIONS__C AS number_of_questions,
@@ -431,8 +431,8 @@ FROM (
             THEN C.JJ_Non_CSC_Assignee__c
             ELSE C.OwnerId
     END
-    LEFT OUTER JOIN {{ source('raw', 'profile') }} P ON U1.ProfileId = P.Id AND C.OwnerId = U1.Id
-    LEFT OUTER JOIN {{ source('raw', 'profile') }} P1 ON P1.Id = U.ProfileId  /*AND  C.CreatedById = P1.Id (1 min 30 s) ---Possible performance issue*/ 
+    LEFT OUTER JOIN (SELECT Distinct Name, Id FROM {{ source('raw', 'profile') }}) P ON U1.ProfileId = P.Id AND C.OwnerId = U1.Id
+    LEFT OUTER JOIN (SELECT Distinct Name, Id FROM {{ source('raw', 'profile') }}) P1 ON P1.Id = U.ProfileId
     LEFT OUTER JOIN {{ source('raw', 'record_type') }} R ON C.RecordTypeId = R.Id
     LEFT OUTER JOIN {{ source('raw', 'country_settings') }} jC ON jC.jj_Country_ISO_Code__c = C.country_iso_code
     LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs ON cs.name = U.JJ_user_country__c
@@ -477,8 +477,8 @@ GROUP BY
     Customer_Request_Assigned_Employee,
     Customer_Request_Owner,
     Employee_Id,
-    /*Customer_Request_Department, --> performance issue on the other select
-    Customer_Request_Employee_Department,*/
+    Customer_Request_Department,
+    Customer_Request_Employee_Department,
     Customer_Request_Created_Employee,
     Customer_Request_Priority,
     Customer_Request_Off_On_Label,
@@ -520,8 +520,8 @@ GROUP BY
     Customer_Request_Threshold_Working_Time,
     Country,
     Compliance_Country,
-    /*Customer_Request_1st_2nd_Line,
-    Customer_Request_Line_Of_Response,*/
+    Customer_Request_1st_2nd_Line,
+    Customer_Request_Line_Of_Response,
     Customer_Request_Link_Id,
     parent_id,
     number_of_questions,
@@ -573,8 +573,8 @@ SELECT
     Customer_Request_Assigned_Employee,
     Customer_Request_Owner,
     Employee_Id_c as Employee_Id,
-    /*Customer_Request_Department,
-    Customer_Request_Employee_Department,*/
+    Customer_Request_Department,
+    Customer_Request_Employee_Department,
     Customer_Request_Created_Employee,
     Customer_Request_Priority,
     Customer_Request_Off_On_Label,
@@ -616,8 +616,8 @@ SELECT
     Customer_Request_Threshold_Working_Time,
     Country,
     Compliance_Country,
-    /*Customer_Request_1st_2nd_Line,
-    Customer_Request_Line_Of_Response,*/
+    Customer_Request_1st_2nd_Line,
+    Customer_Request_Line_Of_Response,
     Customer_Request_Link_Id,
     parent_id,
     number_of_questions,
@@ -721,12 +721,12 @@ FROM (
                 THEN C.JJ_Non_CSC_Assignee__c
                 ELSE C.OwnerId
         END::varchar(255) AS Employee_Id_c,
-        /*P.Name AS Customer_Request_Department,
+        P.Name AS Customer_Request_Department,
         CASE
             WHEN (P1.Id = U.ProfileId AND ((CASE WHEN(c.JJ_Non_CSC_Assignee__c <> '') THEN c.JJ_Non_CSC_Assignee__c ELSE c.OwnerId END)= U.Id))
                 THEN P1.Name
                 ELSE NULL
-        END AS Customer_Request_Employee_Department,*/
+        END AS Customer_Request_Employee_Department,
         U.Id AS Customer_Request_Created_Employee,
         C.Priority AS Customer_Request_Priority,
         CASE
@@ -824,7 +824,7 @@ FROM (
         END::varchar(255) AS Customer_Request_Threshold_Working_Time,
         jC.Name AS Country,
         jC.Name AS Compliance_Country,
-        /*CASE
+        CASE
             WHEN Customer_Request_SKM_Time_Registration != '' AND Customer_Request_SKM_Time_Registration > 0
                 THEN 'Third Line'
             WHEN Customer_Request_Department = 'EMEA_iConnect_CustomerServices'
@@ -837,7 +837,7 @@ FROM (
             WHEN Customer_Request_Department = 'EMEA_iConnect_CustomerServices'
                 THEN 'Customer Services'
                 ELSE 'Non Customer Services'
-        END::varchar(255) AS Customer_Request_Line_Of_Response,*/
+        END::varchar(255) AS Customer_Request_Line_Of_Response,
         (Customer_Request_Id || '-' || Employee_Id_c)::varchar(255) AS Customer_Request_Link_Id,
         C.PARENTID AS parent_id,
         C.JJ_NUMBER_OF_QUESTIONS__C AS number_of_questions,
@@ -868,8 +868,8 @@ FROM (
             THEN C.JJ_Non_CSC_Assignee__c
             ELSE C.OwnerId
     END
-    LEFT OUTER JOIN {{ source('raw', 'profile') }} P ON U1.Profileid = P.Id /*AND C.OwnerId = P.Id (1 min 30 s) ---Possible performance issue*/
-    LEFT OUTER JOIN {{ source('raw', 'profile') }} P1 ON P1.Id = U.ProfileId /*AND  C.CreatedById = P1.Id (1 min 30 s) ---Possible performance issue*/ 
+    LEFT OUTER JOIN (SELECT Distinct Name, Id FROM {{ source('raw', 'profile') }}) P ON U1.Profileid = P.Id
+    LEFT OUTER JOIN (SELECT Distinct Name, Id FROM {{ source('raw', 'profile') }}) P1 ON P1.Id = U.ProfileId
     LEFT OUTER JOIN {{ source('raw', 'record_type') }} R ON C.RecordTypeId = R.Id
     LEFT OUTER JOIN {{ source('raw', 'country_settings') }} jC ON jC.jj_Country_ISO_Code__c = C.country_iso_code
     LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs ON cs.name = U.jj_user_country__c
@@ -914,8 +914,8 @@ GROUP BY
     Customer_Request_Assigned_Employee,
     Customer_Request_Owner,
     Employee_Id,
-    /*Customer_Request_Department,
-    Customer_Request_Employee_Department,*/
+    Customer_Request_Department,
+    Customer_Request_Employee_Department,
     Customer_Request_Created_Employee,
     Customer_Request_Priority,
     Customer_Request_Off_On_Label,
@@ -957,8 +957,8 @@ GROUP BY
     Customer_Request_Threshold_Working_Time,
     Country,
     Compliance_Country,
-    /*--Customer_Request_1st_2nd_Line,
-    --Customer_Request_Line_Of_Response,*/
+    Customer_Request_1st_2nd_Line,
+    Customer_Request_Line_Of_Response,
     Customer_Request_Link_Id,
     parent_id,
     number_of_questions,

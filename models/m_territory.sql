@@ -1,6 +1,5 @@
 {{ config(
-	post_hook="grant all privileges on {{ this }} to {{ var('snowflake_user_grant_privileges') }}",
-	schema='PROCESSING_SCHEMA')
+	post_hook="grant all privileges on {{ this }} to {{ var('snowflake_user_grant_privileges') }}")
 }}
 
 SELECT

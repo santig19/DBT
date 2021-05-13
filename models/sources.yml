@@ -267,4 +267,25 @@ sources:
       identifier: mc_cycle_channel_raw
     - name: medical_insight
       description: none 
-      identifier: medical_insight_raw                                     
+      identifier: medical_insight_raw  
+    - name: emea_matrix_map_target_class
+      description: none 
+      identifier: emea_matrix_map_target_class_raw      
+    - name: product_metrics
+      description: none 
+      identifier: product_metrics_raw 
+    - name: emea_matrix
+      description: none 
+      identifier: emea_matrix_raw               
+    - name: product_market_product_product_metrics_normalized_pivot
+      description: none 
+      identifier: buw_product_market_product_product_metrics_normalized_pivot
+    - name: elq_remote_meeting
+      description: none 
+      identifier: elq_remote_meeting_raw
+    - name: elq_remote_meeting_attendee
+      description: none 
+      identifier: elq_remote_meeting_attendee_raw    
+    - name: smart_tagging
+      description: none 
+      identifier: smart_tagging_raw                                                 

@@ -9,13 +9,13 @@ SELECT
     ,NVL(mc.opt_expiration_date_vod__c,'')  			AS opt_expiration_date
     ,NVL(mc.jj_channel_label__c,'')         			AS channel_label
     ,NVL(mc.createddate ,'')                			AS created_date
-    ,NULLIF(Capture_datetime_vod__c, '')::DATETIME 		AS Capture_datetime
+    ,CASE WHEN Capture_datetime_vod__c = '' THEN NULL ELSE TO_TIMESTAMP(Capture_datetime_vod__c, 'YYYYMMDD HH24:MI:SS') END::DATETIME 		AS Capture_datetime
     ,CASE WHEN (Position(CHR(92) || CHR(92), Channel_value_vod__c) > 0) OR Position(CHR(124) || CHR(34), Channel_value_vod__c) > 0 OR Position(CHR(92) || CHR(124), Channel_value_vod__c) > 0 OR Position(CHR(92) || CHR(34), Channel_value_vod__c) > 0
 		THEN REPLACE(REPLACE(REPLACE(REPLACE(Channel_value_vod__c, CHR(92) || CHR(92), CHR(92)), CHR(124) || CHR(34), CHR(34)), CHR(92) || CHR(124), CHR(124)), CHR(92) || CHR(34), CHR(34))
 		ELSE Channel_value_vod__c 
 	 END 												AS Channel
     ,jj_RecordType_DevName__c							AS RecordType
-	,NULLIF(LastModifiedDate, '')::DATETIME 			AS LastModifiedDate
+	,CASE WHEN LastModifiedDate = '' THEN NULL ELSE TO_TIMESTAMP(LastModifiedDate, 'YYYYMMDD HH24:MI:SS') END::DATETIME 			AS LastModifiedDate
     ,JJ_Primary_Additional__c							AS Primary_Additional
 FROM 
     {{ source('raw', 'multichannel_consent') }} AS mc

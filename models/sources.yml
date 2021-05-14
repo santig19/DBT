@@ -277,7 +277,7 @@ sources:
     - name: emea_matrix
       description: none 
       identifier: emea_matrix_raw               
-    - name: product_market_product_product_metrics_normalized_pivot
+    - name: product_metrics_normalized_pivot
       description: none 
       identifier: buw_product_market_product_product_metrics_normalized_pivot
     - name: elq_remote_meeting

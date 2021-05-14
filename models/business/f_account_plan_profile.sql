@@ -47,7 +47,7 @@ CASE
 END::varchar(255) AS account_plan_profile_region,
 1::integer as account_plan_profile_counter
 		
-FROM {{ source('raw', 'account_plan') }} AS JJTeamMember 
+FROM {{ source('raw', 'account_plan_team_member') }} AS JJTeamMember 
 LEFT OUTER JOIN extended_profiletable ON JJTeammember.jj_team_member__c = extended_profiletable.user_id
 LEFT OUTER JOIN {{ source('raw', 'account') }} AS acc ON user_id = JJTeamMember.jj_team_member__c
 LEFT OUTER JOIN {{ source('raw', 'account_plan') }} AS accplan on acc.id = accplan.account_vod__c

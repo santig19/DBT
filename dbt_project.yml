@@ -189,8 +189,7 @@ models:
         m_user_territory:
             alias: buw_alignment_m_user_territory
         f_key_message:
-            alias: buw_calls_call_activity_f_key_message
-    #end new            
+            alias: buw_calls_call_activity_f_key_message           
     processing:
         materialized: table        
         tmp_call_hierarchy:

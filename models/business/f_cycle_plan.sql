@@ -310,7 +310,7 @@ SELECT DISTINCT
            WHEN (Account_Id = ac.Id) THEN Country_Code || '_' || CASE WHEN Len(ac.Brick_Number_JJ__c) > 0 THEN ac.Brick_Number_JJ__c ELSE 'No Value' END
            ELSE 'NM'
        END::Varchar(255) AS Brick_Code
-	FROM {{ source('raw', 'action_item') }} cpt
+	FROM {{ source('raw', 'cycle_plan_target') }} cpt
 	LEFT JOIN {{ source('raw', 'account') }} ac ON ac.id = cpt.cycle_plan_account_vod__c
 	LEFT JOIN {{ source('raw', 'country_settings') }} cs ON cs.jj_Country_ISO_Code__c = cpt.country_iso_code
 	LEFT JOIN {{ source('raw', 'cycle_plan') }} cp ON cp.id = cpt.cycle_plan_vod__c

@@ -61,7 +61,7 @@ models:
         f_event:
             alias: buw_events_speaker_program_f_event        
         f_event_detail:
-            alias: f_event_detail
+            alias: buw_events_speaker_program_f_event_detail
         f_campaign:
             alias: buw_marketing_market_plan_f_campaign    
         f_campaign_clickthrough_counter:

@@ -4,12 +4,12 @@
 
 SELECT 
 
-	convert (varchar(20), u.territory2ID) as user_territory_id,
-	convert (varchar(256), t.name) as user_territory_name,
-	convert (varchar(20), u.userID) as employee_territory_id,
-	convert (varchar(2), u.country_iso_Code) as user_territory_country_code,
-	convert (varchar(256), c.name) as user_territory_country,
-	convert (varchar(256), c.jj_region__c) as user_territory_region
+	u.territory2ID::varchar(20) as user_territory_id,
+	t.name::varchar(256) as user_territory_name,
+	u.userID::varchar(20) as employee_territory_id,
+	u.country_iso_Code::varchar(2) as user_territory_country_code,
+	c.name::varchar(256) as user_territory_country,
+	c.jj_region__c::varchar(256) as user_territory_region
 
 FROM {{ source('raw', 'user_territory_association') }} u
 

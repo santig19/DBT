@@ -157,8 +157,7 @@ models:
         m_key_message:
             alias: buw_calls_call_activity_m_key_message
         m_knowledge_article_customer_request_mapping:
-            alias: buw_knowledge_article_customer_request_mapping
-    #new        
+            alias: buw_knowledge_article_customer_request_mapping         
         m_leading_specialist:
             alias: buw_leading_specialist
         m_mc_cycle_plan:

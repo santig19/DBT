@@ -10,7 +10,7 @@ select distinct
 	   AP.account_vod__c::varchar(255) as account_id,
 	   AP.country_iso_code::varchar(5) as account_country_code,
 	   CS.name::varchar(255) as account_country,
-	   CS.jj_region__c::varchar(20) as account_region,
+	   CS.jj_region__c::varchar(25) as account_region,
 	   TM.jj_system_unique_team_member__c::varchar(255) as account_plan_system_unique_team_member   
   from      {{ source('raw', 'account_plan_team_member') }} as TM
  inner join {{ source('raw', 'account_plan') }}            as AP

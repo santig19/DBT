@@ -99,7 +99,7 @@ LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS CS ON CS.country_iso_
 LEFT OUTER JOIN {{ source('raw', 'profile') }} AS PRF ON USR.Profileid = PRF.Id
 LEFT OUTER JOIN {{ source('raw', 'approved_document') }} AS APPDOC ON APPDOC.id = SE.approved_email_template_vod__c
 LEFT OUTER JOIN {{ source('raw', 'product_group_map') }} AS PROD_GROUP_MAP ON SE.product_vod__c = PROD_GROUP_MAP.product_vod__c
-LEFT OUTER JOIN {{ source('raw', 'product') }} .product_raw AS PRODUCT ON SE.product_vod__c = PRODUCT.id
+LEFT OUTER JOIN {{ source('raw', 'product') }} AS PRODUCT ON SE.product_vod__c = PRODUCT.id
 LEFT OUTER JOIN {{ ref('m_product') }} AS M_PRODUCT ON PRODUCT.id = M_PRODUCT.product_id
 LEFT OUTER JOIN {{ ref('tmp_user_territory') }} UT ON UT.USERID = SE.ownerid
 LEFT OUTER JOIN {{ source('raw', 'record_type') }} RT ON RT.id = SE.recordtypeid 

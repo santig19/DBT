@@ -180,15 +180,15 @@ GROUP BY
     ,AUX_TABLE.JJ_Spravato_Sales_Stage__c
     ,AUX_TABLE.JJ_Mindset_Spravato__c
 )
-select account_id::varchar(255),
-       product_id::varchar(255),
-       territory_nominal_Id::varchar(255),
-       country_code::varchar(255),
-       product_target_class_key::varchar(255),
-       indication_flag::varchar(1),
-       product_metric_indicator_original_field::varchar(255),
-       product_metric_indicator_field::varchar(255),
-       product_metric_indicator_value::varchar(10000)
+select account_id::varchar(255) as account_id,
+       product_id::varchar(255) as product_id,
+       territory_nominal_Id::varchar(255) as territory_nominal_Id,
+       country_code::varchar(255) as country_code,
+       product_target_class_key::varchar(255) as product_target_class_key,
+       indication_flag::varchar(1) as indication_flag,
+       product_metric_indicator_original_field::varchar(255) as product_metric_indicator_original_field,
+       product_metric_indicator_field::varchar(255) as product_metric_indicator_field,
+       product_metric_indicator_value::varchar(10000) as product_metric_indicator_value
   from 
 (
 select aux.Account_Id

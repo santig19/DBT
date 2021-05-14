@@ -46,7 +46,7 @@ LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs ON cs.jj_country_iso_
 LEFT OUTER JOIN {{ source('raw', 'emea_matrix_map_target_class') }} tc ON tc.non_prescribing = pm.jj_non_prescribing__c 
 LEFT OUTER JOIN {{ source('raw', 'emea_matrix') }} ma ON ma.target = CASE WHEN pm.jj_target__c = 0 THEN 'false' ELSE 'true' END
 	AND ma.potential = pm.jj_potential__c AND ma.penetration = pm.jj_penetration__c
-LEFT OUTER JOIN {{ source('raw', 'product_market_product_product_metrics_normalized_pivot') }} pmnp ON pmnp.account = pm.account_vod__c AND pmnp.product = pm.products_vod__c 
+LEFT OUTER JOIN {{ source('raw', 'product_metrics_normalized_pivot') }} pmnp ON pmnp.account = pm.account_vod__c AND pmnp.product = pm.products_vod__c 
 LEFT OUTER JOIN {{ ref('m_product') }} mp1 ON mp1.product_id = pm.detail_group_vod__c 
 LEFT OUTER JOIN {{ ref('m_product') }} mp2 ON mp2.product_id = pm.products_vod__c 
 LEFT OUTER JOIN 
@@ -117,7 +117,7 @@ LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs ON cs.jj_country_iso_
 LEFT OUTER JOIN {{ source('raw', 'emea_matrix_map_target_class') }} tc ON tc.non_prescribing = pm.jj_non_prescribing__c 
 LEFT OUTER JOIN {{ source('raw', 'emea_matrix') }} ma ON ma.target = CASE WHEN pm.jj_target__c = 0 THEN 'false' ELSE 'true' END
 	AND ma.potential = pm.jj_potential__c AND ma.penetration = pm.jj_penetration__c
-LEFT OUTER JOIN {{ source('raw', 'product_market_product_product_metrics_normalized_pivot') }} pmnp ON pmnp.account = pm.account_vod__c AND pmnp.product = pm.products_vod__c 
+LEFT OUTER JOIN {{ source('raw', 'product_metrics_normalized_pivot') }} pmnp ON pmnp.account = pm.account_vod__c AND pmnp.product = pm.products_vod__c 
 LEFT OUTER JOIN {{ ref('m_product') }}.buw_m_product mp1 ON mp1.product_id = pm.detail_group_vod__c 
 LEFT OUTER JOIN {{ ref('m_product') }}.buw_m_product mp2 ON mp2.product_id = pm.products_vod__c 
 LEFT OUTER JOIN 

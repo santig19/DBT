@@ -31,7 +31,7 @@ SELECT
 				(SELECT TRIM(product_detail_group)
 					FROM (
 						SELECT product_detail_group, row_number() over (order by product_detail_group) as seqnum
-						FROM emea_mto.fwk_icon_emea_matrix
+						FROM {{ source('raw', 'emea_matrix') }}
 						ORDER BY seqnum LIMIT 1
 					))
 				THEN ma.proposed_tc 
@@ -102,7 +102,7 @@ SELECT
 				(SELECT TRIM(product_detail_group)
 					FROM (
 						SELECT product_detail_group, row_number() over (order by product_detail_group) as seqnum
-						FROM emea_mto.fwk_icon_emea_matrix
+						FROM {{ source('raw', 'emea_matrix') }}
 						ORDER BY seqnum LIMIT 1
 					))
 				THEN ma.proposed_tc 
@@ -118,8 +118,8 @@ LEFT OUTER JOIN {{ source('raw', 'emea_matrix_map_target_class') }} tc ON tc.non
 LEFT OUTER JOIN {{ source('raw', 'emea_matrix') }} ma ON ma.target = CASE WHEN pm.jj_target__c = 0 THEN 'false' ELSE 'true' END
 	AND ma.potential = pm.jj_potential__c AND ma.penetration = pm.jj_penetration__c
 LEFT OUTER JOIN {{ source('raw', 'product_metrics_normalized_pivot') }} pmnp ON pmnp.account = pm.account_vod__c AND pmnp.product = pm.products_vod__c 
-LEFT OUTER JOIN {{ ref('m_product') }}.buw_m_product mp1 ON mp1.product_id = pm.detail_group_vod__c 
-LEFT OUTER JOIN {{ ref('m_product') }}.buw_m_product mp2 ON mp2.product_id = pm.products_vod__c 
+LEFT OUTER JOIN {{ ref('m_product') }} mp1 ON mp1.product_id = pm.detail_group_vod__c 
+LEFT OUTER JOIN {{ ref('m_product') }} mp2 ON mp2.product_id = pm.products_vod__c 
 LEFT OUTER JOIN 
 	(SELECT *
 	FROM (
@@ -128,8 +128,8 @@ LEFT OUTER JOIN
 			,pg.product_vod__c as product_id
 			,1 as Indication_Flag
 			,ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY product_analytic_group_id ASC) as rowid
-		FROM {{ source('raw', 'analytics_product_group') }}.ZZ_fwk_icon_analytics_product_group_vod__c_business an	
-		JOIN {{ source('raw', 'analytics_product_group') }}.ZZ_fwk_icon_product_group_map_vod__c_business pg ON an.id = pg.analytics_product_group_vod__c
+		FROM {{ source('raw', 'analytics_product_group') }} an	
+		JOIN {{ source('raw', 'product_group_map') }} pg ON an.id = pg.analytics_product_group_vod__c
 		WHERE COALESCE(pg.product_vod__c, '') != ''
 		) 
 	WHERE rowid=1
@@ -143,23 +143,23 @@ GROUP BY
 
 --RESULTANT TABLE M_PRODUCT_METRICS_EMEA
 SELECT
-	 AUX_TABLE.Account_Id::varchar(255)
-	,AUX_TABLE.Product_Id::varchar(255)
+	 AUX_TABLE.Account_Id::varchar(255) as Account_Id
+	,AUX_TABLE.Product_Id::varchar(255) as Product_Id
 	,a.territory_assignment_id::varchar(255) as Territory_Nominal_Id
-	,AUX_TABLE.Country_Code::varchar(255)
+	,AUX_TABLE.Country_Code::varchar(255) as Country_Code
 	,(CASE WHEN LEN(mp2.product_therapeutic_area_1)>0 THEN mp2.product_therapeutic_area_1 ELSE 'NM' END)::varchar(255) as Therapeutic_Area_Name
 	,(CASE WHEN LEN(mp2.product_brand_therapeutic_area_1_null)>0 THEN mp2.product_brand_therapeutic_area_1_null ELSE 'NM' END)::varchar(255) as Therapeutic_Area_Brand_Name 
 	,cs.name::varchar(255) as Country
 	,cs.jj_region__c::varchar(255) as Region
-	,AUX_TABLE.Penetration::varchar(255)
-	,AUX_TABLE.Potential::varchar(255)
-	,AUX_TABLE.Penetration_number::varchar(255)
-	,AUX_TABLE.Potential_number::varchar(255)
-	,AUX_TABLE.Product_Target_Class_Key::varchar(255)
-	,AUX_TABLE.Product_Target_Class::varchar(255)
-	,AUX_TABLE.Targeting_System_Proposal::varchar(255)
-	,AUX_TABLE.Therapy_mindset::varchar(255)
-	,AUX_TABLE.Sales_stage::varchar(255)
+	,AUX_TABLE.Penetration::varchar(255) as Penetration
+	,AUX_TABLE.Potential::varchar(255) as Potential
+	,AUX_TABLE.Penetration_number::varchar(255) as Penetration_number
+	,AUX_TABLE.Potential_number::varchar(255) as Potential_number
+	,AUX_TABLE.Product_Target_Class_Key::varchar(255) as Product_Target_Class_Key
+	,AUX_TABLE.Product_Target_Class::varchar(255) as Product_Target_Class
+	,AUX_TABLE.Targeting_System_Proposal::varchar(255) as Targeting_System_Proposal
+	,AUX_TABLE.Therapy_mindset::varchar(255) as Therapy_mindset
+	,AUX_TABLE.Sales_stage::varchar(255) as Sales_stage
 	,CASE
 		WHEN LEN(AUX_TABLE.Therapy_mindset) > 0 OR LEN(AUX_TABLE.Sales_stage) > 0 
 			THEN 'Yes'

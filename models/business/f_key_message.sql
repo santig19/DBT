@@ -145,14 +145,14 @@ with veeva1 AS (
 )
 					
 SELECT DISTINCT
-	F_CALL_KEY_MESSAGE.edetail_presentation_id::varchar(20),
-	F_CALL_KEY_MESSAGE.key_message_id::varchar(20), 
-	F_CALL_KEY_MESSAGE.key_message_clm::varchar(3),
-	F_CALL_KEY_MESSAGE.key_call_message_link_id::varchar(255),
-	F_CALL_KEY_MESSAGE.call_clickstream_id::varchar(255), 
+	F_CALL_KEY_MESSAGE.edetail_presentation_id::varchar(20) as edetail_presentation_id,
+	F_CALL_KEY_MESSAGE.key_message_id::varchar(20) as key_message_id, 
+	F_CALL_KEY_MESSAGE.key_message_clm::varchar(3) as key_message_clm,
+	F_CALL_KEY_MESSAGE.key_call_message_link_id::varchar(255) as key_call_message_link_id,
+	F_CALL_KEY_MESSAGE.call_clickstream_id::varchar(255) as call_clickstream_id, 
 	F_CALL_KEY_MESSAGE.call_message_duration, 
-	F_CALL_KEY_MESSAGE.call_key_message_id::varchar(20),
-	F_CALL_KEY_MESSAGE.call_message_country_code::varchar(2),
+	F_CALL_KEY_MESSAGE.call_key_message_id::varchar(20) as call_key_message_id,
+	F_CALL_KEY_MESSAGE.call_message_country_code::varchar(2) as call_message_country_code,
 	CASE
 		WHEN F_CALL_KEY_MESSAGE.Call_Message_Country_Code = jjc.jj_country_iso_code__c
 		THEN jjc.jj_region__c
@@ -164,14 +164,14 @@ SELECT DISTINCT
 		ELSE ''
 	END::varchar(255) AS call_message_country,
 	F_CALL_KEY_MESSAGE.call_message_reaction_colour,
-	F_CALL_KEY_MESSAGE.call_message_reaction::varchar(255),
-	M_KEY_MESSAGE.Key_Message_record_type::varchar(255),
-	M_KEY_MESSAGE.Key_message_description::varchar(255),
-	M_KEY_MESSAGE.key_message_mandatory_item::varchar(3),
-	M_KEY_MESSAGE.key_message_status::varchar(8),
+	F_CALL_KEY_MESSAGE.call_message_reaction::varchar(255) as call_message_reaction,
+	M_KEY_MESSAGE.Key_Message_record_type::varchar(255) as Key_Message_record_type,
+	M_KEY_MESSAGE.Key_message_description::varchar(255) as Key_message_description,
+	M_KEY_MESSAGE.key_message_mandatory_item::varchar(3) as key_message_mandatory_item,
+	M_KEY_MESSAGE.key_message_status::varchar(8) as key_message_status,
 	M_KEY_MESSAGE.key_message,
 	M_KEY_MESSAGE.key_message_emea_key_message,
-	M_KEY_MESSAGE.EMEA_key_message_status::varchar(8)
+	M_KEY_MESSAGE.EMEA_key_message_status::varchar(8) as EMEA_key_message_status
 
 FROM F_CALL_KEY_MESSAGE
 LEFT OUTER JOIN {{ source('raw', 'country_settings') }} AS jjc ON F_CALL_KEY_MESSAGE.Call_Message_Country_Code = jjc.jj_country_iso_code__c

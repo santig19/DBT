@@ -30,7 +30,7 @@ SELECT
   	END) as therapy_decision
 FROM {{ source('raw', 'product_metrics') }} pm 
 LEFT OUTER JOIN {{ source('raw', 'product') }} pr ON pr.id = pm.products_vod__c 
-LEFT OUTER JOIN {{ ref('m_product') }} mp2 ON mp2.product_id = pm.products_vod__c 
+LEFT OUTER JOIN {{ ref('m_product') }} mp2 ON mp2.product_id = pm.products_vod__c
 LEFT OUTER JOIN 
 	(SELECT *
 	FROM (
@@ -106,21 +106,21 @@ GROUP BY
 ,pm.country_iso_code
 ,Product_Target_Class_Key
 ,pm.JJ_INC_Therapy__c
-)	
+)
 
 --RESULTANT TABLE M_PRODUCT_METRICS_COUNTRY
 SELECT
-	 AUX_TABLE.Account_Id::varchar(255)
-	,AUX_TABLE.Product_Id::varchar(255)
+	 AUX_TABLE.Account_Id::varchar(255) as Account_Id
+	,AUX_TABLE.Product_Id::varchar(255) as Product_Id
 	,a.territory_assignment_id::varchar(255) as Territory_Nominal_Id
-	,AUX_TABLE.Country_Code::varchar(255)
+	,AUX_TABLE.Country_Code::varchar(255) as Country_Code
 	,(CASE WHEN LEN(mp2.product_therapeutic_area_1)>0 THEN mp2.product_therapeutic_area_1 ELSE 'NM' END)::varchar(255) as Therapeutic_Area_Name
 	,(CASE WHEN LEN(mp2.product_brand_therapeutic_area_1_null)>0 THEN mp2.product_brand_therapeutic_area_1_null ELSE 'NM' END)::varchar(255) as Therapeutic_Area_Brand_Name 
 	,cs.name::varchar(255) as Country
 	,cs.jj_region__c::varchar(255) as Region
-	,AUX_TABLE.Product_Target_Class_Key::varchar(255)
+	,AUX_TABLE.Product_Target_Class_Key::varchar(255) as Product_Target_Class_Key
 	,AUX_TABLE.Indication_Flag::varchar(1) as Indication_Flag
-	,MAX(AUX_TABLE.therapy_decision) AS therapy_decision
+	,MAX(AUX_TABLE.therapy_decision) as therapy_decision
 FROM AUX_TABLE as AUX_TABLE
 LEFT OUTER JOIN {{ source('raw', 'country_settings') }} cs ON cs.jj_country_iso_code__c = AUX_TABLE.Country_Code
 LEFT OUTER JOIN {{ ref('m_assignment') }} a ON a.assignment_id = AUX_TABLE.Account_Id

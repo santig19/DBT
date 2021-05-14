@@ -104,7 +104,7 @@ LEFT JOIN (
 ) cs on Us.jj_User_Country__c=cs.Name and cs.rowid=1
 LEFT JOIN (
 	SELECT ROW_NUMBER() OVER ( partition by Account_vod__c,User_vod__c,Call2_vod__c order by lastmodifieddate asc) as rowid, Type_vod__c, Account_vod__c, User_vod__c, Call2_vod__c 
-	FROM {{ source('raw', 'account') }} 
+	FROM {{ source('raw', 'call_expenses') }} 
 ) ce on concat(c.Account_vod__c,'_',c.User_vod__c,'_',c.Id) = concat(ce.Account_vod__c,'_',ce.User_vod__c,'_',ce.Call2_vod__c) and ce.rowid=1
 LEFT JOIN (
 	SELECT count(DISTINCT Child_Call) as cont_child, Parent_Call

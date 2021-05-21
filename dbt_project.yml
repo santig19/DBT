@@ -26,9 +26,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 #Variables
 #Generic variables used in all models
-vars:
-  #Snowflake schema where are all the raw tables
-  schema: "RAW_SCHEMA"
+vars:  
   #Snowflake user to grant privileges for each model
   snowflake_user_grant_privileges: "ACCOUNTADMIN"
 

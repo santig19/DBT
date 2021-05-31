@@ -37,5 +37,5 @@ SELECT COUNTRY_ISO_CODE::varchar(100) AS COUNTRY_ISO_CODE
       ,JJ_CONTENT_ID__C::varchar(100) AS JJ_CONTENT_ID__C
       ,JJ_SALESLINE__C::varchar(100) AS JJ_SALESLINE__C
       ,JJ_TERRITORY__C::varchar(16777216) AS JJ_TERRITORY__C
-  FROM {{ var('schema') }}.content_recommendations_raw
+  FROM {{ source('raw', 'content_recommendations') }}
 

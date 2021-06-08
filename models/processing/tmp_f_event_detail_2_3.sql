@@ -148,7 +148,7 @@ LEFT JOIN {{ source('raw', 'rgb') }} rgb on rgb.Field_Value =
 		then 'Signed contract received at least one week before the event date' 
 		when (lower(ev.Event_Attendee_Received_Signed_Contract)='yes' and COALESCE(ev.Event_Date,'')!= '' AND
 			COALESCE(ev.Event_Attendee_Date_Received_Signed_Contract, '') != '' AND
-			DATEDIFF(day,to_date(ev.Event_Date,'ddmmyyyy'), TO_DATE(ev.Event_Attendee_Date_Received_Signed_Contract, 'YYYYMMDD HH24:MI:SS'))<=7)
+			DATEDIFF(day,to_date(ev.Event_Date,'dd-mm-yyyy'), TO_DATE(ev.Event_Attendee_Date_Received_Signed_Contract, 'YYYYMMDD HH24:MI:SS'))<=7)
 		then 'Signed contract received in the week of the event date'
 		when (lower(ev.Event_Attendee_Received_Signed_Contract)='yes' and COALESCE(ev.Event_Attendee_Date_Received_Signed_Contract,'') = '')
 		then 'Signed contract received without received date informed'

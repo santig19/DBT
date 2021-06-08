@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: f_call
+    columns:      
+      - name: CALL_CHANNEL
+        tests:
+          - accepted_values:
+              values: ['Phone','Face to face','No Value','Traditional Mail','Email','Webcall']
+      - name: ACCOUNT_ID
+        tests:
+          - relationships:
+              to: ref('buw_customer_m_account')
+              field: ACCOUNT_ID
+  - name: m_account
+    columns:
+      - name: ACCOUNT_ID
+        tests:
+          - unique
+          - not_null    

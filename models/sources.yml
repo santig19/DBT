@@ -5,7 +5,7 @@ sources:
     schema: raw_schema
     tables:
     - name: account_plan
-      description: none 
+      description: This Table contains account plan data 
       identifier: account_plan_raw
     - name: account_plan_team_member
       description: none 

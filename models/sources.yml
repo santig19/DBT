@@ -11,7 +11,7 @@ sources:
       description: This table contains data about account plan team members 
       identifier: account_plan_team_member_raw
     - name: account
-      description: none 
+      description: This table contains account master data 
       identifier: account_raw
     - name: account_tactic
       description: none 

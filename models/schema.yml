@@ -17,4 +17,6 @@ models:
       - name: ACCOUNT_ID
         tests:
           - unique
-          - not_null    
+          - not_null
+  - name: m_territory                    
+    description: This table contains territory master data

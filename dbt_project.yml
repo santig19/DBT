@@ -43,7 +43,7 @@ models:
     business:
         materialized: table
         m_territory:        
-            alias: buw_alignment_m_territory        
+            alias: buw_alignment_m_territory 
         m_product:        
             alias: buw_m_product
         m_null_country_values:        

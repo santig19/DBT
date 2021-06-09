@@ -5,10 +5,10 @@ sources:
     schema: raw_schema
     tables:
     - name: account_plan
-      description: This
+      description: This table contains data aoubt account plan
       identifier: account_plan_raw
     - name: account_plan_team_member
-      description: none 
+      description: This table contains data about account plan team members 
       identifier: account_plan_team_member_raw
     - name: account
       description: none 

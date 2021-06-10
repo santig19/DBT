@@ -29,6 +29,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 vars:  
   #Snowflake user to grant privileges for each model
   snowflake_user_grant_privileges: "ACCOUNTADMIN"
+  production_database_name: "PRD_POC_DB"
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models

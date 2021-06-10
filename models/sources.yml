@@ -14,7 +14,7 @@ sources:
       description: This table contains account master data 
       identifier: account_raw
     - name: account_tactic
-      description: none 
+      description: This table contains data regarding account tactic 
       identifier: account_tactic_raw
     - name: action_item
       description: none 

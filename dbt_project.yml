@@ -42,7 +42,7 @@ models:
       # Applies to all files under models/example/
     #materialized: ephemeral
     business:
-        materialized: table
+        materialized: table        
         m_territory:        
             alias: buw_alignment_m_territory 
         m_product:        

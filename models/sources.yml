@@ -286,7 +286,6 @@ sources:
     - name: elq_remote_meeting_attendee
       description: none 
       identifier: elq_remote_meeting_attendee_raw    
-      this is a test
     - name: smart_tagging
       description: none 
       identifier: smart_tagging_raw                                                 

@@ -289,3 +289,9 @@ sources:
     - name: smart_tagging
       description: none 
       identifier: smart_tagging_raw                                                 
+<<<<<<< HEAD
+=======
+      test to remove 1
+      test to remove 2
+      test to remove 3
+>>>>>>> 33c917e0424b968b86084732a57eb2aff2167c43

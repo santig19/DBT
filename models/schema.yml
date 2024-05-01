@@ -25,6 +25,7 @@ models:
       - name: CALL_ID
         tests:          
           - not_null
+  test 1
 
 
       
